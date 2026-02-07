@@ -1,0 +1,5 @@
+<Solution>
+  <Project Path="Fixi.Core/Fixi.Core.csproj" />
+  <Project Path="Fixi.Infrastructure/Fixi.Infrastructure.csproj" />
+  <Project Path="Fixi.WebAPI/Fixi.WebAPI.csproj" />
+</Solution>
