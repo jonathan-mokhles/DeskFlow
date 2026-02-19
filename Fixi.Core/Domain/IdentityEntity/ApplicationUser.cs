@@ -10,6 +10,8 @@ namespace Fixi.Core.Domain.IdentityEntity
     {
         public string FullName { get; set; } = string.Empty;
         public int DepartmentId { get; set; }
+        public string RefreshToken { get; set; } = string.Empty;
+        public DateTime RefreshTokenExpiryTime { get; set; }
 
         // Navigation property
         public Department? Department { get; set; }

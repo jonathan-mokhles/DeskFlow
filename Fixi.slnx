@@ -1,5 +1,10 @@
 <Solution>
-  <Project Path="Fixi.Core/Fixi.Core.csproj" />
-  <Project Path="Fixi.Infrastructure/Fixi.Infrastructure.csproj" />
-  <Project Path="Fixi.WebAPI/Fixi.WebAPI.csproj" />
+  <Folder Name="/src/">
+    <Project Path="Fixi.Core/Fixi.Core.csproj" />
+    <Project Path="Fixi.Infrastructure/Fixi.Infrastructure.csproj" />
+    <Project Path="Fixi.WebAPI/Fixi.WebAPI.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="Fixi.Tests/Fixi.Tests.csproj" Id="45048dc2-b771-4f99-b409-d4f6bd1c3bc3" />
+  </Folder>
 </Solution>
