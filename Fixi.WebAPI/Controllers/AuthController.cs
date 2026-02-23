@@ -1,17 +1,12 @@
 ﻿using Fixi.Core.Domain.IdentityEntity;
 using Fixi.Core.DTOs.AccountDTOs;
-using Fixi.Core.Services;
+using Fixi.Core.DTOs.shared;
 using Fixi.Core.ServicesContracts;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
-using Microsoft.IdentityModel.JsonWebTokens;
-using Microsoft.Win32;
+
 using System.Security.Claims;
-using System.Threading.Tasks;
 
 namespace Fixi.WebAPI.Controllers
 {
@@ -35,6 +30,10 @@ namespace Fixi.WebAPI.Controllers
             _logger = logger;
         }
 
+
+
+
+
         /// <summary>
         /// Registers a new user account with the specified registration details. Accessible only to users in the Admin
         /// role.
@@ -49,24 +48,42 @@ namespace Fixi.WebAPI.Controllers
         [HttpPost("register")]
         [Authorize(Roles = "Admin")]
         [ProducesResponseType(StatusCodes.Status201Created)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ApiErrorResponse),StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> register(RegisterDTO registerDTO)
         {
             if (!ModelState.IsValid)
             {
-                return BadRequest(ModelState);
+                ApiErrorResponse errorResponse = new ApiErrorResponse
+                {
+                    Message = "Invalid registration data",
+                    Errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage).ToList(),
+                    TraceId = HttpContext.TraceIdentifier
+                };
+                return BadRequest(errorResponse);
             }
 
             var existingUser = await _userManager.FindByEmailAsync(registerDTO.Email);
 
             if (existingUser != null)
             {
-                return BadRequest(new { message = "User with this email already exists" });
+                ApiErrorResponse errorResponse = new ApiErrorResponse
+                {
+                    Message = "email already exists",
+                    Errors = new List<string> { $"A user with the email '{registerDTO.Email}' already exists." },
+                    TraceId = HttpContext.TraceIdentifier
+                };
+                return BadRequest(errorResponse);
             }
 
             if (!await _roleManager.RoleExistsAsync(registerDTO.Role))
             {
-                return BadRequest(new { message = $"Role '{registerDTO.Role}' does not exist" });
+                ApiErrorResponse errorResponse = new ApiErrorResponse
+                {
+                    Message = "Invalid role",
+                    Errors = new List<string> { $"Role '{registerDTO.Role}' does not exist." },
+                    TraceId = HttpContext.TraceIdentifier
+                };
+                return BadRequest(errorResponse);
             }
 
             ApplicationUser newUser = new ApplicationUser
@@ -83,7 +100,13 @@ namespace Fixi.WebAPI.Controllers
 
             if (!result.Succeeded)
             {
-                return BadRequest(result.Errors);
+                ApiErrorResponse errorResponse = new ApiErrorResponse
+                {
+                    Message = "User registration failed",
+                    Errors = result.Errors.Select(e => e.Description).ToList(),
+                    TraceId = HttpContext.TraceIdentifier
+                };
+                return BadRequest(errorResponse);
             }
 
             await _userManager.AddToRoleAsync(newUser, registerDTO.Role);
@@ -92,6 +115,9 @@ namespace Fixi.WebAPI.Controllers
 
 
         }
+
+
+
 
         /// <summary>
         /// Authenticates a user with the provided credentials and returns a JWT token if successful.
@@ -107,26 +133,33 @@ namespace Fixi.WebAPI.Controllers
         [HttpPost("login")]
         [AllowAnonymous]
         [ProducesResponseType(typeof(AuthResponseDTO), StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(typeof(ApiErrorResponse), StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(typeof(ApiErrorResponse), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> login(LoginDTO loginDTO)
         {
             if (!ModelState.IsValid)
             {
-                return BadRequest(ModelState);
+                    ApiErrorResponse errorResponse = new ApiErrorResponse
+                    {
+                        Message = "Invalid login data",
+                        Errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage).ToList(),
+                        TraceId = HttpContext.TraceIdentifier
+                    };
+                return BadRequest(errorResponse);
             }
 
             var user = await _userManager.FindByEmailAsync(loginDTO.Email);
-            if (user == null)
+            var isPasswordValid = user != null && await _userManager.CheckPasswordAsync(user, loginDTO.Password);
+
+            if (user == null || !isPasswordValid)
             {
                 _logger.LogWarning("Failed login attempt for email: {Email}", loginDTO.Email);
-                return Unauthorized(new { message = "Invalid credentials" });
-            }
-
-            var isPasswordValid = await _userManager.CheckPasswordAsync(user, loginDTO.Password);
-            if (!isPasswordValid)
-            {
-                _logger.LogWarning("Failed login attempt for user: {UserId}", user.Id);
-                return Unauthorized(new { message = "Invalid credentials" });
+                return Unauthorized(new ApiErrorResponse
+                {
+                    Message = "Invalid credentials",
+                    Errors = new List<string> { "Email or password is incorrect." },
+                    TraceId = HttpContext.TraceIdentifier
+                });
             }
 
             AuthResponseDTO authResponse = await _jwt.GenerateToken(user);
@@ -134,6 +167,9 @@ namespace Fixi.WebAPI.Controllers
             return Ok(authResponse);
 
         }
+
+
+
 
         /// <summary>
         /// Handles a request to refresh a JWT access token using a valid refresh token.
@@ -149,36 +185,63 @@ namespace Fixi.WebAPI.Controllers
         [HttpPost("refresh-token")]
         [AllowAnonymous]
         [ProducesResponseType(typeof(AuthResponseDTO), StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ApiErrorResponse), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> refreshToken(RefreshTokenRequestDTO request)
         {
             if (!ModelState.IsValid)
             {
-               return BadRequest(new { message = "Invalid request" });
+                ApiErrorResponse errorResponse = new ApiErrorResponse
+                {
+                    Message = "Invalid request data",
+                    Errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage).ToList(),
+                    TraceId = HttpContext.TraceIdentifier
+                };
+                return BadRequest(errorResponse);
             }
 
-            try
-            {
+
                 var principal = _jwt.GetPrincipalFromExpiredToken(request.Token);
+
                 if(principal == null)
                 {
-                    return BadRequest(new { message = "Invalid token" });
+                    ApiErrorResponse errorResponse = new ApiErrorResponse
+                    {
+                        Message = "Invalid token",
+                        Errors = new List<string> { "The provided access token is invalid or malformed." },
+                        TraceId = HttpContext.TraceIdentifier
+                    };
+                return BadRequest(errorResponse);
                 }
 
-                string? userEmail =  principal.FindFirstValue(ClaimTypes.Email);
-
-                ApplicationUser? user = await _userManager.FindByEmailAsync(userEmail);
-                if(user == null || user.RefreshToken != request.RefreshToken || user.RefreshTokenExpiryTime <= DateTime.UtcNow)
+                string? userEmail = principal.FindFirstValue(ClaimTypes.Email);
+                if (string.IsNullOrEmpty(userEmail))
                 {
-                    return BadRequest(new { message = "Invalid token or refresh token" });
+                    return BadRequest(new ApiErrorResponse
+                    {
+                        Message = "Invalid token",
+                        Errors = new List<string> { "Token does not contain a valid email claim." },
+                        TraceId = HttpContext.TraceIdentifier
+                    });
                 }
+            ApplicationUser? user = await _userManager.FindByEmailAsync(userEmail);
+            if (user == null || user.RefreshToken != request.RefreshToken || user.RefreshTokenExpiryTime <= DateTime.UtcNow)
+                {
+                    ApiErrorResponse errorResponse = new ApiErrorResponse
+                    {
+                        Message = "Invalid token or refresh token",
+                        Errors = new List<string> { "The provided refresh token is invalid, expired, or does not match the user." },
+                        TraceId = HttpContext.TraceIdentifier
+                    };
+                return BadRequest(errorResponse);
+                }
+
                 var response = await _jwt.GenerateToken(user);
                 return Ok(response);
-            }
-            catch (Exception ex) { 
-                return BadRequest(new { message = "Invalid token", details = ex.Message });
-            }
+            
+
         }
+
+
 
         /// <summary>
         /// Resets the password for a user identified by the provided email address.
@@ -189,22 +252,44 @@ namespace Fixi.WebAPI.Controllers
         /// with error details.</returns>
         [HttpPost("reset-password")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ApiErrorResponse), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> resetPassword(ResetPasswordRequestDTO passwordRequest)
         {
             if (!ModelState.IsValid)
             {
-                return BadRequest(ModelState);
+                ApiErrorResponse errorResponse = new ApiErrorResponse
+                {
+                    Message = "Invalid request data",
+                    Errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage).ToList(),
+                    TraceId = HttpContext.TraceIdentifier
+                };
+                return BadRequest(errorResponse);
             }
-            ApplicationUser? user = await _userManager.FindByEmailAsync(passwordRequest.Email);
+
+            var UserEmail = User.FindFirstValue(ClaimTypes.Email);
+            ApplicationUser? user = await _userManager.FindByEmailAsync(UserEmail!);
+
             if (user == null)
             {
-                return BadRequest(new { message = "User with this email does not exist" });
+                ApiErrorResponse errorResponse = new ApiErrorResponse
+                {
+                    Message = "User not found",
+                    Errors = new List<string> { $"No user found with the email '{UserEmail}'." },
+                    TraceId = HttpContext.TraceIdentifier
+                };
+                return BadRequest(errorResponse);
             }
+
             var result =  await _userManager.ChangePasswordAsync(user, passwordRequest.OldPassword, passwordRequest.NewPassword);
             if (!result.Succeeded)
             {
-                return BadRequest(result.Errors);
+                ApiErrorResponse errorResponse = new ApiErrorResponse
+                {
+                    Message = "Password reset failed",
+                    Errors = result.Errors.Select(e => e.Description).ToList(),
+                    TraceId = HttpContext.TraceIdentifier
+                };
+                return BadRequest(errorResponse);
             }
             return Ok(new { message = "Password reset successful" });
         }

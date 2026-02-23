@@ -33,11 +33,11 @@ namespace Fixi.Core.Services
             {
             new Claim(JwtRegisteredClaimNames.Sub, user.Id), // subject is userID	
             new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()), //Json token id
-            new Claim(ClaimTypes.Role, roles.First()),
+            new Claim(ClaimTypes.Role, roles.FirstOrDefault()),
             new Claim(ClaimTypes.Email, user.Email)
             };
 
-            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:SecretKey"]));
+            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:SecretKey"])); // Secret key from Secrets Manager 
             var expiration = DateTime.UtcNow.AddMinutes(Convert.ToDouble(_config["Jwt:DurationInMinutes"]));
             var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
 
@@ -59,7 +59,7 @@ namespace Fixi.Core.Services
                 Email = user.Email!,
                 Token = token,
                 Expiration = expiration,
-                Role = roles.First(),
+                Role = roles.FirstOrDefault() ?? "User",
                 RefreshToken = user.RefreshToken,
                 RefreshTokenExpiration = user.RefreshTokenExpiryTime
             };

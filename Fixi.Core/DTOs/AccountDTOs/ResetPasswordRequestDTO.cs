@@ -7,10 +7,6 @@ namespace Fixi.Core.DTOs.AccountDTOs
 {
     public class ResetPasswordRequestDTO
     {
-
-        [Required]
-        [EmailAddress]
-        public string Email { get; set; } = string.Empty;
         [Required]
         public string OldPassword { get; set; }= string.Empty;
         [Required]
