@@ -15,10 +15,6 @@ namespace Fixi.Core.Domain.Entity
         public int Id { get; set; }
 
         [Required]
-        [MaxLength(50)]
-        public string TicketNumber { get; set; } = string.Empty;
-
-        [Required]
         [MaxLength(200)]
         public string Title { get; set; } = string.Empty;
 
@@ -34,34 +30,35 @@ namespace Fixi.Core.Domain.Entity
         // References
         [Required]
         public int CategoryId { get; set; }
-
         [Required]
         public string ReportedById { get; set; } = string.Empty;
-
         public string? AssignedToId { get; set; }
 
         // Dates
         [Required]
         public DateTime CreatedDate { get; set; }
-
         public DateTime? AssignedDate { get; set; }
-
         public DateTime? ResolvedDate { get; set; }
-
         public DateTime? ClosedDate { get; set; }
-
         [Required]
         public DateTime LastModifiedDate { get; set; }
 
-        // SLA
-        [Required]
-        public DateTime SLADeadline { get; set; }
 
-        public bool SLABreached { get; set; } = false;
+        // SLA 
+        [Required]
+        public DateTime SLAResponseDeadline { get; set; }
+        public bool SLAResponseBreached { get; set; } = false;
+
+        [Required]
+        public DateTime SLAResolutionDeadline { get; set; }
+        public bool SLAResolutionBreached { get; set; } = false;
+
 
         // Audit
         [Required]
         public string LastModifiedById { get; set; } = string.Empty;
+
+
 
         // Navigation Properties
         [ForeignKey(nameof(CategoryId))]
@@ -78,6 +75,6 @@ namespace Fixi.Core.Domain.Entity
 
         public ICollection<TicketComment> Comments { get; set; } = new List<TicketComment>();
         public ICollection<TicketAttachment> Attachments { get; set; } = new List<TicketAttachment>();
-        public ICollection<TicketStatusHistory> StatusHistory { get; set; } = new List<TicketStatusHistory>();
+        public ICollection<TicketAuditLog> AuditLogs { get; set; } = new List<TicketAuditLog>();
     }
 }

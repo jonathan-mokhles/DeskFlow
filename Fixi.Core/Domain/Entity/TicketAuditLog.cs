@@ -1,14 +1,10 @@
 ﻿using Fixi.Core.Domain.IdentityEntity;
-using Fixi.Core.Enums;
-using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Text;
 
 namespace Fixi.Core.Domain.Entity
 {
-    public class TicketStatusHistory
+    public class TicketAuditLog
     {
         [Key]
         public int Id { get; set; }
@@ -17,19 +13,24 @@ namespace Fixi.Core.Domain.Entity
         public int TicketId { get; set; }
 
         [Required]
-        public TicketStatus FromStatus { get; set; }
+        [MaxLength(50)]
+        public string ChangeType { get; set; } = string.Empty;
+
+        [MaxLength(500)]
+        public string? OldValue { get; set; }
+
+        [MaxLength(500)]
+        public string? NewValue { get; set; }
 
         [Required]
-        public TicketStatus ToStatus { get; set; }
-
-        [Required]
-        public string ChangedById { get; set; }= string.Empty;
+        public string ChangedById { get; set; } = string.Empty;
 
         [Required]
         public DateTime ChangedDate { get; set; }
 
         [MaxLength(500)]
         public string? ChangeReason { get; set; }
+
 
         // Navigation Properties
         [ForeignKey(nameof(TicketId))]

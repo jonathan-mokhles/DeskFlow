@@ -22,7 +22,7 @@ namespace Fixi.Infrastructure.DbContext
         public DbSet<Ticket> Tickets { get; set; }
         public DbSet<TicketComment> TicketComments { get; set; }
         public DbSet<TicketAttachment> TicketAttachments { get; set; }
-        public DbSet<TicketStatusHistory> TicketStatusHistory { get; set; }
+        public DbSet<TicketAuditLog> TicketAuditLog { get; set; }
         public DbSet<SLASetting> SLASettings { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -63,7 +63,7 @@ namespace Fixi.Infrastructure.DbContext
                 .OnDelete(DeleteBehavior.Restrict);
 
             // TicketStatusHistory relationships
-            modelBuilder.Entity<TicketStatusHistory>()
+            modelBuilder.Entity<TicketAuditLog>()
                 .HasOne(s => s.ChangedBy)
                 .WithMany()
                 .HasForeignKey(s => s.ChangedById)
