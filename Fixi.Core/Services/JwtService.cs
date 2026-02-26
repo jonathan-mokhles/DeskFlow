@@ -5,7 +5,6 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System;
-using System.Collections.Generic;
 using System.Data;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -31,10 +30,11 @@ namespace Fixi.Core.Services
 
             var claims = new List<Claim>
             {
-            new Claim(JwtRegisteredClaimNames.Sub, user.Id), // subject is userID	
-            new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()), //Json token id
+            new Claim(JwtRegisteredClaimNames.Sub, user.Id), // subject is userId	
+            new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()), //Json token Id
             new Claim(ClaimTypes.Role, roles.FirstOrDefault()),
-            new Claim(ClaimTypes.Email, user.Email)
+            new Claim(ClaimTypes.Email, user.Email),
+            new Claim("DeptId", user.DepartmentId.ToString())
             };
 
             var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:SecretKey"])); // Secret key from Secrets Manager 
@@ -66,9 +66,10 @@ namespace Fixi.Core.Services
 
         }
 
+
         public ClaimsPrincipal? GetPrincipalFromExpiredToken(string token)
         {
-            var tokenValidationParameters = new TokenValidationParameters
+            var tokenValticketIdationParameters = new TokenValidationParameters
             {
                 ValidateAudience = false,
                 ValidateIssuer = false,
@@ -78,10 +79,10 @@ namespace Fixi.Core.Services
             };
 
             JwtSecurityTokenHandler tokenHandler = new JwtSecurityTokenHandler();
-            ClaimsPrincipal claims =  tokenHandler.ValidateToken(token, tokenValidationParameters, out SecurityToken securityToken);
+            ClaimsPrincipal claims =  tokenHandler.ValidateToken(token, tokenValticketIdationParameters, out SecurityToken securityToken);
             if(securityToken is not JwtSecurityToken jwtSecurityToken || !jwtSecurityToken.Header.Alg.Equals(SecurityAlgorithms.HmacSha256, StringComparison.InvariantCultureIgnoreCase))
             {
-                throw new SecurityTokenException("Invalid token");
+                throw new SecurityTokenException("InvalticketId token");
             }
             return claims;
         }
