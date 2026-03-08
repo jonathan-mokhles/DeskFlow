@@ -8,11 +8,11 @@ namespace Fixi.Core.Domain.Repositories_Contracts
     public interface ICategoryRepository
     {
         // Basic CRUD
-        Task<Category?> GetByIdAsync(int id);
+        Task<Category?> GetByticketIdAsync(int ticketId);
         Task<IEnumerable<Category>> GetAllAsync();
         Task<Category> CreateAsync(Category category);
         Task UpdateAsync(Category category);
-        Task DeleteAsync(int id);
+        Task DeleteAsync(int ticketId);
 
     }
 }

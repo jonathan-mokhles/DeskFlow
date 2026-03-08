@@ -105,7 +105,7 @@ namespace Fixi.Infrastructure.Migrations
                         {
                             Id = 10,
                             DepartmentId = 3,
-                            Description = "Incidents related to failed, delayed, or incorrect financial transactions.",
+                            Description = "IncIdents related to failed, delayed, or incorrect financial transactions.",
                             Name = "Payment Processing"
                         },
                         new
@@ -608,20 +608,20 @@ namespace Fixi.Infrastructure.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
-                    b.Property<string>("LoginProvider")
+                    b.Property<string>("LoginProvIder")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<string>("ProviderKey")
+                    b.Property<string>("ProvIderKey")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<string>("ProviderDisplayName")
+                    b.Property<string>("ProvIderDisplayName")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("UserId")
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
-                    b.HasKey("LoginProvider", "ProviderKey");
+                    b.HasKey("LoginProvIder", "ProvIderKey");
 
                     b.HasIndex("UserId");
 
@@ -648,7 +648,7 @@ namespace Fixi.Infrastructure.Migrations
                     b.Property<string>("UserId")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<string>("LoginProvider")
+                    b.Property<string>("LoginProvIder")
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Name")
@@ -657,7 +657,7 @@ namespace Fixi.Infrastructure.Migrations
                     b.Property<string>("Value")
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("UserId", "LoginProvider", "Name");
+                    b.HasKey("UserId", "LoginProvIder", "Name");
 
                     b.ToTable("AspNetUserTokens", (string)null);
                 });

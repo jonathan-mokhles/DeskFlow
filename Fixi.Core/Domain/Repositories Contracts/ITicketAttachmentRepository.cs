@@ -8,10 +8,10 @@ namespace Fixi.Core.Domain.Repositories_Contracts
     public interface ITicketAttachmentRepository
     {
         // Basic CRUD
-        Task<TicketAttachment?> GetByIdAsync(int id);
+        Task<TicketAttachment?> GetByticketIdAsync(int ticketId);
         Task<IEnumerable<TicketAttachment>> GetAllAsync();
         Task<TicketAttachment> CreateAsync(TicketAttachment attachment);
         Task UpdateAsync(TicketAttachment attachment);
-        Task DeleteAsync(int id);
+        Task DeleteAsync(int ticketId);
     }
 }

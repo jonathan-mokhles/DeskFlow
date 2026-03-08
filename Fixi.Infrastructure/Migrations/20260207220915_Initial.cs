@@ -17,47 +17,47 @@ namespace Fixi.Infrastructure.Migrations
                 name: "AspNetRoles",
                 columns: table => new
                 {
-                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    id = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     NormalizedName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     ConcurrencyStamp = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_AspNetRoles", x => x.Id);
+                    table.PrimaryKey("PK_AspNetRoles", x => x.id);
                 });
 
             migrationBuilder.CreateTable(
                 name: "Departments",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                    id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:identity", "1, 1"),
                     Name = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Departments", x => x.Id);
+                    table.PrimaryKey("PK_Departments", x => x.id);
                 });
 
             migrationBuilder.CreateTable(
                 name: "AspNetRoleClaims",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    RoleId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:identity", "1, 1"),
+                    Roleid = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     ClaimType = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     ClaimValue = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_AspNetRoleClaims", x => x.Id);
+                    table.PrimaryKey("PK_AspNetRoleClaims", x => x.id);
                     table.ForeignKey(
-                        name: "FK_AspNetRoleClaims_AspNetRoles_RoleId",
-                        column: x => x.RoleId,
+                        name: "FK_AspNetRoleClaims_AspNetRoles_Roleid",
+                        column: x => x.Roleid,
                         principalTable: "AspNetRoles",
-                        principalColumn: "Id",
+                        principalColumn: "id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -65,9 +65,9 @@ namespace Fixi.Infrastructure.Migrations
                 name: "AspNetUsers",
                 columns: table => new
                 {
-                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    id = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     FullName = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    DepartmentId = table.Column<int>(type: "int", nullable: false),
+                    Departmentid = table.Column<int>(type: "int", nullable: false),
                     UserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     NormalizedUserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     Email = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
@@ -85,12 +85,12 @@ namespace Fixi.Infrastructure.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_AspNetUsers", x => x.Id);
+                    table.PrimaryKey("PK_AspNetUsers", x => x.id);
                     table.ForeignKey(
-                        name: "FK_AspNetUsers_Departments_DepartmentId",
-                        column: x => x.DepartmentId,
+                        name: "FK_AspNetUsers_Departments_Departmentid",
+                        column: x => x.Departmentid,
                         principalTable: "Departments",
-                        principalColumn: "Id",
+                        principalColumn: "id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -98,20 +98,20 @@ namespace Fixi.Infrastructure.Migrations
                 name: "Categories",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                    id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:identity", "1, 1"),
                     Name = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     Description = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true),
-                    DepartmentId = table.Column<int>(type: "int", nullable: false)
+                    Departmentid = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Categories", x => x.Id);
+                    table.PrimaryKey("PK_Categories", x => x.id);
                     table.ForeignKey(
-                        name: "FK_Categories_Departments_DepartmentId",
-                        column: x => x.DepartmentId,
+                        name: "FK_Categories_Departments_Departmentid",
+                        column: x => x.Departmentid,
                         principalTable: "Departments",
-                        principalColumn: "Id",
+                        principalColumn: "id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -119,20 +119,20 @@ namespace Fixi.Infrastructure.Migrations
                 name: "AspNetUserClaims",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:identity", "1, 1"),
+                    Userid = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     ClaimType = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     ClaimValue = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_AspNetUserClaims", x => x.Id);
+                    table.PrimaryKey("PK_AspNetUserClaims", x => x.id);
                     table.ForeignKey(
-                        name: "FK_AspNetUserClaims_AspNetUsers_UserId",
-                        column: x => x.UserId,
+                        name: "FK_AspNetUserClaims_AspNetUsers_Userid",
+                        column: x => x.Userid,
                         principalTable: "AspNetUsers",
-                        principalColumn: "Id",
+                        principalColumn: "id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -143,16 +143,16 @@ namespace Fixi.Infrastructure.Migrations
                     LoginProvider = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     ProviderKey = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     ProviderDisplayName = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false)
+                    Userid = table.Column<string>(type: "nvarchar(450)", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_AspNetUserLogins", x => new { x.LoginProvider, x.ProviderKey });
                     table.ForeignKey(
-                        name: "FK_AspNetUserLogins_AspNetUsers_UserId",
-                        column: x => x.UserId,
+                        name: "FK_AspNetUserLogins_AspNetUsers_Userid",
+                        column: x => x.Userid,
                         principalTable: "AspNetUsers",
-                        principalColumn: "Id",
+                        principalColumn: "id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -160,23 +160,23 @@ namespace Fixi.Infrastructure.Migrations
                 name: "AspNetUserRoles",
                 columns: table => new
                 {
-                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    RoleId = table.Column<string>(type: "nvarchar(450)", nullable: false)
+                    Userid = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Roleid = table.Column<string>(type: "nvarchar(450)", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_AspNetUserRoles", x => new { x.UserId, x.RoleId });
+                    table.PrimaryKey("PK_AspNetUserRoles", x => new { x.Userid, x.Roleid });
                     table.ForeignKey(
-                        name: "FK_AspNetUserRoles_AspNetRoles_RoleId",
-                        column: x => x.RoleId,
+                        name: "FK_AspNetUserRoles_AspNetRoles_Roleid",
+                        column: x => x.Roleid,
                         principalTable: "AspNetRoles",
-                        principalColumn: "Id",
+                        principalColumn: "id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_AspNetUserRoles_AspNetUsers_UserId",
-                        column: x => x.UserId,
+                        name: "FK_AspNetUserRoles_AspNetUsers_Userid",
+                        column: x => x.Userid,
                         principalTable: "AspNetUsers",
-                        principalColumn: "Id",
+                        principalColumn: "id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -184,19 +184,19 @@ namespace Fixi.Infrastructure.Migrations
                 name: "AspNetUserTokens",
                 columns: table => new
                 {
-                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Userid = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     LoginProvider = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     Value = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_AspNetUserTokens", x => new { x.UserId, x.LoginProvider, x.Name });
+                    table.PrimaryKey("PK_AspNetUserTokens", x => new { x.Userid, x.LoginProvider, x.Name });
                     table.ForeignKey(
-                        name: "FK_AspNetUserTokens_AspNetUsers_UserId",
-                        column: x => x.UserId,
+                        name: "FK_AspNetUserTokens_AspNetUsers_Userid",
+                        column: x => x.Userid,
                         principalTable: "AspNetUsers",
-                        principalColumn: "Id",
+                        principalColumn: "id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -204,37 +204,37 @@ namespace Fixi.Infrastructure.Migrations
                 name: "SLASettings",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                    id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:identity", "1, 1"),
                     Priority = table.Column<int>(type: "int", nullable: false),
                     ResponseTimeMinutes = table.Column<int>(type: "int", nullable: false),
                     ResolutionTimeMinutes = table.Column<int>(type: "int", nullable: false),
-                    CategoryId = table.Column<int>(type: "int", nullable: true)
+                    Categoryid = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_SLASettings", x => x.Id);
+                    table.PrimaryKey("PK_SLASettings", x => x.id);
                     table.ForeignKey(
-                        name: "FK_SLASettings_Categories_CategoryId",
-                        column: x => x.CategoryId,
+                        name: "FK_SLASettings_Categories_Categoryid",
+                        column: x => x.Categoryid,
                         principalTable: "Categories",
-                        principalColumn: "Id");
+                        principalColumn: "id");
                 });
 
             migrationBuilder.CreateTable(
                 name: "Tickets",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                    id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:identity", "1, 1"),
                     TicketNumber = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     Title = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Priority = table.Column<int>(type: "int", nullable: false),
                     Status = table.Column<int>(type: "int", nullable: false),
-                    CategoryId = table.Column<int>(type: "int", nullable: false),
-                    ReportedById = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    AssignedToId = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    Categoryid = table.Column<int>(type: "int", nullable: false),
+                    ReportedByid = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    AssignedToid = table.Column<string>(type: "nvarchar(450)", nullable: true),
                     CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     AssignedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
                     ResolvedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
@@ -242,34 +242,34 @@ namespace Fixi.Infrastructure.Migrations
                     LastModifiedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     SLADeadline = table.Column<DateTime>(type: "datetime2", nullable: false),
                     SLABreached = table.Column<bool>(type: "bit", nullable: false),
-                    LastModifiedById = table.Column<string>(type: "nvarchar(450)", nullable: false)
+                    LastModifiedByid = table.Column<string>(type: "nvarchar(450)", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Tickets", x => x.Id);
+                    table.PrimaryKey("PK_Tickets", x => x.id);
                     table.ForeignKey(
-                        name: "FK_Tickets_AspNetUsers_AssignedToId",
-                        column: x => x.AssignedToId,
+                        name: "FK_Tickets_AspNetUsers_AssignedToid",
+                        column: x => x.AssignedToid,
                         principalTable: "AspNetUsers",
-                        principalColumn: "Id",
+                        principalColumn: "id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_Tickets_AspNetUsers_LastModifiedById",
-                        column: x => x.LastModifiedById,
+                        name: "FK_Tickets_AspNetUsers_LastModifiedByid",
+                        column: x => x.LastModifiedByid,
                         principalTable: "AspNetUsers",
-                        principalColumn: "Id",
+                        principalColumn: "id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_Tickets_AspNetUsers_ReportedById",
-                        column: x => x.ReportedById,
+                        name: "FK_Tickets_AspNetUsers_ReportedByid",
+                        column: x => x.ReportedByid,
                         principalTable: "AspNetUsers",
-                        principalColumn: "Id",
+                        principalColumn: "id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_Tickets_Categories_CategoryId",
-                        column: x => x.CategoryId,
+                        name: "FK_Tickets_Categories_Categoryid",
+                        column: x => x.Categoryid,
                         principalTable: "Categories",
-                        principalColumn: "Id",
+                        principalColumn: "id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -277,31 +277,31 @@ namespace Fixi.Infrastructure.Migrations
                 name: "TicketAttachments",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    TicketId = table.Column<int>(type: "int", nullable: false),
+                    id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:identity", "1, 1"),
+                    Ticketid = table.Column<int>(type: "int", nullable: false),
                     FileName = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
                     FileSize = table.Column<long>(type: "bigint", nullable: false),
                     FilePath = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: false),
                     MimeType = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    UploadedById = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    UploadedByid = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     UploadedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     AttachmentType = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_TicketAttachments", x => x.Id);
+                    table.PrimaryKey("PK_TicketAttachments", x => x.id);
                     table.ForeignKey(
-                        name: "FK_TicketAttachments_AspNetUsers_UploadedById",
-                        column: x => x.UploadedById,
+                        name: "FK_TicketAttachments_AspNetUsers_UploadedByid",
+                        column: x => x.UploadedByid,
                         principalTable: "AspNetUsers",
-                        principalColumn: "Id",
+                        principalColumn: "id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_TicketAttachments_Tickets_TicketId",
-                        column: x => x.TicketId,
+                        name: "FK_TicketAttachments_Tickets_Ticketid",
+                        column: x => x.Ticketid,
                         principalTable: "Tickets",
-                        principalColumn: "Id",
+                        principalColumn: "id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -309,28 +309,28 @@ namespace Fixi.Infrastructure.Migrations
                 name: "TicketComments",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    TicketId = table.Column<int>(type: "int", nullable: false),
-                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:identity", "1, 1"),
+                    Ticketid = table.Column<int>(type: "int", nullable: false),
+                    Userid = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     CommentText = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     IsInternal = table.Column<bool>(type: "bit", nullable: false),
                     CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_TicketComments", x => x.Id);
+                    table.PrimaryKey("PK_TicketComments", x => x.id);
                     table.ForeignKey(
-                        name: "FK_TicketComments_AspNetUsers_UserId",
-                        column: x => x.UserId,
+                        name: "FK_TicketComments_AspNetUsers_Userid",
+                        column: x => x.Userid,
                         principalTable: "AspNetUsers",
-                        principalColumn: "Id",
+                        principalColumn: "id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_TicketComments_Tickets_TicketId",
-                        column: x => x.TicketId,
+                        name: "FK_TicketComments_Tickets_Ticketid",
+                        column: x => x.Ticketid,
                         principalTable: "Tickets",
-                        principalColumn: "Id",
+                        principalColumn: "id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -338,35 +338,35 @@ namespace Fixi.Infrastructure.Migrations
                 name: "TicketStatusHistory",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    TicketId = table.Column<int>(type: "int", nullable: false),
+                    id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:identity", "1, 1"),
+                    Ticketid = table.Column<int>(type: "int", nullable: false),
                     FromStatus = table.Column<int>(type: "int", nullable: false),
                     ToStatus = table.Column<int>(type: "int", nullable: false),
-                    ChangedById = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    ChangedByid = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     ChangedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     ChangeReason = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_TicketStatusHistory", x => x.Id);
+                    table.PrimaryKey("PK_TicketStatusHistory", x => x.id);
                     table.ForeignKey(
-                        name: "FK_TicketStatusHistory_AspNetUsers_ChangedById",
-                        column: x => x.ChangedById,
+                        name: "FK_TicketStatusHistory_AspNetUsers_ChangedByid",
+                        column: x => x.ChangedByid,
                         principalTable: "AspNetUsers",
-                        principalColumn: "Id",
+                        principalColumn: "id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_TicketStatusHistory_Tickets_TicketId",
-                        column: x => x.TicketId,
+                        name: "FK_TicketStatusHistory_Tickets_Ticketid",
+                        column: x => x.Ticketid,
                         principalTable: "Tickets",
-                        principalColumn: "Id",
+                        principalColumn: "id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.InsertData(
                 table: "AspNetRoles",
-                columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
+                columns: new[] { "id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
                     { "1", "a1b2c3d4-e5f6-7890-abcd-1234567890ab", "Admin", "ADMIN" },
@@ -377,7 +377,7 @@ namespace Fixi.Infrastructure.Migrations
 
             migrationBuilder.InsertData(
                 table: "Departments",
-                columns: new[] { "Id", "Name" },
+                columns: new[] { "id", "Name" },
                 values: new object[,]
                 {
                     { 1, "IT Support" },
@@ -388,7 +388,7 @@ namespace Fixi.Infrastructure.Migrations
 
             migrationBuilder.InsertData(
                 table: "SLASettings",
-                columns: new[] { "Id", "CategoryId", "Priority", "ResolutionTimeMinutes", "ResponseTimeMinutes" },
+                columns: new[] { "id", "Categoryid", "Priority", "ResolutionTimeMinutes", "ResponseTimeMinutes" },
                 values: new object[,]
                 {
                     { 1, null, 1, 2400, 1440 },
@@ -399,7 +399,7 @@ namespace Fixi.Infrastructure.Migrations
 
             migrationBuilder.InsertData(
                 table: "Categories",
-                columns: new[] { "Id", "DepartmentId", "Description", "Name" },
+                columns: new[] { "id", "Departmentid", "Description", "Name" },
                 values: new object[,]
                 {
                     { 1, 1, "Computer, laptop, printer, and other hardware issues", "Hardware" },
@@ -416,9 +416,9 @@ namespace Fixi.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_AspNetRoleClaims_RoleId",
+                name: "IX_AspNetRoleClaims_Roleid",
                 table: "AspNetRoleClaims",
-                column: "RoleId");
+                column: "Roleid");
 
             migrationBuilder.CreateIndex(
                 name: "RoleNameIndex",
@@ -428,19 +428,19 @@ namespace Fixi.Infrastructure.Migrations
                 filter: "[NormalizedName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
-                name: "IX_AspNetUserClaims_UserId",
+                name: "IX_AspNetUserClaims_Userid",
                 table: "AspNetUserClaims",
-                column: "UserId");
+                column: "Userid");
 
             migrationBuilder.CreateIndex(
-                name: "IX_AspNetUserLogins_UserId",
+                name: "IX_AspNetUserLogins_Userid",
                 table: "AspNetUserLogins",
-                column: "UserId");
+                column: "Userid");
 
             migrationBuilder.CreateIndex(
-                name: "IX_AspNetUserRoles_RoleId",
+                name: "IX_AspNetUserRoles_Roleid",
                 table: "AspNetUserRoles",
-                column: "RoleId");
+                column: "Roleid");
 
             migrationBuilder.CreateIndex(
                 name: "EmailIndex",
@@ -448,9 +448,9 @@ namespace Fixi.Infrastructure.Migrations
                 column: "NormalizedEmail");
 
             migrationBuilder.CreateIndex(
-                name: "IX_AspNetUsers_DepartmentId",
+                name: "IX_AspNetUsers_Departmentid",
                 table: "AspNetUsers",
-                column: "DepartmentId");
+                column: "Departmentid");
 
             migrationBuilder.CreateIndex(
                 name: "UserNameIndex",
@@ -460,64 +460,64 @@ namespace Fixi.Infrastructure.Migrations
                 filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Categories_DepartmentId",
+                name: "IX_Categories_Departmentid",
                 table: "Categories",
-                column: "DepartmentId");
+                column: "Departmentid");
 
             migrationBuilder.CreateIndex(
-                name: "IX_SLASettings_CategoryId",
+                name: "IX_SLASettings_Categoryid",
                 table: "SLASettings",
-                column: "CategoryId");
+                column: "Categoryid");
 
             migrationBuilder.CreateIndex(
-                name: "IX_TicketAttachments_TicketId",
+                name: "IX_TicketAttachments_Ticketid",
                 table: "TicketAttachments",
-                column: "TicketId");
+                column: "Ticketid");
 
             migrationBuilder.CreateIndex(
-                name: "IX_TicketAttachments_UploadedById",
+                name: "IX_TicketAttachments_UploadedByid",
                 table: "TicketAttachments",
-                column: "UploadedById");
+                column: "UploadedByid");
 
             migrationBuilder.CreateIndex(
-                name: "IX_TicketComments_TicketId",
+                name: "IX_TicketComments_Ticketid",
                 table: "TicketComments",
-                column: "TicketId");
+                column: "Ticketid");
 
             migrationBuilder.CreateIndex(
-                name: "IX_TicketComments_UserId",
+                name: "IX_TicketComments_Userid",
                 table: "TicketComments",
-                column: "UserId");
+                column: "Userid");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Tickets_AssignedToId",
+                name: "IX_Tickets_AssignedToid",
                 table: "Tickets",
-                column: "AssignedToId");
+                column: "AssignedToid");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Tickets_CategoryId",
+                name: "IX_Tickets_Categoryid",
                 table: "Tickets",
-                column: "CategoryId");
+                column: "Categoryid");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Tickets_LastModifiedById",
+                name: "IX_Tickets_LastModifiedByid",
                 table: "Tickets",
-                column: "LastModifiedById");
+                column: "LastModifiedByid");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Tickets_ReportedById",
+                name: "IX_Tickets_ReportedByid",
                 table: "Tickets",
-                column: "ReportedById");
+                column: "ReportedByid");
 
             migrationBuilder.CreateIndex(
-                name: "IX_TicketStatusHistory_ChangedById",
+                name: "IX_TicketStatusHistory_ChangedByid",
                 table: "TicketStatusHistory",
-                column: "ChangedById");
+                column: "ChangedByid");
 
             migrationBuilder.CreateIndex(
-                name: "IX_TicketStatusHistory_TicketId",
+                name: "IX_TicketStatusHistory_Ticketid",
                 table: "TicketStatusHistory",
-                column: "TicketId");
+                column: "Ticketid");
         }
 
         /// <inheritdoc />

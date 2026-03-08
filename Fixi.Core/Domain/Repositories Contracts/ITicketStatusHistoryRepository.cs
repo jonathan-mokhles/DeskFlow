@@ -5,11 +5,10 @@ using System.Text;
 
 namespace Fixi.Core.Domain.Repositories_Contracts
 {
-    public interface ITicketStatusHistoryRepository
+    public interface ITicketAuditLogRepository
     {
-        // Basic CRUD
-        Task<TicketStatusHistory?> GetByIdAsync(int id);
-        Task<IEnumerable<TicketStatusHistory>> GetAllAsync();
-        Task<TicketStatusHistory> CreateAsync(TicketStatusHistory history);
+        public Task<TicketAuditLog?> GetByticketIdAsync(int ticketId);
+        public Task<IEnumerable<TicketAuditLog>> GetAllAsync();
+        public Task<TicketAuditLog> CreateAsync(TicketAuditLog history);
     }
 }

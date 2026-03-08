@@ -8,10 +8,10 @@ namespace Fixi.Core.Domain.Repositories_Contracts
     public interface ITicketCommentRepository
     {
         // Basic CRUD
-        Task<TicketComment?> GetByIdAsync(int id);
+        Task<TicketComment?> GetByticketIdAsync(int ticketId);
         Task<IEnumerable<TicketComment>> GetAllAsync();
         Task<TicketComment> CreateAsync(TicketComment comment);
         Task UpdateAsync(TicketComment comment);
-        Task DeleteAsync(int id);
+        Task DeleteAsync(int ticketId);
     }
 }

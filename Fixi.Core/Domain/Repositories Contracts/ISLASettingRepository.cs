@@ -7,11 +7,10 @@ namespace Fixi.Core.Domain.Repositories_Contracts
 {
     public interface ISLASettingRepository
     {
-        // Basic CRUD
-        Task<SLASetting?> GetByIdAsync(int id);
+        Task<SLASetting?> GetByPriorityAsync(int Priority);
         Task<IEnumerable<SLASetting>> GetAllAsync();
         Task<SLASetting> CreateAsync(SLASetting slaSetting);
         Task UpdateAsync(SLASetting slaSetting);
-        Task DeleteAsync(int id);
+        Task DeleteAsync(int ticketId);
     }
 }

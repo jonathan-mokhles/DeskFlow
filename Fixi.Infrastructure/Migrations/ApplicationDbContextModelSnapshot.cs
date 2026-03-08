@@ -269,19 +269,20 @@ namespace Fixi.Infrastructure.Migrations
                     b.Property<DateTime?>("ResolvedDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<bool>("SLABreached")
+                    b.Property<bool>("SLAResolutionBreached")
                         .HasColumnType("bit");
 
-                    b.Property<DateTime>("SLADeadline")
+                    b.Property<DateTime>("SLAResolutionDeadline")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("SLAResponseBreached")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime>("SLAResponseDeadline")
                         .HasColumnType("datetime2");
 
                     b.Property<int>("Status")
                         .HasColumnType("int");
-
-                    b.Property<string>("TicketNumber")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
 
                     b.Property<string>("Title")
                         .IsRequired()
@@ -351,6 +352,50 @@ namespace Fixi.Infrastructure.Migrations
                     b.ToTable("TicketAttachments");
                 });
 
+            modelBuilder.Entity("Fixi.Core.Domain.Entity.TicketAuditLog", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("ChangeReason")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<string>("ChangeType")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("ChangedById")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<DateTime>("ChangedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("NewValue")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<string>("OldValue")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<int>("TicketId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ChangedById");
+
+                    b.HasIndex("TicketId");
+
+                    b.ToTable("TicketAuditLog");
+                });
+
             modelBuilder.Entity("Fixi.Core.Domain.Entity.TicketComment", b =>
                 {
                     b.Property<int>("Id")
@@ -383,43 +428,6 @@ namespace Fixi.Infrastructure.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("TicketComments");
-                });
-
-            modelBuilder.Entity("Fixi.Core.Domain.Entity.TicketStatusHistory", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("ChangeReason")
-                        .HasMaxLength(500)
-                        .HasColumnType("nvarchar(500)");
-
-                    b.Property<string>("ChangedById")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<DateTime>("ChangedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("FromStatus")
-                        .HasColumnType("int");
-
-                    b.Property<int>("TicketId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("ToStatus")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ChangedById");
-
-                    b.HasIndex("TicketId");
-
-                    b.ToTable("TicketStatusHistory");
                 });
 
             modelBuilder.Entity("Fixi.Core.Domain.IdentityEntity.ApplicationUser", b =>
@@ -737,6 +745,25 @@ namespace Fixi.Infrastructure.Migrations
                     b.Navigation("UploadedBy");
                 });
 
+            modelBuilder.Entity("Fixi.Core.Domain.Entity.TicketAuditLog", b =>
+                {
+                    b.HasOne("Fixi.Core.Domain.IdentityEntity.ApplicationUser", "ChangedBy")
+                        .WithMany()
+                        .HasForeignKey("ChangedById")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Fixi.Core.Domain.Entity.Ticket", "Ticket")
+                        .WithMany("AuditLogs")
+                        .HasForeignKey("TicketId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("ChangedBy");
+
+                    b.Navigation("Ticket");
+                });
+
             modelBuilder.Entity("Fixi.Core.Domain.Entity.TicketComment", b =>
                 {
                     b.HasOne("Fixi.Core.Domain.Entity.Ticket", "Ticket")
@@ -754,25 +781,6 @@ namespace Fixi.Infrastructure.Migrations
                     b.Navigation("Ticket");
 
                     b.Navigation("User");
-                });
-
-            modelBuilder.Entity("Fixi.Core.Domain.Entity.TicketStatusHistory", b =>
-                {
-                    b.HasOne("Fixi.Core.Domain.IdentityEntity.ApplicationUser", "ChangedBy")
-                        .WithMany()
-                        .HasForeignKey("ChangedById")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("Fixi.Core.Domain.Entity.Ticket", "Ticket")
-                        .WithMany("StatusHistory")
-                        .HasForeignKey("TicketId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("ChangedBy");
-
-                    b.Navigation("Ticket");
                 });
 
             modelBuilder.Entity("Fixi.Core.Domain.IdentityEntity.ApplicationUser", b =>
@@ -855,9 +863,9 @@ namespace Fixi.Infrastructure.Migrations
                 {
                     b.Navigation("Attachments");
 
-                    b.Navigation("Comments");
+                    b.Navigation("AuditLogs");
 
-                    b.Navigation("StatusHistory");
+                    b.Navigation("Comments");
                 });
 #pragma warning restore 612, 618
         }

@@ -5,13 +5,13 @@ using System.Text;
 
 namespace Fixi.Core.Domain.Repositories_Contracts
 {
-    public interface IDepartmentRepository
+    public interface ticketIdepartmentRepository
     {
         // Basic CRUD
-        Task<Department?> GetByIdAsync(int id);
+        Task<Department?> GetByticketIdAsync(int ticketId);
         Task<IEnumerable<Department>> GetAllAsync();
         Task<Department> CreateAsync(Department department);
         Task UpdateAsync(Department department);
-        Task DeleteAsync(int id);
+        Task DeleteAsync(int ticketId);
     }
 }
