@@ -56,6 +56,26 @@ namespace Fixi.WebAPI.Controllers
         }
 
 
+        [HttpPut("{id}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesErrorResponseType(typeof(ApiErrorResponse))]
+        public async Task<ActionResult> UpdateTicket(int id, UpdateTicketDTO updateTicketDTO)
+        {
+            if(id != updateTicketDTO.Id)
+            {
+                return BadRequest(new ApiErrorResponse
+                {
+                    Message = "Ticket ID is wrong.",
+                    Errors = new List<string> { "ID mismatch." },
+                    TraceId = HttpContext.TraceIdentifier
+                });
+            }
+            await _ticketService.UpdateTicketAsync(updateTicketDTO, GetUserClaims());
+            return NoContent();
+        }
+
+
+
         [HttpPatch("{ticketId}/status")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesErrorResponseType(typeof(ApiErrorResponse))]
@@ -120,7 +140,14 @@ namespace Fixi.WebAPI.Controllers
             return NoContent();
         }
 
-
+        [HttpGet("history")]
+        [ProducesResponseType(typeof(IEnumerable<TicketAuditHistoryDTO>), StatusCodes.Status200OK)]
+        [ProducesErrorResponseType(typeof(ApiErrorResponse))]
+        public async Task<ActionResult<IEnumerable<TicketAuditHistoryDTO>>> GetTicketHistory(int ticketId)
+        {
+            var history = await _ticketService.GetTicketHistoryAsync(ticketId, GetUserClaims());
+            return Ok(history);
+        }
 
 
         private UserClaims GetUserClaims()

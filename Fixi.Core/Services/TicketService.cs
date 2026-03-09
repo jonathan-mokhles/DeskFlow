@@ -82,6 +82,28 @@ namespace Fixi.Core.Services
             return await _Ticketrepo.GetAllAsync(queryParams);
         }
 
+        public async Task UpdateTicketAsync(UpdateTicketDTO updateTicketDTO, UserClaims claims)
+        {
+            TicketDTO? ticket = await _Ticketrepo.GetTicketAsync(updateTicketDTO.Id);
+            string Role = claims.Role;
+            if (ticket == null)
+            {
+                throw new Exception("Ticket not found.");
+            }
+            if ( ticket.ReportedById != claims.UserId )
+            {
+                throw new Exception("Unauthorized to update this ticket.");
+            }
+            await _ticketAuditLogRepo.CreateAsync(new TicketAuditLog
+            {
+                TicketId = updateTicketDTO.Id,
+                ChangedById = claims.UserId,
+                ChangeType = "Updated Ticket",
+                ChangedDate = DateTime.UtcNow,
+            });
+            await _Ticketrepo.UpdateAsync(updateTicketDTO);
+        }
+
         public async Task<TicketFullResponseDTO> GetTicketByIdAsync(int ticketId, UserClaims claims)
         {
             TicketDTO? ticket = await _Ticketrepo.GetTicketAsync(ticketId);
@@ -211,7 +233,20 @@ namespace Fixi.Core.Services
             await _Ticketrepo.DeleteAsync(ticketId);
         }
 
-
+        public async Task<IEnumerable<TicketAuditHistoryDTO>> GetTicketHistoryAsync(int ticketId, UserClaims claims)
+        {
+            TicketDTO? ticket = await _Ticketrepo.GetTicketAsync(ticketId);
+            string Role = claims.Role;
+            if (ticket == null)
+            {
+                throw new Exception("Ticket not found.");
+            }
+            if (ticket.DepartmentId != claims.DeptId || (claims.UserId != ticket.AssignedToId && ticket.ReportedById != claims.UserId && Role != "Manger"))
+            {
+                throw new Exception("Unauthorized to view this ticket history.");
+            }
+            return await _Ticketrepo.GetTicketHisoryAsync(ticketId);
+        }
 
 
         private static Dictionary<TicketStatus, List<TicketStatus>> allowedTransitions = new Dictionary<TicketStatus, List<TicketStatus>>

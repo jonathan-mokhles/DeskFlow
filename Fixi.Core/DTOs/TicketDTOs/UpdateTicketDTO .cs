@@ -4,8 +4,9 @@ using System.Text;
 
 namespace Fixi.Core.DTOs.TicketDTOs
 {
-    public class UpdateTicketDTO
+    public record UpdateTicketDTO
     {
+        public int Id { get; set; }
         public string Title { get; set; } = string.Empty;
         public string Description { get; set; } = string.Empty;
         public int Priority { get; set; }

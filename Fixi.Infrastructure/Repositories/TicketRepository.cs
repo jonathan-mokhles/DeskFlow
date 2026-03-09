@@ -49,11 +49,11 @@ namespace Fixi.Infrastructure.Repositories
             {
                 query = query.Where(t => t.ReportedById == queryParams.ReporterId);
             }
-            if(queryParams.DepatrmentId is not null)
+            if (queryParams.DepatrmentId is not null)
             {
                 query = query.Where(t => t.Category.DepartmentId == queryParams.DepatrmentId);
             }
-            if(queryParams.categoryId is not null)
+            if (queryParams.categoryId is not null)
             {
                 query = query.Where(t => t.CategoryId == queryParams.categoryId);
             }
@@ -76,10 +76,16 @@ namespace Fixi.Infrastructure.Repositories
             }).Skip(skip).Take(queryParams.PageSize).ToListAsync();
         }
 
-        public async Task UpdateAsync(Ticket ticket)
+        public async Task UpdateAsync(UpdateTicketDTO ticket)
         {
-            _db.Tickets.Update(ticket);
-            await _db.SaveChangesAsync();
+            await _db.Tickets.Where(t => t.Id == ticket.Id).ExecuteUpdateAsync(t => t
+                .SetProperty(t => t.Title, ticket.Title)
+                .SetProperty(t => t.Description, ticket.Description)
+                .SetProperty(t => t.Priority, (TicketPriority)ticket.Priority)
+                .SetProperty(t => t.CategoryId, ticket.CategoryId)
+                .SetProperty(t => t.LastModifiedDate, DateTime.UtcNow)
+                .SetProperty(t => t.LastModifiedById, t => t.ReportedById)
+                );
         }
 
         public async Task DeleteAsync(int id)
@@ -107,9 +113,9 @@ namespace Fixi.Infrastructure.Repositories
                 SLAResolutionDeadline = t.SLAResolutionDeadline,
                 SLAResolutionBreached = t.SLAResolutionBreached,
                 LastModifiedById = t.LastModifiedById,
-                CategoryName =  t.Category.Name,
-                DepartmentName =  t.Category.Department.Name!,
-                ReportedByName =  t.ReportedBy.FullName,
+                CategoryName = t.Category.Name,
+                DepartmentName = t.Category.Department.Name!,
+                ReportedByName = t.ReportedBy.FullName,
                 AssignedToName = t.AssignedTo != null ? t.AssignedTo.FullName : null,
                 LastModifiedByName = t.LastModifiedBy.FullName
             }).FirstOrDefaultAsync();
@@ -146,6 +152,19 @@ namespace Fixi.Infrastructure.Repositories
                 })
                 .FirstOrDefaultAsync();
 
+        }
+
+        public async Task<IEnumerable<TicketAuditHistoryDTO>> GetTicketHisoryAsync(int ticketId)
+        {
+            return await _db.TicketAuditLog.Where(a => a.TicketId == ticketId).Select(a => new TicketAuditHistoryDTO
+            {
+                ChangeType = a.ChangeType,
+                OldValue = a.OldValue,
+                NewValue = a.NewValue,
+                ChangedByName = a.ChangedBy.FullName,
+                ChangedDate = a.ChangedDate,
+                ChangeReason = a.ChangeReason
+            }).ToListAsync();
         }
     }
 }

@@ -10,6 +10,9 @@ using System.Text;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using System.Security.Claims;
+using Fixi.Core.Domain.Repositories_Contracts;
+using Fixi.Infrastructure.Repositories;
+using Fixi.WebAPI.Middlewares;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,7 +20,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
 { options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")); 
 });
-builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
+builder.Services.AddIdentityCore<ApplicationUser>()
 .AddEntityFrameworkStores<ApplicationDbContext>();
 
 
@@ -37,7 +40,7 @@ builder.Services.AddAuthentication(options =>
         ValidateIssuerSigningKey = true,
         IssuerSigningKey =
             new SymmetricSecurityKey(
-                Encoding.UTF8.GetBytes(builder.Configuration["JWT:SecretKey"]))
+                Encoding.UTF8.GetBytes(builder.Configuration["JWT:SecretKey"]))// Secret key from Secrets Manager
     };
 });
 
@@ -45,6 +48,14 @@ builder.Services.AddAuthentication(options =>
 
 
 builder.Services.AddScoped<IJwtService, JwtService>();
+builder.Services.AddScoped<ITicketService, TicketService>();
+
+
+builder.Services.AddScoped<ITicketRepository, TicketRepository>();
+builder.Services.AddScoped<ITicketAuditLogRepository, TicketAuditLogRepository>();
+builder.Services.AddScoped<ISLASettingRepository, SLASettingRepository>();
+
+
 
 
 builder.Services.AddControllers(options =>
@@ -53,17 +64,14 @@ builder.Services.AddControllers(options =>
     options.Filters.Add(new AuthorizeFilter(policy));
 });
 
-
 builder.Services.AddSwaggerGen();
-// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
-builder.Services.AddOpenApi();
 
 var app = builder.Build();
 
 
 
 // Configure the HTTP request pipeline.
-
+app.UseExceptionHandlingMiddleware();
 app.UseSwagger();
 app.UseSwaggerUI();
 
