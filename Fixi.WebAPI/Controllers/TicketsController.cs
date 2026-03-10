@@ -70,6 +70,15 @@ namespace Fixi.WebAPI.Controllers
                     TraceId = HttpContext.TraceIdentifier
                 });
             }
+            if(!ModelState.IsValid )
+            {
+                return BadRequest(new ApiErrorResponse
+                {
+                    Message = "Invalid input data.",
+                    Errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage).ToList(),
+                    TraceId = HttpContext.TraceIdentifier
+                });
+            }
             await _ticketService.UpdateTicketAsync(updateTicketDTO, GetUserClaims());
             return NoContent();
         }
@@ -140,7 +149,7 @@ namespace Fixi.WebAPI.Controllers
             return NoContent();
         }
 
-        [HttpGet("history")]
+        [HttpGet("{ticketId}/history")]
         [ProducesResponseType(typeof(IEnumerable<TicketAuditHistoryDTO>), StatusCodes.Status200OK)]
         [ProducesErrorResponseType(typeof(ApiErrorResponse))]
         public async Task<ActionResult<IEnumerable<TicketAuditHistoryDTO>>> GetTicketHistory(int ticketId)

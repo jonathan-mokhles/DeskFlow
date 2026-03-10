@@ -6,6 +6,7 @@ using Fixi.Core.DTOs.TicketDTOs;
 using Fixi.Core.Enums;
 using Fixi.Core.ServicesContracts;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,13 +17,13 @@ namespace Fixi.Core.Services
 {
     public class TicketService : ITicketService
     {
-        ITicketRepository _Ticketrepo;
+        ITicketRepository _ticketRepository;
         ISLASettingRepository _slaRepo;
         ITicketAuditLogRepository _ticketAuditLogRepo;
         UserManager<ApplicationUser> _userManager;
         public TicketService(ITicketRepository ticketRepository, ISLASettingRepository sLASetting, ITicketAuditLogRepository ticketAudit, UserManager<ApplicationUser> userManager)
         {
-            _Ticketrepo = ticketRepository;
+            _ticketRepository = ticketRepository;
             _slaRepo = sLASetting;
             _ticketAuditLogRepo = ticketAudit;
             _userManager = userManager;
@@ -52,7 +53,7 @@ namespace Fixi.Core.Services
                 LastModifiedById = TicketDTO.ReportedById
 
             };
-            await _Ticketrepo.CreateAsync(ticket);
+            await _ticketRepository.CreateAsync(ticket);
 
             TicketAuditLog auditLog = new TicketAuditLog
             {
@@ -73,19 +74,18 @@ namespace Fixi.Core.Services
         {
             if(claims.Role == "Manager" || claims.Role == "Technician")
             {
-                queryParams.DepatrmentId = claims.DeptId;
+                queryParams.DepartmentId = claims.DeptId;
             }
             else if(claims.Role == "User")
             {
                 queryParams.ReporterId = claims.UserId;
             }
-            return await _Ticketrepo.GetAllAsync(queryParams);
+            return await _ticketRepository.GetAllAsync(queryParams);
         }
 
         public async Task UpdateTicketAsync(UpdateTicketDTO updateTicketDTO, UserClaims claims)
         {
-            TicketDTO? ticket = await _Ticketrepo.GetTicketAsync(updateTicketDTO.Id);
-            string Role = claims.Role;
+            TicketDTO? ticket = await _ticketRepository.GetTicketAsync(updateTicketDTO.Id);
             if (ticket == null)
             {
                 throw new Exception("Ticket not found.");
@@ -101,28 +101,28 @@ namespace Fixi.Core.Services
                 ChangeType = "Updated Ticket",
                 ChangedDate = DateTime.UtcNow,
             });
-            await _Ticketrepo.UpdateAsync(updateTicketDTO);
+            await _ticketRepository.UpdateAsync(updateTicketDTO);
         }
 
         public async Task<TicketFullResponseDTO> GetTicketByIdAsync(int ticketId, UserClaims claims)
         {
-            TicketDTO? ticket = await _Ticketrepo.GetTicketAsync(ticketId);
+            TicketDTO? ticket = await _ticketRepository.GetTicketAsync(ticketId);
             string Role = claims.Role;
             if (ticket == null)
             {
                 throw new Exception("Ticket not found.");
             }
-            if (ticket.DepartmentId != claims.DeptId || (claims.UserId != ticket.AssignedToId && ticket.ReportedById != claims.UserId && Role != "Manger"))
+            if (ticket.DepartmentId != claims.DeptId || (claims.UserId != ticket.AssignedToId && ticket.ReportedById != claims.UserId && Role != "Manager"))
             {
                 throw new Exception("Unauthorized to update this ticket.");
             }
-            return await _Ticketrepo.GetFullTicketAsync(ticketId);
+            return await _ticketRepository.GetFullTicketAsync(ticketId);
 
         }
 
         public async Task UpdateTicketPriority(int ticketId, int newPriority, UserClaims calims)
         {
-            TicketDTO? ticket = await _Ticketrepo.GetTicketAsync(ticketId);
+            TicketDTO? ticket = await _ticketRepository.GetTicketAsync(ticketId);
             if (ticket == null)
             {
                 throw new Exception("Ticket not found.");
@@ -140,18 +140,18 @@ namespace Fixi.Core.Services
                 OldValue = ((TicketPriority)ticket.priority).ToString(),
                 NewValue = ((TicketPriority)newPriority).ToString()
             });
-            await _Ticketrepo.UpdatePriority(ticketId, newPriority);
+            await _ticketRepository.UpdatePriority(ticketId, newPriority);
         }
 
         public async Task UpdateTicketStatus(int ticketId, TicketStatus newStatus, UserClaims claims)
         {
-            TicketDTO? ticket =  await _Ticketrepo.GetTicketAsync(ticketId);
+            TicketDTO? ticket =  await _ticketRepository.GetTicketAsync(ticketId);
             string Role = claims.Role;
             if (ticket == null)
             {
                 throw new Exception("Ticket not found.");
             }
-            if (ticket.DepartmentId != claims.DeptId || (claims.UserId != ticket.AssignedToId && ticket.ReportedById != claims.UserId && Role != "Manger"))
+            if (ticket.DepartmentId != claims.DeptId || (claims.UserId != ticket.AssignedToId && ticket.ReportedById != claims.UserId && Role != "Manager"))
             {
                 throw new Exception("Unauthorized to update this ticket.");
             }
@@ -172,12 +172,12 @@ namespace Fixi.Core.Services
                 OldValue = ticket.status.ToString(),
                 NewValue = newStatus.ToString()
             });
-            await _Ticketrepo.UpdateStatus(ticketId, newStatus);
+            await _ticketRepository.UpdateStatus(ticketId, newStatus);
         }
 
         public async Task AssignTechnician(int ticketId, string newtechnicianId, UserClaims calims)
         {
-            TicketDTO? ticket = await _Ticketrepo.GetTicketAsync(ticketId);
+            TicketDTO? ticket = await _ticketRepository.GetTicketAsync(ticketId);
             if (ticket == null)
             {
                 throw new Exception("Ticket not found.");
@@ -210,12 +210,12 @@ namespace Fixi.Core.Services
                 NewValue = NewAssigned.FullName
 
             });
-            await _Ticketrepo.AssignTechnician(ticketId, newtechnicianId);
+            await _ticketRepository.AssignTechnician(ticketId, newtechnicianId);
         }
 
         public async Task DeleteTicket(int ticketId, string userId)
         {
-            TicketDTO? ticket = await _Ticketrepo.GetTicketAsync(ticketId);
+            TicketDTO? ticket = await _ticketRepository.GetTicketAsync(ticketId);
             if (ticket == null)
             {
                 throw new Exception("Ticket not found.");
@@ -230,22 +230,22 @@ namespace Fixi.Core.Services
                 NewValue = null
             };
             await _ticketAuditLogRepo.CreateAsync(auditLog);
-            await _Ticketrepo.DeleteAsync(ticketId);
+            await _ticketRepository.DeleteAsync(ticketId);
         }
 
         public async Task<IEnumerable<TicketAuditHistoryDTO>> GetTicketHistoryAsync(int ticketId, UserClaims claims)
         {
-            TicketDTO? ticket = await _Ticketrepo.GetTicketAsync(ticketId);
+            TicketDTO? ticket = await _ticketRepository.GetTicketAsync(ticketId);
             string Role = claims.Role;
             if (ticket == null)
             {
                 throw new Exception("Ticket not found.");
             }
-            if (ticket.DepartmentId != claims.DeptId || (claims.UserId != ticket.AssignedToId && ticket.ReportedById != claims.UserId && Role != "Manger"))
+            if (ticket.DepartmentId != claims.DeptId || (claims.UserId != ticket.AssignedToId && ticket.ReportedById != claims.UserId && Role != "Manager"))
             {
                 throw new Exception("Unauthorized to view this ticket history.");
             }
-            return await _Ticketrepo.GetTicketHisoryAsync(ticketId);
+            return await _ticketRepository.GetTicketHisoryAsync(ticketId);
         }
 
 

@@ -18,10 +18,11 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
-{ options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")); 
+{ 
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")); 
 });
-builder.Services.AddIdentityCore<ApplicationUser>()
-.AddEntityFrameworkStores<ApplicationDbContext>();
+
+builder.Services.AddIdentityCore<ApplicationUser>().AddEntityFrameworkStores<ApplicationDbContext>();
 
 
 builder.Services.AddAuthentication(options =>
@@ -43,8 +44,6 @@ builder.Services.AddAuthentication(options =>
                 Encoding.UTF8.GetBytes(builder.Configuration["JWT:SecretKey"]))// Secret key from Secrets Manager
     };
 });
-
-
 
 
 builder.Services.AddScoped<IJwtService, JwtService>();

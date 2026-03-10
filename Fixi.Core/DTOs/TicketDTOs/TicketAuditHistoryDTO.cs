@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Fixi.Core.DTOs.TicketDTOs
 {
-    public  record TicketAuditHistoryDTO
+    public  class TicketAuditHistoryDTO
     {
         public string ChangeType { get; set; } = string.Empty;
         public string? OldValue { get; set; }

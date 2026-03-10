@@ -49,9 +49,9 @@ namespace Fixi.Infrastructure.Repositories
             {
                 query = query.Where(t => t.ReportedById == queryParams.ReporterId);
             }
-            if (queryParams.DepatrmentId is not null)
+            if (queryParams.DepartmentId is not null)
             {
-                query = query.Where(t => t.Category.DepartmentId == queryParams.DepatrmentId);
+                query = query.Where(t => t.Category.DepartmentId == queryParams.DepartmentId);
             }
             if (queryParams.categoryId is not null)
             {
@@ -63,7 +63,7 @@ namespace Fixi.Infrastructure.Repositories
 
             return await query.Select(t => new TicketResponseDTO
             {
-                ticketId = t.Id,
+                Id = t.Id,
                 Title = t.Title,
                 Priority = t.Priority.ToString(),
                 Status = t.Status.ToString(),

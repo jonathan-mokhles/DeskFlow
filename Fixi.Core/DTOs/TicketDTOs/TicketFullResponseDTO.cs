@@ -9,7 +9,7 @@ using System.Text;
 
 namespace Fixi.Core.DTOs.TicketDTOs
 {
-    public class TicketFullResponseDTO
+    public record TicketFullResponseDTO
     {
         public int Id { get; set; }
         public string Title { get; set; } = string.Empty;

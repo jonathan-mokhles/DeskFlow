@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Fixi.Core.DTOs.AccountDTOs
 {
-    public class AuthResponseDTO
+    public record AuthResponseDTO
     {
         public string FullName { get; set; } = string.Empty;
         public string Email { get; set; } = string.Empty;

@@ -9,9 +9,9 @@ using System.Text;
 
 namespace Fixi.Core.DTOs.TicketDTOs
 {
-    public class TicketResponseDTO
+    public record TicketResponseDTO
     {
-        public int ticketId { get; set; }
+        public int Id { get; set; }
         public string Title { get; set; } = string.Empty;
         public string Priority { get; set; } = string.Empty;
         public string Status { get; set; } = string.Empty;

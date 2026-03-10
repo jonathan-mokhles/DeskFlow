@@ -4,11 +4,11 @@ using System.Text;
 
 namespace Fixi.Core.DTOs.shared
 {
-    public  class ApiErrorResponse
+    public record ApiErrorResponse
     {
-        public string Message { get; set; } = default!;
+        public string Message { get; set; } = string.Empty;
         public List<string> Errors { get; set; } = new List<string>();
-        public string TraceId { get; set; } = default!;
+        public string TraceId { get; set; } = string.Empty;
 
     }
 }

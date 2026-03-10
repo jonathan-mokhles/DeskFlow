@@ -1,15 +1,24 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Text;
 
 namespace Fixi.Core.DTOs.TicketDTOs
 {
-    public record UpdateTicketDTO
+    public class UpdateTicketDTO
     {
         public int Id { get; set; }
+        [Required]
+        [MaxLength(200)]
         public string Title { get; set; } = string.Empty;
+
+        [Required]
         public string Description { get; set; } = string.Empty;
+
+        [Required]
         public int Priority { get; set; }
+
+        [Required]
         public int CategoryId { get; set; }
     }
 }
