@@ -4,6 +4,7 @@ using Fixi.Core.Domain.Repositories_Contracts;
 using Fixi.Core.DTOs.shared;
 using Fixi.Core.DTOs.TicketDTOs;
 using Fixi.Core.Enums;
+using Fixi.Core.Exceptions;
 using Fixi.Core.ServicesContracts;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
@@ -35,7 +36,7 @@ namespace Fixi.Core.Services
             SLASetting slaSetting = await _slaRepo.GetByPriorityAsync(TicketDTO.Priority);
             if (slaSetting == null)
             {
-                throw new Exception("SLA settings not found for the specified priority.");
+                throw new NotFoundException("SLA settings not found for the specified priority.");
             }
 
             Ticket ticket = new Ticket
@@ -88,11 +89,11 @@ namespace Fixi.Core.Services
             TicketDTO? ticket = await _ticketRepository.GetTicketAsync(updateTicketDTO.Id);
             if (ticket == null)
             {
-                throw new Exception("Ticket not found.");
+                throw new TicketNotFoundException();
             }
             if ( ticket.ReportedById != claims.UserId )
             {
-                throw new Exception("Unauthorized to update this ticket.");
+                throw new UnauthorizedTicketAccessException();
             }
             await _ticketAuditLogRepo.CreateAsync(new TicketAuditLog
             {
@@ -110,11 +111,11 @@ namespace Fixi.Core.Services
             string Role = claims.Role;
             if (ticket == null)
             {
-                throw new Exception("Ticket not found.");
+                throw new TicketNotFoundException();
             }
             if (ticket.DepartmentId != claims.DeptId || (claims.UserId != ticket.AssignedToId && ticket.ReportedById != claims.UserId && Role != "Manager"))
             {
-                throw new Exception("Unauthorized to update this ticket.");
+                throw new UnauthorizedTicketAccessException();
             }
             return await _ticketRepository.GetFullTicketAsync(ticketId);
 
@@ -125,11 +126,11 @@ namespace Fixi.Core.Services
             TicketDTO? ticket = await _ticketRepository.GetTicketAsync(ticketId);
             if (ticket == null)
             {
-                throw new Exception("Ticket not found.");
+                throw new TicketNotFoundException();
             }
             if (ticket.DepartmentId != calims.DeptId)
             {
-                throw new Exception("Unauthorized to update this ticket.");
+                throw new UnauthorizedTicketAccessException();
             }
             await _ticketAuditLogRepo.CreateAsync(new TicketAuditLog
             {
@@ -149,19 +150,19 @@ namespace Fixi.Core.Services
             string Role = claims.Role;
             if (ticket == null)
             {
-                throw new Exception("Ticket not found.");
+                throw new TicketNotFoundException();
             }
             if (ticket.DepartmentId != claims.DeptId || (claims.UserId != ticket.AssignedToId && ticket.ReportedById != claims.UserId && Role != "Manager"))
             {
-                throw new Exception("Unauthorized to update this ticket.");
+                throw new UnauthorizedTicketAccessException();
             }
             if (!allowedTransitions[ticket.status].Contains(newStatus))
             {
-                throw new Exception($"Invalid status transition");
+                throw new BusinessRuleViolationException($"Invalid status transition");
             }
             if((ticket.status == TicketStatus.InProgress || newStatus == TicketStatus.InProgress) && Role != "Technician")
             {
-                throw new Exception("Only technicians can move tickets to or from In Progress status.");
+                throw new BusinessRuleViolationException("Only technicians can move tickets to or from In Progress status.");
             }  
             await _ticketAuditLogRepo .CreateAsync(new TicketAuditLog
             {
@@ -180,24 +181,24 @@ namespace Fixi.Core.Services
             TicketDTO? ticket = await _ticketRepository.GetTicketAsync(ticketId);
             if (ticket == null)
             {
-                throw new Exception("Ticket not found.");
+                throw new TicketNotFoundException();
             }
             if (ticket.DepartmentId != calims.DeptId)
             {
-                throw new Exception("Unauthorized to update this ticket.");
+                throw new UnauthorizedTicketAccessException();
             }
             if (calims.Role == "Technician" && newtechnicianId != calims.UserId)
             {
-                throw new Exception("Technician can only assign themselves to a ticket.");
+                throw new BusinessRuleViolationException("Technician can only assign themselves to a ticket.");
             }
             ApplicationUser? NewAssigned = await _userManager.FindByIdAsync(newtechnicianId);
             if (NewAssigned == null)
             {
-                throw new Exception("Technician not found.");
+                throw new NotFoundException("Technician not found.");
             }
             if(NewAssigned.DepartmentId != calims.DeptId)
             {
-                throw new Exception("Cannot assign technician from a different department.");
+                throw new BusinessRuleViolationException("Cannot assign technician from a different department.");
             }
             
             await _ticketAuditLogRepo.CreateAsync(new TicketAuditLog
@@ -218,7 +219,7 @@ namespace Fixi.Core.Services
             TicketDTO? ticket = await _ticketRepository.GetTicketAsync(ticketId);
             if (ticket == null)
             {
-                throw new Exception("Ticket not found.");
+                throw new TicketNotFoundException();
             }
             TicketAuditLog auditLog = new TicketAuditLog
             {
@@ -239,11 +240,11 @@ namespace Fixi.Core.Services
             string Role = claims.Role;
             if (ticket == null)
             {
-                throw new Exception("Ticket not found.");
+                throw new TicketNotFoundException();
             }
             if (ticket.DepartmentId != claims.DeptId || (claims.UserId != ticket.AssignedToId && ticket.ReportedById != claims.UserId && Role != "Manager"))
             {
-                throw new Exception("Unauthorized to view this ticket history.");
+                throw new UnauthorizedTicketAccessException();
             }
             return await _ticketRepository.GetTicketHisoryAsync(ticketId);
         }

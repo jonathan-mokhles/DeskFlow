@@ -10,6 +10,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
+using Fixi.Core.Exceptions;
 
 namespace Fixi.Core.Services
 {
@@ -82,7 +83,7 @@ namespace Fixi.Core.Services
             ClaimsPrincipal claims =  tokenHandler.ValidateToken(token, tokenValticketIdationParameters, out SecurityToken securityToken);
             if(securityToken is not JwtSecurityToken jwtSecurityToken || !jwtSecurityToken.Header.Alg.Equals(SecurityAlgorithms.HmacSha256, StringComparison.InvariantCultureIgnoreCase))
             {
-                throw new SecurityTokenException("InvalticketId token");
+                throw new ValidationException("Invalticket Id token");
             }
             return claims;
         }

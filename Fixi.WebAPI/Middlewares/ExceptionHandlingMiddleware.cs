@@ -1,7 +1,5 @@
 ﻿using Fixi.Core.DTOs.shared;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Http;
-using System.Threading.Tasks;
+using Fixi.Core.Exceptions;
 
 namespace Fixi.WebAPI.Middlewares
 {
@@ -16,25 +14,73 @@ namespace Fixi.WebAPI.Middlewares
             _logger = logger;
         }
 
-        public Task Invoke(HttpContext httpContext)
+        public async Task Invoke(HttpContext httpContext)
         {
             try
             {
-                return _next(httpContext);
+                await _next(httpContext);
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, ex.Message);
-
-                ApiErrorResponse errorResponse = new ApiErrorResponse
-                {
-                    Message =  "Exception error",
-                    Errors = new List<string> { ex.ToString() },
-                    TraceId = httpContext.TraceIdentifier
-                };
-                httpContext.Response.StatusCode = StatusCodes.Status400BadRequest;
-                return httpContext.Response.WriteAsJsonAsync(errorResponse);
+                await HandleExceptionAsync(httpContext, ex);
             }
+        }
+
+        private static Task HandleExceptionAsync(HttpContext context, Exception exception)
+        {
+            context.Response.ContentType = "application/json";
+
+            var response = new ApiErrorResponse
+            {
+                TraceId = context.TraceIdentifier
+            };
+
+            switch (exception)
+            {
+                case TicketNotFoundException :
+                    context.Response.StatusCode = 404;
+                    response.Message = "Not found";
+                    response.Errors = new List<string> { exception.Message };
+                    break;
+
+                case UnauthorizedTicketAccessException:
+                    context.Response.StatusCode = 403;
+                    response.Message = "UnAuthorized";
+                    response.Errors = new List<string> { exception.Message };
+                    break;
+
+                case NotFoundException:
+                    context.Response.StatusCode = 404;
+                    response.Message = "Not found";
+                    response.Errors = new List<string> { exception.Message };
+                    break;
+
+                case BusinessRuleViolationException:
+                    context.Response.StatusCode = 400;
+                    response.Message = "Business rule violation";
+                    response.Errors = new List<string> { exception.Message };
+                    break;
+
+                case UnauthorizedOperationException:
+                    context.Response.StatusCode = 403;
+                    response.Message = "UnAuthorized";
+                    response.Errors = new List<string> { exception.Message };
+                    break;
+
+                case ValidationException:
+                    context.Response.StatusCode = 400;
+                    response.Message = "Validation error";
+                    response.Errors = new List<string> { exception.Message };
+                    break;
+
+                default:
+                    context.Response.StatusCode = 500;
+                    response.Message = "Internal server error";
+                    response.Errors = new List<string> { exception.Message };
+                    break;
+            }
+            return context.Response.WriteAsJsonAsync(response);
         }
     }
 

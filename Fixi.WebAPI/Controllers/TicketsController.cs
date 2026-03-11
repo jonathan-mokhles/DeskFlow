@@ -127,7 +127,7 @@ namespace Fixi.WebAPI.Controllers
             {
                 return BadRequest(new ApiErrorResponse
                 {
-                    Message = "Invalid priority value. Priority must be between 1 and 5.",
+                    Message = "Invalid priority value. Priority must be between 1 and 3.",
                     Errors = new List<string> { "Priority value out of range." },
                     TraceId = HttpContext.TraceIdentifier
                 });
