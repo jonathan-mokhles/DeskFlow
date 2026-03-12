@@ -118,7 +118,7 @@ namespace Fixi.WebAPI.Controllers
 
 
         [HttpPatch("{ticketId}/priority")]
-        [Authorize(Roles = "Manager")]
+        [Authorize( policy: "ManagerOmly")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesErrorResponseType(typeof(ApiErrorResponse))]
         public async Task<ActionResult> UpdateTicketPriority(int ticketId, int newPriority)
@@ -139,7 +139,7 @@ namespace Fixi.WebAPI.Controllers
 
 
         [HttpDelete("{id}")]
-        [Authorize(Roles = "Admin")]
+        [Authorize(policy: "AdminOnly")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesErrorResponseType(typeof(ApiErrorResponse))]
         public async Task<ActionResult> DeleteTicket(int id)

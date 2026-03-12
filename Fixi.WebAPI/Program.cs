@@ -45,6 +45,23 @@ builder.Services.AddAuthentication(options =>
     };
 });
 
+builder.Services.AddAuthorization( options =>
+     {
+         options.AddPolicy("ManagerOnly", policy => policy.RequireRole("Manager"));
+         options.AddPolicy("AdminOnly", policy => policy.RequireRole("Admin"));
+         options.AddPolicy("ManagerOrTechnician", policy => policy.RequireRole("User", "Technician"));
+         // Custom claim-based policies
+         //options.AddPolicy("SameDepartment", policy =>
+         //    policy.Requirements.Add(new SameDepartmentRequirement()));
+
+         //options.AddPolicy("CanEditTicket", policy =>
+         //    policy.Requirements.Add(new CanEditTicketRequirement()));
+     });
+
+// Register handlers
+//services.AddScoped<IAuthorizationHandler, SameDepartmentHandler>();
+//services.AddScoped<IAuthorizationHandler, CanEditTicketHandler>();
+
 
 builder.Services.AddScoped<IJwtService, JwtService>();
 builder.Services.AddScoped<ITicketService, TicketService>();

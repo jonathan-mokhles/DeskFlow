@@ -6,7 +6,7 @@ namespace Fixi.Core.Enums
 {
     public enum TicketStatus
     {
-        New = 1,
+        Open = 1,
         InProgress = 2,
         OnHold = 3,
         Resolved = 4,

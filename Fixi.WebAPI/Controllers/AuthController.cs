@@ -46,7 +46,7 @@ namespace Fixi.WebAPI.Controllers
         /// <returns>A 201 Created result if the user is successfully registered; otherwise, a 400 Bad Request result containing
         /// validation errors or identity errors.</returns>
         [HttpPost("register")]
-        [Authorize(Roles = "Admin")]
+        [Authorize(policy: "AdminOnly")]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(typeof(ApiErrorResponse),StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> register(RegisterDTO registerDTO)
@@ -292,13 +292,6 @@ namespace Fixi.WebAPI.Controllers
                 return BadRequest(errorResponse);
             }
             return Ok(new { message = "Password reset successful" });
-        }
-
-        [HttpGet("test")]
-        public IActionResult test()
-        {
-            _logger.LogInformation("Test endpoint hit");
-            return Ok("test");
         }
     }
 

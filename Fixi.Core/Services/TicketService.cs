@@ -44,7 +44,7 @@ namespace Fixi.Core.Services
                 Title = TicketDTO.Title,
                 Description = TicketDTO.Description,
                 Priority = (TicketPriority)TicketDTO.Priority,
-                Status = TicketStatus.New,
+                Status = TicketStatus.Open,
                 CategoryId = TicketDTO.CategoryId,
                 ReportedById = TicketDTO.ReportedById,
                 CreatedDate = DateTime.UtcNow,
@@ -249,10 +249,9 @@ namespace Fixi.Core.Services
             return await _ticketRepository.GetTicketHisoryAsync(ticketId);
         }
 
-
         private static Dictionary<TicketStatus, List<TicketStatus>> allowedTransitions = new Dictionary<TicketStatus, List<TicketStatus>>
         {
-            { TicketStatus.New, new List<TicketStatus> { TicketStatus.InProgress, TicketStatus.Canceled } },
+            { TicketStatus.Open, new List<TicketStatus> { TicketStatus.InProgress, TicketStatus.Canceled } },
             { TicketStatus.InProgress, new List<TicketStatus> { TicketStatus.Resolved, TicketStatus.OnHold } },
             {TicketStatus.OnHold, new List<TicketStatus> { TicketStatus.InProgress, TicketStatus.Canceled }  },
             { TicketStatus.Resolved, new List<TicketStatus> { TicketStatus.Closed, TicketStatus.InProgress } },
