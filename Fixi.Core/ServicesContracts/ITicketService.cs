@@ -15,14 +15,14 @@ namespace Fixi.Core.ServicesContracts
         public Task<Ticket> CreateTicketAsync(CreateTicketDTO createTicketDTO);
         public Task<IEnumerable<TicketResponseDTO>> GetAllTicketsAsync(TicketQueryParams queryParams, UserClaims claims);
 
-        public Task<TicketFullResponseDTO> GetTicketByIdAsync(int ticketId, UserClaims calims);
+        public Task<TicketFullResponseDTO> GetTicketByIdAsync(int ticketId);
         public Task UpdateTicketAsync(UpdateTicketDTO updateTicketDTO, UserClaims claims);
         public Task UpdateTicketStatus(int ticketId, TicketStatus newStatus, UserClaims calims);
         public Task UpdateTicketPriority(int ticketId, int newPriority, UserClaims calims);
         public Task AssignTechnician(int ticketId, string newtechnicianId, UserClaims calims);
         public Task DeleteTicket(int ticketId, string userId);
 
-        public Task<IEnumerable<TicketAuditHistoryDTO>> GetTicketHistoryAsync(int ticketId, UserClaims claims);
+        public Task<IEnumerable<TicketAuditHistoryDTO>> GetTicketHistoryAsync(int ticketId);
 
     }
 }

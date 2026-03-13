@@ -105,20 +105,9 @@ namespace Fixi.Core.Services
             await _ticketRepository.UpdateAsync(updateTicketDTO);
         }
 
-        public async Task<TicketFullResponseDTO> GetTicketByIdAsync(int ticketId, UserClaims claims)
+        public async Task<TicketFullResponseDTO> GetTicketByIdAsync(int ticketId)
         {
-            TicketDTO? ticket = await _ticketRepository.GetTicketAsync(ticketId);
-            string Role = claims.Role;
-            if (ticket == null)
-            {
-                throw new TicketNotFoundException();
-            }
-            if (ticket.DepartmentId != claims.DeptId || (claims.UserId != ticket.AssignedToId && ticket.ReportedById != claims.UserId && Role != "Manager"))
-            {
-                throw new UnauthorizedTicketAccessException();
-            }
             return await _ticketRepository.GetFullTicketAsync(ticketId);
-
         }
 
         public async Task UpdateTicketPriority(int ticketId, int newPriority, UserClaims calims)
@@ -234,18 +223,8 @@ namespace Fixi.Core.Services
             await _ticketRepository.DeleteAsync(ticketId);
         }
 
-        public async Task<IEnumerable<TicketAuditHistoryDTO>> GetTicketHistoryAsync(int ticketId, UserClaims claims)
+        public async Task<IEnumerable<TicketAuditHistoryDTO>> GetTicketHistoryAsync(int ticketId)
         {
-            TicketDTO? ticket = await _ticketRepository.GetTicketAsync(ticketId);
-            string Role = claims.Role;
-            if (ticket == null)
-            {
-                throw new TicketNotFoundException();
-            }
-            if (ticket.DepartmentId != claims.DeptId || (claims.UserId != ticket.AssignedToId && ticket.ReportedById != claims.UserId && Role != "Manager"))
-            {
-                throw new UnauthorizedTicketAccessException();
-            }
             return await _ticketRepository.GetTicketHisoryAsync(ticketId);
         }
 

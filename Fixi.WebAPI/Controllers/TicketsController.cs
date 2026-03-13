@@ -1,4 +1,5 @@
 ﻿using Fixi.Core.Domain.Entity;
+using Fixi.Core.Domain.Repositories_Contracts;
 using Fixi.Core.DTOs.shared;
 using Fixi.Core.DTOs.TicketDTOs;
 using Fixi.Core.Enums;
@@ -16,10 +17,14 @@ namespace Fixi.WebAPI.Controllers
     public class TicketsController : ControllerBase
     {
         ITicketService _ticketService;
+        IAuthorizationService _authorizationService;
+        ITicketRepository _ticketRepository;
 
-        public TicketsController(ITicketService ticketService)
+        public TicketsController(ITicketService ticketService, IAuthorizationService authorizationService, ITicketRepository ticketRepository )
         {
             _ticketService = ticketService;
+            _authorizationService = authorizationService;
+            _ticketRepository = ticketRepository;
         }
 
         [HttpPost("")]
@@ -39,7 +44,29 @@ namespace Fixi.WebAPI.Controllers
         [ProducesErrorResponseType(typeof(ApiErrorResponse))]
         public async Task<ActionResult<TicketResponseDTO>> GetTicketById(int id)
         {
-            var ticket = await _ticketService.GetTicketByIdAsync(id, GetUserClaims());
+            TicketDTO ticketDto = await _ticketRepository.GetTicketAsync(id);
+            if(ticketDto is null)
+            {
+                return NotFound(new ApiErrorResponse
+                {
+                    Message = "Ticket not found.",
+                    Errors = new List<string> { "No ticket with the specified ID." },
+                    TraceId = HttpContext.TraceIdentifier
+                });
+            }
+
+            var authorizationResult = await _authorizationService.AuthorizeAsync(User, ticketDto, "ManagerOrReporterOrAssignedTo");
+            if(!authorizationResult.Succeeded)
+            {
+                return Unauthorized(new ApiErrorResponse
+                {
+                    Message = "You do not have permission to view this ticket.",
+                    Errors = new List<string> { "Unauthorized access." },
+                    TraceId = HttpContext.TraceIdentifier
+                });
+            }
+
+            var ticket = await _ticketService.GetTicketByIdAsync(id);
             return Ok(ticket);
         }
 
@@ -154,7 +181,27 @@ namespace Fixi.WebAPI.Controllers
         [ProducesErrorResponseType(typeof(ApiErrorResponse))]
         public async Task<ActionResult<IEnumerable<TicketAuditHistoryDTO>>> GetTicketHistory(int ticketId)
         {
-            var history = await _ticketService.GetTicketHistoryAsync(ticketId, GetUserClaims());
+            TicketDTO ticket = await _ticketRepository.GetTicketAsync(ticketId);
+            if(ticket is null)
+            {
+                return NotFound(new ApiErrorResponse
+                {
+                    Message = "Ticket not found.",
+                    Errors = new List<string> { "No ticket with the specified ID." },
+                    TraceId = HttpContext.TraceIdentifier
+                });
+            }
+            var result = await _authorizationService.AuthorizeAsync(User, ticketId, "ManagerOrReporterOrAssignedTo");
+            if(!result.Succeeded)
+            {
+                return Unauthorized( new ApiErrorResponse
+                {
+                    Message = "You do not have permission to view this ticket's history.",
+                    Errors = new List<string> { "Unauthorized access." },
+                    TraceId = HttpContext.TraceIdentifier
+                });
+            }
+            var history = await _ticketService.GetTicketHistoryAsync(ticketId);
             return Ok(history);
         }
 
