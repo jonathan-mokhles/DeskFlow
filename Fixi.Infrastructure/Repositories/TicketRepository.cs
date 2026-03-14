@@ -143,6 +143,7 @@ namespace Fixi.Infrastructure.Repositories
                 .Where(t => t.Id == ticketId)
                 .Select(t => new TicketDTO
                 {
+                    Id = t.Id,
                     DepartmentId = t.Category.DepartmentId,
                     priority = t.Priority,
                     status = t.Status,

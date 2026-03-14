@@ -110,27 +110,19 @@ namespace Fixi.Core.Services
             return await _ticketRepository.GetFullTicketAsync(ticketId);
         }
 
-        public async Task UpdateTicketPriority(int ticketId, int newPriority, UserClaims calims)
+        public async Task UpdateTicketPriority(TicketDTO ticket, int newPriority, string userID )
         {
-            TicketDTO? ticket = await _ticketRepository.GetTicketAsync(ticketId);
-            if (ticket == null)
-            {
-                throw new TicketNotFoundException();
-            }
-            if (ticket.DepartmentId != calims.DeptId)
-            {
-                throw new UnauthorizedTicketAccessException();
-            }
+
             await _ticketAuditLogRepo.CreateAsync(new TicketAuditLog
             {
-                TicketId = ticketId,
-                ChangedById = calims.UserId,
+                TicketId = ticket.Id,
+                ChangedById = userID,
                 ChangeType = "Updated Priority",
                 ChangedDate = DateTime.UtcNow,
                 OldValue = ((TicketPriority)ticket.priority).ToString(),
                 NewValue = ((TicketPriority)newPriority).ToString()
             });
-            await _ticketRepository.UpdatePriority(ticketId, newPriority);
+            await _ticketRepository.UpdatePriority(ticket.Id, newPriority);
         }
 
         public async Task UpdateTicketStatus(int ticketId, TicketStatus newStatus, UserClaims claims)

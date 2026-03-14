@@ -145,7 +145,6 @@ namespace Fixi.WebAPI.Controllers
 
 
         [HttpPatch("{ticketId}/priority")]
-        [Authorize( policy: "ManagerOmly")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesErrorResponseType(typeof(ApiErrorResponse))]
         public async Task<ActionResult> UpdateTicketPriority(int ticketId, int newPriority)
@@ -160,7 +159,27 @@ namespace Fixi.WebAPI.Controllers
                 });
             }
 
-            await _ticketService.UpdateTicketPriority(ticketId, newPriority,GetUserClaims());
+            TicketDTO ticket = await _ticketRepository.GetTicketAsync(ticketId);
+            if(ticket is null)
+            {
+                return NotFound(new ApiErrorResponse
+                {
+                    Message = "Ticket not found.",
+                    Errors = new List<string> { "No ticket with the specified ID." },
+                    TraceId = HttpContext.TraceIdentifier
+                });
+            }
+            var authorizationResult = await _authorizationService.AuthorizeAsync(User, ticket, "DepartmentManagerOnly");
+            if(!authorizationResult.Succeeded)
+            {
+                return Unauthorized(new ApiErrorResponse
+                {
+                    Message = "You do not have permission to change this ticket's priority.",
+                    Errors = new List<string> { "Unauthorized access." },
+                    TraceId = HttpContext.TraceIdentifier
+                });
+            }
+            await _ticketService.UpdateTicketPriority(ticket, newPriority, User.FindFirstValue(JwtRegisteredClaimNames.Sub));
             return NoContent();
         }
 
