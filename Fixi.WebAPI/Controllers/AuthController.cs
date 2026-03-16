@@ -31,94 +31,6 @@ namespace Fixi.WebAPI.Controllers
         }
 
 
-
-
-
-        /// <summary>
-        /// Registers a new user account with the specified registration details. Accessible only to users in the Admin
-        /// role.
-        /// </summary>
-        /// <remarks>This action requires authentication and is restricted to users with the Admin role.
-        /// The user is assigned to a role upon successful registration. The request body must provide valid
-        /// registration data; otherwise, the request will fail validation.</remarks>
-        /// <param name="registerDTO">An object containing the registration information for the new user, including email, full name, department,
-        /// phone number, and password. All fields are required.</param>
-        /// <returns>A 201 Created result if the user is successfully registered; otherwise, a 400 Bad Request result containing
-        /// validation errors or identity errors.</returns>
-        [HttpPost("register")]
-        [Authorize(policy: "AdminOnly")]
-        [ProducesResponseType(StatusCodes.Status201Created)]
-        [ProducesResponseType(typeof(ApiErrorResponse),StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> register(RegisterDTO registerDTO)
-        {
-            if (!ModelState.IsValid)
-            {
-                ApiErrorResponse errorResponse = new ApiErrorResponse
-                {
-                    Message = "Invalid registration data",
-                    Errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage).ToList(),
-                    TraceId = HttpContext.TraceIdentifier
-                };
-                return BadRequest(errorResponse);
-            }
-
-            var existingUser = await _userManager.FindByEmailAsync(registerDTO.Email);
-
-            if (existingUser != null)
-            {
-                ApiErrorResponse errorResponse = new ApiErrorResponse
-                {
-                    Message = "email already exists",
-                    Errors = new List<string> { $"A user with the email '{registerDTO.Email}' already exists." },
-                    TraceId = HttpContext.TraceIdentifier
-                };
-                return BadRequest(errorResponse);
-            }
-
-            if (!await _roleManager.RoleExistsAsync(registerDTO.Role))
-            {
-                ApiErrorResponse errorResponse = new ApiErrorResponse
-                {
-                    Message = "Invalid role",
-                    Errors = new List<string> { $"Role '{registerDTO.Role}' does not exist." },
-                    TraceId = HttpContext.TraceIdentifier
-                };
-                return BadRequest(errorResponse);
-            }
-
-            ApplicationUser newUser = new ApplicationUser
-            {
-                UserName = registerDTO.Email,
-                Email = registerDTO.Email,
-                FullName = registerDTO.FullName,
-                DepartmentId = registerDTO.DepartmentId,
-                PhoneNumber = registerDTO.phone,
-
-            };
-
-            var result = await _userManager.CreateAsync(newUser, registerDTO.Password);
-
-            if (!result.Succeeded)
-            {
-                ApiErrorResponse errorResponse = new ApiErrorResponse
-                {
-                    Message = "User registration failed",
-                    Errors = result.Errors.Select(e => e.Description).ToList(),
-                    TraceId = HttpContext.TraceIdentifier
-                };
-                return BadRequest(errorResponse);
-            }
-
-            await _userManager.AddToRoleAsync(newUser, registerDTO.Role);
-            _logger.LogInformation("User {Email} registered successfully", registerDTO.Email);
-            return CreatedAtAction(nameof(register), new { email = newUser.Email });
-
-
-        }
-
-
-
-
         /// <summary>
         /// Authenticates a user with the provided credentials and returns a JWT token if successful.
         /// </summary>
@@ -167,7 +79,6 @@ namespace Fixi.WebAPI.Controllers
             return Ok(authResponse);
 
         }
-
 
 
 

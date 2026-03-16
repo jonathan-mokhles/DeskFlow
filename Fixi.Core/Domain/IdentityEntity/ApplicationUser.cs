@@ -12,6 +12,8 @@ namespace Fixi.Core.Domain.IdentityEntity
         public int DepartmentId { get; set; }
         public string RefreshToken { get; set; } = string.Empty;
         public DateTime RefreshTokenExpiryTime { get; set; }
+        public bool IsActive { get; set; } = true;
+        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
         // Navigation property
         public Department? Department { get; set; }

@@ -3,10 +3,12 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Text;
 
-namespace Fixi.Core.DTOs.AccountDTOs
+namespace Fixi.Core.DTOs.UsersDTOs
 {
-    public class RegisterDTO
+    public class UpdateUserDTO
     {
+        public string Id { get; set; } = string.Empty;
+
         [Required]
         public string FullName { get; set; } = string.Empty;
 
@@ -20,14 +22,5 @@ namespace Fixi.Core.DTOs.AccountDTOs
         [Required]
         [EmailAddress]
         public string Email { get; set; } = string.Empty;
-
-        [Required]
-        public string Password { get; set; } = string.Empty;
-
-        public string Role { get; set; } = "User";
-
-        [Required]
-        [Compare("Password", ErrorMessage = "Passwords do not match.")]
-        public string ConfirmPassword { get; set; } = string.Empty;
     }
 }
