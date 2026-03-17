@@ -17,7 +17,7 @@ namespace Fixi.WebAPI.Controllers
         private readonly Logger<UsersController> _logger;
 
 
-        public UsersController(UserService userService, Logger<UsersController> logger )
+        public UsersController(UserService userService, Logger<UsersController> logger)
         {
             _userService = userService;
             _logger = logger;
@@ -74,7 +74,7 @@ namespace Fixi.WebAPI.Controllers
                 return BadRequest(errorResponse);
             }
 
-            if(id != updateDTO.Id)
+            if (id != updateDTO.Id)
             {
                 ApiErrorResponse errorResponse = new ApiErrorResponse
                 {
@@ -85,7 +85,7 @@ namespace Fixi.WebAPI.Controllers
                 return BadRequest(errorResponse);
             }
 
-            var result = await _userService.UpdateUserAsync(id,updateDTO);
+            var result = await _userService.UpdateUserAsync(id, updateDTO);
             if (!result.Succeeded)
             {
                 ApiErrorResponse errorResponse = new ApiErrorResponse
@@ -124,7 +124,36 @@ namespace Fixi.WebAPI.Controllers
             _logger.LogInformation("User {UserId} deleted successfully", id);
             return NoContent();
         }
-    
+
+        [HttpGet("{id}")]
+        [ProducesResponseType(typeof(UserResponseDTO), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiErrorResponse), StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> GetUserById(string id)
+        {
+
+            var user = await _userService.GetUserByIdAsync(id);
+            if (user == null)
+            {
+                ApiErrorResponse errorResponse = new ApiErrorResponse
+                {
+                    Message = "User not found",
+                    Errors = new List<string> { $"No user found with ID '{id}'." },
+                    TraceId = HttpContext.TraceIdentifier
+                };
+                return NotFound(errorResponse);
+            }
+            return Ok(user);
 
         }
+
+
+        [HttpGet]
+        [Authorize(policy: "DepatrmentManagerOrAdmin")]
+        [ProducesResponseType(typeof(List<UserResponseDTO>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> GetAllUsers([FromQuery] UsersQueryParameters query)
+        {
+            var users = await _userService.GetAllUsersAsync(query);
+            return Ok(users);
+        }
+    }
 }

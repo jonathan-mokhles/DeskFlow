@@ -13,6 +13,8 @@ namespace Fixi.Core.ServicesContracts
 
         public Task<IdentityResult> DeleteUserAsync(string Id);
 
-        //public Task<ApplicationUser> GetUserByIdAsync(string Id);
+        public Task<UserResponseDTO> GetUserByIdAsync(string Id);
+
+        public Task<List<UserResponseDTO>> GetAllUsersAsync(UsersQueryParameters query);
     }
 }

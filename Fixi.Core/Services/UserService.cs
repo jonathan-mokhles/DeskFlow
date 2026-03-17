@@ -5,6 +5,7 @@ using Fixi.Core.Exceptions;
 using Fixi.Core.ServicesContracts;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -83,6 +84,51 @@ namespace Fixi.Core.Services
             }
             userToDelete.IsActive = false;
             return await _userManager.UpdateAsync(userToDelete);
+        }
+
+        public async Task<UserResponseDTO> GetUserByIdAsync(string Id)
+        {
+            var response = await _userManager.Users.Where(u => u.Id == Id)
+                .Select(u => new UserResponseDTO
+                {
+                    Id = u.Id,
+                    FullName = u.FullName,
+                    DepartmentId = u.DepartmentId,
+                    DepartmentName = u.Department.Name,
+                    phone = u.PhoneNumber,
+                    Email = u.Email
+                }).FirstAsync();
+            return response;
+        }
+
+        public async Task<List<UserResponseDTO>> GetAllUsersAsync(UsersQueryParameters query)
+        {
+            var queryable = _userManager.Users.AsQueryable();
+
+            if (!string.IsNullOrEmpty(query.Name))
+            {
+                queryable = queryable.Where(u => u.FullName.Contains(query.Name));
+            }
+            if (query.DepartmentId.HasValue)
+            {
+                queryable = queryable.Where(u => u.DepartmentId == query.DepartmentId.Value);
+            }
+
+            query.PageSize = Math.Min(query.PageSize, 100);
+            int skip = (query.PageNumber - 1) * query.PageSize;
+
+            var response = await queryable.Skip(skip).Take(query.PageSize)
+                .Select(u => new UserResponseDTO
+                {
+                    Id = u.Id,
+                    FullName = u.FullName,
+                    DepartmentId = u.DepartmentId,
+                    DepartmentName = u.Department.Name,
+                    phone = u.PhoneNumber,
+                    Email = u.Email
+                }).Skip(skip).Take(query.PageSize).ToListAsync();
+
+            return response;
         }
     }
 }
