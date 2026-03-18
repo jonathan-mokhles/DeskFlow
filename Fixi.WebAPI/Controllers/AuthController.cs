@@ -45,8 +45,7 @@ namespace Fixi.WebAPI.Controllers
         [HttpPost("login")]
         [AllowAnonymous]
         [ProducesResponseType(typeof(AuthResponseDTO), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(ApiErrorResponse), StatusCodes.Status401Unauthorized)]
-        [ProducesResponseType(typeof(ApiErrorResponse), StatusCodes.Status400BadRequest)]
+        [ProducesErrorResponseType(typeof(ApiErrorResponse))]
         public async Task<IActionResult> login(LoginDTO loginDTO)
         {
             if (!ModelState.IsValid)
@@ -96,7 +95,7 @@ namespace Fixi.WebAPI.Controllers
         [HttpPost("refresh-token")]
         [AllowAnonymous]
         [ProducesResponseType(typeof(AuthResponseDTO), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(ApiErrorResponse), StatusCodes.Status400BadRequest)]
+        [ProducesErrorResponseType(typeof(ApiErrorResponse))]
         public async Task<IActionResult> refreshToken(RefreshTokenRequestDTO request)
         {
             if (!ModelState.IsValid)
@@ -163,7 +162,7 @@ namespace Fixi.WebAPI.Controllers
         /// with error details.</returns>
         [HttpPost("reset-password")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(ApiErrorResponse), StatusCodes.Status400BadRequest)]
+        [ProducesErrorResponseType(typeof(ApiErrorResponse))]
         public async Task<IActionResult> resetPassword(ResetPasswordRequestDTO passwordRequest)
         {
             if (!ModelState.IsValid)

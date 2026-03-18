@@ -24,7 +24,7 @@ namespace Fixi.Core.DTOs.UsersDTOs
         [Required]
         public string Password { get; set; } = string.Empty;
 
-        public string Role { get; set; } = "User";
+        public string Role { get; set; } = string.Empty;
 
         [Required]
         [Compare("Password", ErrorMessage = "Passwords do not match.")]

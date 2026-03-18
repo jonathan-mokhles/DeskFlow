@@ -33,8 +33,6 @@ namespace Fixi.WebAPI.Controllers
         public async Task<ActionResult> CreateTicket(CreateTicketDTO createTicketDTO)
         {
             Ticket createdTicket = await _ticketService.CreateTicketAsync(createTicketDTO);
-
-
             return CreatedAtAction(nameof(GetTicketById), new { id = createdTicket.Id }, createdTicket);
         }
 
@@ -44,7 +42,7 @@ namespace Fixi.WebAPI.Controllers
         [ProducesErrorResponseType(typeof(ApiErrorResponse))]
         public async Task<ActionResult<TicketResponseDTO>> GetTicketById(int id)
         {
-            TicketDTO ticketDto = await _ticketRepository.GetTicketAsync(id);
+            TicketDTO? ticketDto = await _ticketRepository.GetTicketAsync(id);
             if(ticketDto is null)
             {
                 return NotFound(new ApiErrorResponse
@@ -76,7 +74,7 @@ namespace Fixi.WebAPI.Controllers
         public async Task<ActionResult<IEnumerable<TicketResponseDTO>>> GetAllTickets([FromQuery] TicketQueryParams queryParams)
         {
             var role = User.FindFirstValue(ClaimTypes.Role);
-            string userid = User.FindFirstValue(JwtRegisteredClaimNames.Sub);
+            string userid = User.FindFirstValue(JwtRegisteredClaimNames.Sub)!;
 
             var tickets = await _ticketService.GetAllTicketsAsync(queryParams, GetUserClaims());
             return Ok(tickets);
@@ -133,7 +131,7 @@ namespace Fixi.WebAPI.Controllers
 
 
         [HttpPatch("{ticketId}/assign")]
-        [Authorize(Roles = "Manager,Technician")]
+        [Authorize(policy: "ManagerOrTechnician")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesErrorResponseType(typeof(ApiErrorResponse))]
         public async Task<ActionResult> AssignTechnician(int ticketId, string newTechnicianId)
@@ -159,7 +157,7 @@ namespace Fixi.WebAPI.Controllers
                 });
             }
 
-            TicketDTO ticket = await _ticketRepository.GetTicketAsync(ticketId);
+            TicketDTO? ticket = await _ticketRepository.GetTicketAsync(ticketId);
             if(ticket is null)
             {
                 return NotFound(new ApiErrorResponse
@@ -169,7 +167,7 @@ namespace Fixi.WebAPI.Controllers
                     TraceId = HttpContext.TraceIdentifier
                 });
             }
-            var authorizationResult = await _authorizationService.AuthorizeAsync(User, ticket, "DepartmentManagerOnly");
+            var authorizationResult = await _authorizationService.AuthorizeAsync(User, ticket.DepartmentId, "ManagerOrAdmin");
             if(!authorizationResult.Succeeded)
             {
                 return Unauthorized(new ApiErrorResponse
@@ -179,7 +177,8 @@ namespace Fixi.WebAPI.Controllers
                     TraceId = HttpContext.TraceIdentifier
                 });
             }
-            await _ticketService.UpdateTicketPriority(ticket, newPriority, User.FindFirstValue(JwtRegisteredClaimNames.Sub));
+
+            await _ticketService.UpdateTicketPriority(ticket, newPriority, User.FindFirstValue(JwtRegisteredClaimNames.Sub)!);
             return NoContent();
         }
 
@@ -190,17 +189,18 @@ namespace Fixi.WebAPI.Controllers
         [ProducesErrorResponseType(typeof(ApiErrorResponse))]
         public async Task<ActionResult> DeleteTicket(int id)
         {
-            string userid = User.FindFirstValue(JwtRegisteredClaimNames.Sub);
+            string userid = User.FindFirstValue(JwtRegisteredClaimNames.Sub)!;
             await _ticketService.DeleteTicket(id, userid);
             return NoContent();
         }
+
 
         [HttpGet("{ticketId}/history")]
         [ProducesResponseType(typeof(IEnumerable<TicketAuditHistoryDTO>), StatusCodes.Status200OK)]
         [ProducesErrorResponseType(typeof(ApiErrorResponse))]
         public async Task<ActionResult<IEnumerable<TicketAuditHistoryDTO>>> GetTicketHistory(int ticketId)
         {
-            TicketDTO ticket = await _ticketRepository.GetTicketAsync(ticketId);
+            TicketDTO? ticket = await _ticketRepository.GetTicketAsync(ticketId);
             if(ticket is null)
             {
                 return NotFound(new ApiErrorResponse
@@ -210,7 +210,7 @@ namespace Fixi.WebAPI.Controllers
                     TraceId = HttpContext.TraceIdentifier
                 });
             }
-            var result = await _authorizationService.AuthorizeAsync(User, ticketId, "ManagerOrReporterOrAssignedTo");
+            var result = await _authorizationService.AuthorizeAsync(User, ticket, "ManagerOrReporterOrAssignedTo");
             if(!result.Succeeded)
             {
                 return Unauthorized( new ApiErrorResponse
@@ -227,10 +227,10 @@ namespace Fixi.WebAPI.Controllers
 
         private UserClaims GetUserClaims()
         {
-            var role = User.FindFirstValue(ClaimTypes.Role);
-            string userid = User.FindFirstValue(JwtRegisteredClaimNames.Sub);
+            string role = User.FindFirstValue(ClaimTypes.Role)!;
+            string userid = User.FindFirstValue(JwtRegisteredClaimNames.Sub)!;
             
-            string deptId = User.FindFirstValue("DeptId");
+            string deptId = User.FindFirstValue("DeptId")!;
             int.TryParse(deptId, out var parsedDeptId);
             return new UserClaims
             {

@@ -13,5 +13,6 @@ namespace Fixi.Core.DTOs.UsersDTOs
         public string DepartmentName { get; set; } = string.Empty; 
         public string phone { get; set; } = string.Empty;
         public string Email { get; set; } = string.Empty;
+        public string Role { get; set; } = string.Empty;
     }
 }

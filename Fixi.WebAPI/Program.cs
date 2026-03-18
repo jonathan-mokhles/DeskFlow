@@ -13,6 +13,8 @@ using System.Security.Claims;
 using Fixi.Core.Domain.Repositories_Contracts;
 using Fixi.Infrastructure.Repositories;
 using Fixi.WebAPI.Middlewares;
+using Fixi.Core.Authorization.Handlers;
+using Fixi.Core.Authorization.Requirements;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -41,26 +43,25 @@ builder.Services.AddAuthentication(options =>
         ValidateIssuerSigningKey = true,
         IssuerSigningKey =
             new SymmetricSecurityKey(
-                Encoding.UTF8.GetBytes(builder.Configuration["JWT:SecretKey"]))// Secret key from Secrets Manager
+                Encoding.UTF8.GetBytes(builder.Configuration["JWT:SecretKey"]!))// Secret key from Secrets Manager
     };
 });
 
 builder.Services.AddAuthorization( options =>
      {
-         options.AddPolicy("ManagerOnly", policy => policy.RequireRole("Manager"));
+         options.AddPolicy("AdminOrManager", policy => policy.RequireRole("Manager","Admin"));
          options.AddPolicy("AdminOnly", policy => policy.RequireRole("Admin"));
-         options.AddPolicy("ManagerOrTechnician", policy => policy.RequireRole("User", "Technician"));
-         // Custom claim-based policies
-         //options.AddPolicy("SameDepartment", policy =>
-         //    policy.Requirements.Add(new SameDepartmentRequirement()));
+         options.AddPolicy("ManagerOrTechnician", policy => policy.RequireRole("Manader", "Technician"));
 
-         //options.AddPolicy("CanEditTicket", policy =>
-         //    policy.Requirements.Add(new CanEditTicketRequirement()));
+         options.AddPolicy("ManagerOrReporterOrAssignedTo", policy =>
+             policy.Requirements.Add(new ManagerOrReporterOrAssignedToRequirement()));
+
+         options.AddPolicy("ManagerOrAdmin", policy =>
+             policy.Requirements.Add(new ManagerOrAdminRequirement()));
      });
 
-// Register handlers
-//services.AddScoped<IAuthorizationHandler, SameDepartmentHandler>();
-//services.AddScoped<IAuthorizationHandler, CanEditTicketHandler>();
+builder.Services.AddScoped<IAuthorizationHandler,ManagerOrReporterOrAssignedToHandler >();
+builder.Services.AddScoped<IAuthorizationHandler,ManagerOrAdminHandler >();
 
 
 builder.Services.AddScoped<IJwtService, JwtService>();

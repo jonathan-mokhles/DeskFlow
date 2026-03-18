@@ -7,13 +7,13 @@ using System.Text;
 
 namespace Fixi.Core.Authorization.Handlers
 {
-    public class DepartmentManagerOrAdminHandler : AuthorizationHandler<DepartmentManagerOrAdminRequirement, TicketDTO>
+    public class ManagerOrAdminHandler : AuthorizationHandler<ManagerOrAdminRequirement, int>
     {
-        protected override Task HandleRequirementAsync(AuthorizationHandlerContext context, DepartmentManagerOrAdminRequirement requirement, TicketDTO resource)
+        protected override Task HandleRequirementAsync(AuthorizationHandlerContext context, ManagerOrAdminRequirement requirement, int resource)
         {
-            string role = context.User.Claims.FirstOrDefault(c => c.Type == "role")?.Value;
+            string role = context.User.Claims.FirstOrDefault(c => c.Type == "role")?.Value!;
             int deptID = int.Parse(context.User.Claims.FirstOrDefault(c => c.Type == "DeptId")?.Value ?? "0");
-            if ((role == "Manager" && deptID == resource.DepartmentId) || role == "Admin")
+            if ((role == "Manager" && deptID == resource) || role == "Admin")
             {
                 context.Succeed(requirement);
             }

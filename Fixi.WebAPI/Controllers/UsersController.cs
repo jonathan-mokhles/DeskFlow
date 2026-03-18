@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 
 namespace Fixi.WebAPI.Controllers
 {
@@ -38,7 +40,7 @@ namespace Fixi.WebAPI.Controllers
         [HttpPost]
         [Authorize(policy: "AdminOnly")]
         [ProducesResponseType(StatusCodes.Status201Created)]
-        [ProducesResponseType(typeof(ApiErrorResponse), StatusCodes.Status400BadRequest)]
+        [ProducesErrorResponseType(typeof(ApiErrorResponse))]
         public async Task<IActionResult> register(RegisterUserDTO registerDTO)
         {
             if (!ModelState.IsValid)
@@ -60,7 +62,7 @@ namespace Fixi.WebAPI.Controllers
         [HttpPut("{id}")]
         [Authorize(policy: "AdminOnly")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
-        [ProducesResponseType(typeof(ApiErrorResponse), StatusCodes.Status400BadRequest)]
+        [ProducesErrorResponseType(typeof(ApiErrorResponse))]
         public async Task<IActionResult> UpdateUser(string id, UpdateUserDTO updateDTO)
         {
             if (!ModelState.IsValid)
@@ -105,7 +107,7 @@ namespace Fixi.WebAPI.Controllers
         [HttpDelete("{id}")]
         [Authorize(policy: "AdminOnly")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
-        [ProducesResponseType(typeof(ApiErrorResponse), StatusCodes.Status400BadRequest)]
+        [ProducesErrorResponseType(typeof(ApiErrorResponse))]
         public async Task<IActionResult> DeleteUser(string id)
         {
             var result = await _userService.DeleteUserAsync(id);
@@ -127,10 +129,9 @@ namespace Fixi.WebAPI.Controllers
 
         [HttpGet("{id}")]
         [ProducesResponseType(typeof(UserResponseDTO), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(ApiErrorResponse), StatusCodes.Status404NotFound)]
+        [ProducesErrorResponseType(typeof(ApiErrorResponse))]
         public async Task<IActionResult> GetUserById(string id)
         {
-
             var user = await _userService.GetUserByIdAsync(id);
             if (user == null)
             {
@@ -142,16 +143,38 @@ namespace Fixi.WebAPI.Controllers
                 };
                 return NotFound(errorResponse);
             }
-            return Ok(user);
+
+            var role = User.FindFirstValue(ClaimTypes.Role);
+            string userid = User.FindFirstValue(JwtRegisteredClaimNames.Sub)!;
+
+            int deptId = int.Parse(User.FindFirstValue("DeptId")!);
+            if (id == userid || user.Role == "Admin" || (user.Role == "Manager" && user.DepartmentId == deptId)) {
+                return Ok(user);
+            }
+            else
+            {
+                ApiErrorResponse errorResponse = new ApiErrorResponse
+                {
+                    Message = "Unauthorized access",
+                    Errors = new List<string> { "You do not have permission to access this user's information." },
+                    TraceId = HttpContext.TraceIdentifier
+                };
+                return Unauthorized(errorResponse);
+            }
 
         }
 
 
         [HttpGet]
-        [Authorize(policy: "DepatrmentManagerOrAdmin")]
+        [Authorize(policy: "AdminOrManager")]
         [ProducesResponseType(typeof(List<UserResponseDTO>), StatusCodes.Status200OK)]
+        [ProducesErrorResponseType(typeof(ApiErrorResponse))]
         public async Task<IActionResult> GetAllUsers([FromQuery] UsersQueryParameters query)
         {
+            if (User.IsInRole("Manager"))
+            {
+                query.DepartmentId = int.Parse(User.Claims.FirstOrDefault(c => c.Type == "DepartmentId")?.Value ?? "0");
+            }
             var users = await _userService.GetAllUsersAsync(query);
             return Ok(users);
         }

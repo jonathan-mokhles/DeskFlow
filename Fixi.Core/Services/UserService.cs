@@ -57,7 +57,7 @@ namespace Fixi.Core.Services
             await _userManager.AddToRoleAsync(newUser, registerDTO.Role);
         }
 
-        public Task<IdentityResult> UpdateUserAsync(string Id, UpdateUserDTO updateDTO)
+        public async Task<IdentityResult> UpdateUserAsync(string Id, UpdateUserDTO updateDTO)
         {
             ApplicationUser? userToUpdate = _userManager.Users.FirstOrDefault(u => u.Id == updateDTO.Id);
 
@@ -71,8 +71,13 @@ namespace Fixi.Core.Services
             userToUpdate.PhoneNumber = updateDTO.phone;
             userToUpdate.Email = updateDTO.Email;
 
-            return _userManager.UpdateAsync(userToUpdate);
-
+            await _userManager.RemoveFromRolesAsync(userToUpdate, _userManager.GetRolesAsync(userToUpdate).Result);
+            if (!await _roleManager.RoleExistsAsync(updateDTO.Role))
+            {
+                throw new ValidationException("Specified role does not exist.");
+            }
+            await _userManager.AddToRoleAsync(userToUpdate, updateDTO.Role);
+            return await _userManager.UpdateAsync(userToUpdate);
         }
 
         public async Task<IdentityResult> DeleteUserAsync(string Id)
@@ -94,9 +99,11 @@ namespace Fixi.Core.Services
                     Id = u.Id,
                     FullName = u.FullName,
                     DepartmentId = u.DepartmentId,
-                    DepartmentName = u.Department.Name,
-                    phone = u.PhoneNumber,
-                    Email = u.Email
+                    DepartmentName = u.Department!.Name,
+                    phone = u.PhoneNumber!,
+                    Email = u.Email!,
+                    Role =  _userManager.GetRolesAsync(u).Result.FirstOrDefault()!,
+
                 }).FirstAsync();
             return response;
         }
@@ -123,9 +130,10 @@ namespace Fixi.Core.Services
                     Id = u.Id,
                     FullName = u.FullName,
                     DepartmentId = u.DepartmentId,
-                    DepartmentName = u.Department.Name,
-                    phone = u.PhoneNumber,
-                    Email = u.Email
+                    DepartmentName = u.Department!.Name,
+                    phone = u.PhoneNumber!,
+                    Email = u.Email!,
+                    Role = _userManager.GetRolesAsync(u).Result.FirstOrDefault()!,
                 }).Skip(skip).Take(query.PageSize).ToListAsync();
 
             return response;
