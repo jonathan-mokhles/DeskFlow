@@ -6,10 +6,6 @@ using Fixi.Core.ServicesContracts;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Text;
-
 namespace Fixi.Core.Services
 {
     public class UserService : IUserService
@@ -44,7 +40,7 @@ namespace Fixi.Core.Services
                 Email = registerDTO.Email,
                 FullName = registerDTO.FullName,
                 DepartmentId = registerDTO.DepartmentId,
-                PhoneNumber = registerDTO.phone,
+                PhoneNumber = registerDTO.Phone,
 
             };
             var result = await _userManager.CreateAsync(newUser, registerDTO.Password);
@@ -68,10 +64,10 @@ namespace Fixi.Core.Services
 
             userToUpdate.FullName = updateDTO.FullName;
             userToUpdate.DepartmentId = updateDTO.DepartmentId;
-            userToUpdate.PhoneNumber = updateDTO.phone;
+            userToUpdate.PhoneNumber = updateDTO.Phone;
             userToUpdate.Email = updateDTO.Email;
 
-            await _userManager.RemoveFromRolesAsync(userToUpdate, _userManager.GetRolesAsync(userToUpdate).Result);
+            await _userManager.RemoveFromRolesAsync(userToUpdate, await _userManager.GetRolesAsync(userToUpdate));
             if (!await _roleManager.RoleExistsAsync(updateDTO.Role))
             {
                 throw new ValidationException("Specified role does not exist.");
@@ -93,19 +89,24 @@ namespace Fixi.Core.Services
 
         public async Task<UserResponseDTO> GetUserByIdAsync(string Id)
         {
-            var response = await _userManager.Users.Where(u => u.Id == Id)
-                .Select(u => new UserResponseDTO
-                {
-                    Id = u.Id,
-                    FullName = u.FullName,
-                    DepartmentId = u.DepartmentId,
-                    DepartmentName = u.Department!.Name,
-                    phone = u.PhoneNumber!,
-                    Email = u.Email!,
-                    Role =  _userManager.GetRolesAsync(u).Result.FirstOrDefault()!,
+            ApplicationUser? user = await _userManager.Users.Include(u => u.Department).FirstOrDefaultAsync(u => u.Id == Id);
+            if (user == null)
+            {
+                throw new NotFoundException("User not found.");
+            }
+            var roles = await _userManager.GetRolesAsync(user);
 
-                }).FirstAsync();
-            return response;
+            return new UserResponseDTO
+            {
+                Id = user.Id,
+                FullName = user.FullName,
+                DepartmentId = user.DepartmentId,
+                DepartmentName = user.Department!.Name,
+                Phone = user.PhoneNumber!,
+                Email = user.Email!,
+                Role = roles.FirstOrDefault()!,
+            };
+
         }
 
         public async Task<List<UserResponseDTO>> GetAllUsersAsync(UsersQueryParameters query)
@@ -124,19 +125,25 @@ namespace Fixi.Core.Services
             query.PageSize = Math.Min(query.PageSize, 100);
             int skip = (query.PageNumber - 1) * query.PageSize;
 
-            var response = await queryable.Skip(skip).Take(query.PageSize)
-                .Select(u => new UserResponseDTO
-                {
-                    Id = u.Id,
-                    FullName = u.FullName,
-                    DepartmentId = u.DepartmentId,
-                    DepartmentName = u.Department!.Name,
-                    phone = u.PhoneNumber!,
-                    Email = u.Email!,
-                    Role = _userManager.GetRolesAsync(u).Result.FirstOrDefault()!,
-                }).Skip(skip).Take(query.PageSize).ToListAsync();
 
-            return response;
+            var users = await queryable.Include(u => u.Department).Skip(skip).Take(query.PageSize).ToListAsync();
+            var userResponseList = new List<UserResponseDTO>();
+            foreach (var user in users)
+            {
+                var roles = await _userManager.GetRolesAsync(user);
+                userResponseList.Add(new UserResponseDTO
+                {
+                    Id = user.Id,
+                    FullName = user.FullName,
+                    DepartmentId = user.DepartmentId,
+                    DepartmentName = user.Department!.Name,
+                    Phone = user.PhoneNumber!,
+                    Email = user.Email!,
+                    Role = roles.FirstOrDefault()!,
+                });
+            }
+            return userResponseList;
         }
+
     }
 }

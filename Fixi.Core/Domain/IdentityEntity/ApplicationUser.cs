@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Text;
 
 namespace Fixi.Core.Domain.IdentityEntity
@@ -16,6 +17,8 @@ namespace Fixi.Core.Domain.IdentityEntity
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
         // Navigation property
+        [ForeignKey("DepartmentId")]
         public Department? Department { get; set; }
+
     }
 }

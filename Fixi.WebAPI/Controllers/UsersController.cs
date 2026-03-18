@@ -54,6 +54,7 @@ namespace Fixi.WebAPI.Controllers
                 return BadRequest(errorResponse);
             }
 
+            await _userService.RegisterUserAsync(registerDTO);
             _logger.LogInformation("User {Email} registered successfully", registerDTO.Email);
             return CreatedAtAction(nameof(register), new { email = registerDTO.Email });
         }
@@ -173,7 +174,7 @@ namespace Fixi.WebAPI.Controllers
         {
             if (User.IsInRole("Manager"))
             {
-                query.DepartmentId = int.Parse(User.Claims.FirstOrDefault(c => c.Type == "DepartmentId")?.Value ?? "0");
+                query.DepartmentId = int.Parse(User.Claims.FirstOrDefault(c => c.Type == "DeptId")?.Value ?? "0");
             }
             var users = await _userService.GetAllUsersAsync(query);
             return Ok(users);

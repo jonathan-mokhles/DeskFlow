@@ -15,7 +15,7 @@ namespace Fixi.Core.DTOs.UsersDTOs
 
         [Required]
         [Phone]
-        public string phone { get; set; } = string.Empty;
+        public string Phone { get; set; } = string.Empty;
 
         [Required]
         [EmailAddress]

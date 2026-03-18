@@ -51,7 +51,7 @@ builder.Services.AddAuthorization( options =>
      {
          options.AddPolicy("AdminOrManager", policy => policy.RequireRole("Manager","Admin"));
          options.AddPolicy("AdminOnly", policy => policy.RequireRole("Admin"));
-         options.AddPolicy("ManagerOrTechnician", policy => policy.RequireRole("Manader", "Technician"));
+         options.AddPolicy("ManagerOrTechnician", policy => policy.RequireRole("Manager", "Technician"));
 
          options.AddPolicy("ManagerOrReporterOrAssignedTo", policy =>
              policy.Requirements.Add(new ManagerOrReporterOrAssignedToRequirement()));
@@ -66,6 +66,7 @@ builder.Services.AddScoped<IAuthorizationHandler,ManagerOrAdminHandler >();
 
 builder.Services.AddScoped<IJwtService, JwtService>();
 builder.Services.AddScoped<ITicketService, TicketService>();
+builder.Services.AddScoped<IUserService, UserService>();
 
 
 builder.Services.AddScoped<ITicketRepository, TicketRepository>();
