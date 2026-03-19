@@ -32,6 +32,15 @@ namespace Fixi.WebAPI.Controllers
         [ProducesErrorResponseType(typeof(ApiErrorResponse))]
         public async Task<ActionResult> CreateTicket(CreateTicketDTO createTicketDTO)
         {
+            if(!ModelState.IsValid)
+            {
+                return BadRequest(new ApiErrorResponse
+                {
+                    Message = "Invalid input data.",
+                    Errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage).ToList(),
+                    TraceId = HttpContext.TraceIdentifier
+                });
+            }
             Ticket createdTicket = await _ticketService.CreateTicketAsync(createTicketDTO);
             return CreatedAtAction(nameof(GetTicketById), new { id = createdTicket.Id }, createdTicket);
         }
