@@ -67,11 +67,16 @@ builder.Services.AddScoped<IAuthorizationHandler,ManagerOrAdminHandler >();
 builder.Services.AddScoped<IJwtService, JwtService>();
 builder.Services.AddScoped<ITicketService, TicketService>();
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<ICategoryService, CategoryService>();
+builder.Services.AddScoped<IDepartmentService, DepartmentService>();
+builder.Services.AddScoped<ISLAService, SLAService>();
 
 
 builder.Services.AddScoped<ITicketRepository, TicketRepository>();
 builder.Services.AddScoped<ITicketAuditLogRepository, TicketAuditLogRepository>();
 builder.Services.AddScoped<ISLASettingRepository, SLASettingRepository>();
+builder.Services.AddScoped<ICategoryRepository,CategoryRepository >();
+builder.Services.AddScoped<IDepartmentRepository, DepartmentRopository>();
 
 
 

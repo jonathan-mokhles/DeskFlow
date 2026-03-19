@@ -1,20 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 using System.Text;
-using Fixi.Core.Domain.IdentityEntity;
 
-namespace Fixi.Core.Domain.Entity
+namespace Fixi.Core.DTOs.CategoryDTOs
 {
-    public class Department
+    public class CreateCategoryDTO
     {
-        [Key]
-        public int Id { get; set; }
-
         [Required]
         [MaxLength(100)]
         public string Name { get; set; } = string.Empty;
 
+        [MaxLength(500)]
+        public string? Description { get; set; }
+
+        [Required]
+        public int DepartmentId { get; set; }
     }
 }

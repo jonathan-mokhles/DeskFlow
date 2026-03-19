@@ -1,4 +1,5 @@
 ﻿using Fixi.Core.Domain.Entity;
+using Fixi.Core.DTOs.CategoryDTOs;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -7,12 +8,10 @@ namespace Fixi.Core.Domain.Repositories_Contracts
 {
     public interface ICategoryRepository
     {
-        // Basic CRUD
-        Task<Category?> GetByticketIdAsync(int ticketId);
         Task<IEnumerable<Category>> GetAllAsync();
-        Task<Category> CreateAsync(Category category);
+        Task CreateAsync(Category category);
         Task UpdateAsync(Category category);
-        Task DeleteAsync(int ticketId);
+        Task DeleteAsync(int Id);
 
     }
 }
