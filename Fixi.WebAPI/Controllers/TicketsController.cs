@@ -176,6 +176,7 @@ namespace Fixi.WebAPI.Controllers
                     TraceId = HttpContext.TraceIdentifier
                 });
             }
+
             var authorizationResult = await _authorizationService.AuthorizeAsync(User, ticket.DepartmentId, "ManagerOrAdmin");
             if(!authorizationResult.Succeeded)
             {

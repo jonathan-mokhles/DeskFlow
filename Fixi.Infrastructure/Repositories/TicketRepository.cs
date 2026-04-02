@@ -157,7 +157,9 @@ namespace Fixi.Infrastructure.Repositories
 
         public async Task<IEnumerable<TicketAuditHistoryDTO>> GetTicketHisoryAsync(int ticketId)
         {
-            return await _db.TicketAuditLog.Where(a => a.TicketId == ticketId).Select(a => new TicketAuditHistoryDTO
+            return await _db.TicketAuditLog
+                .Where(a => a.TicketId == ticketId)
+                .Select(a => new TicketAuditHistoryDTO
             {
                 ChangeType = a.ChangeType,
                 OldValue = a.OldValue,
