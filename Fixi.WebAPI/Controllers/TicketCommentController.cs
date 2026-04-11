@@ -9,6 +9,9 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Fixi.WebAPI.Controllers
 {
+    /// <summary>
+    /// for managing comments related to tickets.
+    /// </summary>
     [Route("api/tickets/{ticketId}/comments")]
     [ApiController]
     public class TicketCommentController : ControllerBase
@@ -25,9 +28,19 @@ namespace Fixi.WebAPI.Controllers
             _authorizationService = authorizationService;
         }
 
-        [HttpPost]
-        [ProducesErrorResponseType(typeof(ApiErrorResponse))]
+        /// <summary>
+        /// Adds a new comment to the specified ticket.
+        /// </summary>
+        /// <remarks>Admin, Depatment Manger, Assigned technician and Reported User only can comment</remarks>
+        /// <param name="ticketId">The unique identifier of the ticket to which the comment will be added.</param>
+        /// <param name="comment">The data for the comment to add, including content and associated ticket information. Must not be null, and
+        /// the TicketId property must match the ticketId parameter.</param>
+       
         [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiErrorResponse), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ApiErrorResponse), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(ApiErrorResponse), StatusCodes.Status403Forbidden)]
+        [HttpPost]
         public async Task<IActionResult> AddComment(int ticketId, CommentCreateDTO comment)
         {
             TicketDTO? ticket = await _ticketRepository.GetTicketAsync(ticketId);
@@ -43,10 +56,10 @@ namespace Fixi.WebAPI.Controllers
             var result = await _authorizationService.AuthorizeAsync(User, ticket, "ManagerOrReporterOrAssignedTo");
             if (!result.Succeeded)
             {
-                return Unauthorized(new ApiErrorResponse
+                return StatusCode(StatusCodes.Status403Forbidden, new ApiErrorResponse
                 {
                     Message = "You do not have permission to add comment.",
-                    Errors = new List<string> { "Unauthorized access." },
+                    Errors = new List<string> { "Forbidden access." },
                     TraceId = HttpContext.TraceIdentifier
                 });
             }
@@ -76,10 +89,16 @@ namespace Fixi.WebAPI.Controllers
             return Ok();
         }
 
-
+        /// <summary>
+        /// Retrive all comments related to a specific ticket by providing the ticket's unique identifier.
+        /// </summary>
+        /// <remarks>Admin, Depatment Manger, Assigned technician and Reported User only can access the comments of the ticket</remarks>
+        /// <param name="ticketId"></param>
+        /// <returns></returns>
         [HttpGet]
         [ProducesResponseType(typeof(List<CommentResponseDTO>),StatusCodes.Status200OK)]
-        [ProducesErrorResponseType(typeof(ApiErrorResponse))]
+        [ProducesResponseType(typeof(ApiErrorResponse), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(ApiErrorResponse), StatusCodes.Status403Forbidden)]
         public async Task<IActionResult> GetComments(int ticketId)
         {
             TicketDTO? ticket = await _ticketRepository.GetTicketAsync(ticketId);
@@ -95,59 +114,51 @@ namespace Fixi.WebAPI.Controllers
             var result = await _authorizationService.AuthorizeAsync(User, ticket, "ManagerOrReporterOrAssignedTo");
             if (!result.Succeeded)
             {
-                return Unauthorized(new ApiErrorResponse
+                return StatusCode(StatusCodes.Status403Forbidden, new ApiErrorResponse
                 {
                     Message = "You do not have permission to add comment.",
                     Errors = new List<string> { "Unauthorized access." },
                     TraceId = HttpContext.TraceIdentifier
                 });
             }
-
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(new ApiErrorResponse
-                {
-                    Errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage).ToList(),
-                    Message = "Invalid comment data",
-                    TraceId = HttpContext.TraceIdentifier,
-
-                });
-            }
-
-
             var tickets = await _CommentsService.GetCommentsForTicketAsync(ticketId);
 
             return  Ok(tickets);
         }
 
-
+        /// <summary>
+        /// Delete a comment from a ticket by providing the ticket's unique identifier and the comment's unique identifier.
+        /// </summary>
+        /// <remarks>Only the comment's author or an admin can delete a comment.</remarks>
+        /// <param name="commentId"></param>
+        /// <returns></returns>
         [HttpDelete("{commentId}")]
-        [ProducesErrorResponseType(typeof(ApiErrorResponse))]
+        [ProducesResponseType(typeof(ApiErrorResponse), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(ApiErrorResponse), StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<IActionResult> DeleteComment(int ticketId, int commentId)
+        public async Task<IActionResult> DeleteComment(int commentId)
         {
-            TicketDTO? ticket = await _ticketRepository.GetTicketAsync(ticketId);
-            if (ticket is null)
+            string userId = User.Claims.FirstOrDefault(c => c.Type == "UserID")?.Value ?? string.Empty;
+            CommentResponseDTO? comment = await _CommentsService.GetCommentByIdAsync(commentId);
+            if(comment is null)
             {
                 return NotFound(new ApiErrorResponse
                 {
-                    Message = "Ticket not found.",
-                    Errors = new List<string> { "No ticket with the specified ID." },
+                    Message = "Comment not found.",
+                    Errors = new List<string> { "No comment with the specified ID." },
                     TraceId = HttpContext.TraceIdentifier
                 });
             }
-            var result = await _authorizationService.AuthorizeAsync(User, ticket, "ManagerOrReporterOrAssignedTo");
-            if (!result.Succeeded)
+
+            if (comment.UserID != userId )
             {
-                return Unauthorized(new ApiErrorResponse
+                return StatusCode(StatusCodes.Status403Forbidden, new ApiErrorResponse
                 {
                     Message = "You do not have permission to delete comment.",
                     Errors = new List<string> { "Unauthorized access." },
                     TraceId = HttpContext.TraceIdentifier
                 });
             }
-
-
 
             await _CommentsService.DeleteCommentFromTicketAsync(commentId);
             return Ok();

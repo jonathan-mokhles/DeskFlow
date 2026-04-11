@@ -18,6 +18,21 @@ namespace Fixi.Infrastructure.Repositories
             _db = db;
         }
 
+        public async Task<CommentResponseDTO?> GetCommentByIdAsync(int commentId)
+        {
+            return await _db.TicketComments.Where(c => c.Id == commentId)
+                .Select(c => new CommentResponseDTO
+                {
+                    Id = c.Id,
+                    TicketId = c.TicketId,
+                    UserName = c.User.UserName!,
+                    CommentText = c.CommentText,
+                    IsInternal = c.IsInternal,
+                    CreatedDate = c.CreatedDate,
+                    UserID = c.UserId
+                }).FirstOrDefaultAsync();
+        }
+
         public async Task CreateAsync(TicketComment comment)
         {
             await _db.AddAsync(comment);
@@ -40,7 +55,8 @@ namespace Fixi.Infrastructure.Repositories
                     UserName = c.User.UserName!,
                     CommentText = c.CommentText,
                     IsInternal = c.IsInternal,
-                    CreatedDate = c.CreatedDate
+                    CreatedDate = c.CreatedDate,
+                    UserID = c.UserId
                 }).ToListAsync();
         }
     }

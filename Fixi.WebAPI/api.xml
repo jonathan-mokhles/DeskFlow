@@ -1,0 +1,330 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Fixi.WebAPI</name>
+    </assembly>
+    <members>
+        <member name="M:Fixi.WebAPI.Controllers.AuthController.login(Fixi.Core.DTOs.AccountDTOs.LoginDTO)">
+            <summary>
+            Handles user login
+            </summary>
+            <param name="loginDTO">The login data transfer object containing the user's email and password.</param>
+        </member>
+        <member name="M:Fixi.WebAPI.Controllers.AuthController.refreshToken(Fixi.Core.DTOs.AccountDTOs.RefreshTokenRequestDTO)">
+            <summary>
+            refreshes the access token using a valid refresh token.
+            </summary>
+            <remarks>The client must provide both the expired access token and a valid refresh token. If the refresh token is invalid, expired
+            , or does not match the user, the request will be rejected.</remarks>
+            <param name="request">The refresh token request containing the expired access token and the associated refresh token.</param>
+            <returns> Return the new access token and refresh token if successful</returns>
+        </member>
+        <member name="M:Fixi.WebAPI.Controllers.AuthController.resetPassword(Fixi.Core.DTOs.AccountDTOs.ResetPasswordRequestDTO)">
+            <summary>
+            Resets the password for a user identified by the provided email address.
+            </summary>
+            <param name="passwordRequest">An object containing the user's email address, current password, and new password.</param>
+            <returns>An HTTP 200 OK response if the password is successfully reset</returns>
+        </member>
+        <member name="T:Fixi.WebAPI.Controllers.CategoryController">
+            <summary>
+            Represents an API controller that manages category resources.</summary>
+            <remarks>Access to this controller is restricted to users with the AdminOnly policy.</remarks>
+        </member>
+        <member name="M:Fixi.WebAPI.Controllers.CategoryController.GetAllCategories">
+            <summary>
+            Retrieves all categories.
+            </summary>
+            <returns>A list of category response DTOs.</returns>
+        </member>
+        <member name="M:Fixi.WebAPI.Controllers.CategoryController.CreateCategory(Fixi.Core.DTOs.CategoryDTOs.CreateCategoryDTO)">
+            <summary>
+            Create new category
+            </summary>
+            <param name="category"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Fixi.WebAPI.Controllers.CategoryController.UpdateCategory(System.Int32,Fixi.Core.DTOs.CategoryDTOs.UpdateCategoryDTO)">
+            <summary>
+            Update category by id
+            </summary>
+            <param name="id"> Category Id</param>
+            <param name="category">Category data to update</param>
+            <returns></returns>
+        </member>
+        <member name="M:Fixi.WebAPI.Controllers.CategoryController.DeleteCategory(System.Int32)">
+            <summary>
+            Delete category by id
+            </summary>
+            <param name="id">Category Id</param>
+            <returns></returns>
+        </member>
+        <member name="T:Fixi.WebAPI.Controllers.DepartmentController">
+            <summary>
+            Represents an API controller that manages department resources.
+            </summary>
+            <remarks>Access to this controller is restricted to users with the AdminOnly policy</remarks>
+        </member>
+        <member name="M:Fixi.WebAPI.Controllers.DepartmentController.GetAllDepartments">
+            <summary>
+            Retrive all the departments
+            </summary>
+            <returns>list of departments</returns>
+        </member>
+        <member name="M:Fixi.WebAPI.Controllers.DepartmentController.DeleteDepartment(System.Int32)">
+            <summary>
+            Deletes the department with Id.
+            </summary>
+            <param name="id">The Id of the department to delete.</param>
+            <returns>An HTTP 204 No Content response if the department was successfully deleted.</returns>
+        </member>
+        <member name="M:Fixi.WebAPI.Controllers.DepartmentController.AddDepartment(System.String)">
+            <summary>
+            Creates a new department with the specified name.
+            </summary>
+            <param name="name">The name of the department to create. Cannot be null or empty.</param>
+        </member>
+        <member name="T:Fixi.WebAPI.Controllers.SLAController">
+            <summary>
+            Provides API endpoints for managing Service Level Agreement (SLA) resources. 
+            </summary>
+            <remarks> Access to these endpoints is restricted to users with the AdminOnly policy.</remarks>
+        </member>
+        <member name="M:Fixi.WebAPI.Controllers.SLAController.CreateSLA(Fixi.Core.DTOs.SLADTOs.SLACreateDTO)">
+            <summary>
+            Create new SLA 
+            </summary>
+            <param name="createDTO"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Fixi.WebAPI.Controllers.SLAController.GetAllSLA">
+            <summary>
+            Retrieves all service level agreements (SLAs).
+            </summary>
+        </member>
+        <member name="M:Fixi.WebAPI.Controllers.SLAController.GetSLAById(System.Int32)">
+            <summary>
+            Retrieves a specific service level agreement (SLA) by its Id.
+            </summary>
+            <param name="id"> SLA Id</param>
+        </member>
+        <member name="M:Fixi.WebAPI.Controllers.SLAController.UpdateSLA(System.Int32,Fixi.Core.Domain.Entity.SLASetting)">
+            <summary>
+            Updates the specified SLA setting with new values.
+            </summary>
+            <param name="id">The unique identifier of the SLA setting to update. Must match the Id property of the provided SLA setting.</param>
+            <param name="sLA">The updated SLA setting values. The Id property must match the id parameter.</param>
+        </member>
+        <member name="M:Fixi.WebAPI.Controllers.SLAController.DeleteSLA(System.Int32)">
+            <summary>
+            Delete SLA by its Id
+            </summary>
+            <param name="id"> SLA Id</param>
+            <returns></returns>
+        </member>
+        <member name="T:Fixi.WebAPI.Controllers.TicketCommentController">
+            <summary>
+            for managing comments related to tickets.
+            </summary>
+        </member>
+        <member name="M:Fixi.WebAPI.Controllers.TicketCommentController.AddComment(System.Int32,Fixi.Core.DTOs.CommentDTOs.CommentCreateDTO)">
+            <summary>
+            Adds a new comment to the specified ticket.
+            </summary>
+            <remarks>Admin, Depatment Manger, Assigned technician and Reported User only can comment</remarks>
+            <param name="ticketId">The unique identifier of the ticket to which the comment will be added.</param>
+            <param name="comment">The data for the comment to add, including content and associated ticket information. Must not be null, and
+            the TicketId property must match the ticketId parameter.</param>
+        </member>
+        <member name="M:Fixi.WebAPI.Controllers.TicketCommentController.GetComments(System.Int32)">
+            <summary>
+            Retrive all comments related to a specific ticket by providing the ticket's unique identifier.
+            </summary>
+            <remarks>Admin, Depatment Manger, Assigned technician and Reported User only can access the comments of the ticket</remarks>
+            <param name="ticketId"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Fixi.WebAPI.Controllers.TicketCommentController.DeleteComment(System.Int32)">
+            <summary>
+            Delete a comment from a ticket by providing the ticket's unique identifier and the comment's unique identifier.
+            </summary>
+            <remarks>Only the comment's author or an admin can delete a comment.</remarks>
+            <param name="commentId"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Fixi.WebAPI.Controllers.TicketsController.CreateTicket(Fixi.Core.DTOs.TicketDTOs.CreateTicketDTO)">
+            <summary>
+            open new ticket.
+            </summary>
+            <param name="createTicketDTO"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Fixi.WebAPI.Controllers.TicketsController.GetTicketById(System.Int32)">
+            <summary>
+            Retrive ticket by Id.
+            </summary>
+            <remarks> Only the reporter, assigned technician, manager of the department or admin can access the ticket details.</remarks>
+            <param name="id"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Fixi.WebAPI.Controllers.TicketsController.GetAllTickets(Fixi.Core.DTOs.TicketDTOs.TicketQueryParams)">
+            <summary>
+            Retrives all tickets with pagination and optional filtering by status, priority, department, category, reporter or assigned technician.
+            </summary>
+            <param name="queryParams">The query parameters for filtering and pagination.</param>
+            <returns>A list of tickets matching the specified criteria.</returns>
+        </member>
+        <member name="M:Fixi.WebAPI.Controllers.TicketsController.UpdateTicket(System.Int32,Fixi.Core.DTOs.TicketDTOs.UpdateTicketDTO)">
+            <summary>
+            Udpate all ticket details except status, assigned technician and priority.
+            </summary>
+            <remarks> Only the reporter, assigned technician, manager of the department or admin can update the ticket details.</remarks>
+            <param name="id">The unique identifier of the ticket to update. Cannot be null or empty.</param>
+            <param name="updateTicketDTO">An object containing the updated ticket details. All fields are required.</param>
+            <returns>A 204 No Content response if the ticket is updated successfully; otherwise, a 400 Bad Request response containing error details.</returns>
+        </member>
+        <member name="M:Fixi.WebAPI.Controllers.TicketsController.UpdateTicketStatus(System.Int32,System.Int32)">
+            <summary>
+            Updates the status of the specified ticket to a new value.
+            </summary>
+            <remarks>This operation requires the caller to have appropriate permissions to modify the
+            ticket. </remarks>
+            <param name="ticketId">The unique identifier of the ticket to update.</param>
+            <param name="newStatus">The new status value to assign to the ticket. Must be an integer between 0 and 6, inclusive.</param>
+            <returns>A result indicating the outcome of the operation. Returns 204 No Content if the update is successful, or 400
+            Bad Request if the new status value is invalid.</returns>
+        </member>
+        <member name="M:Fixi.WebAPI.Controllers.TicketsController.AssignTechnician(System.Int32,System.String)">
+            <summary>
+            Assigns a technician to the specified support ticket.
+            </summary>
+            <remarks>This action requires the caller to have the ManagerOrTechnician authorization policy.</remarks>
+            <param name="ticketId">The unique identifier of the support ticket to which the technician will be assigned.</param>
+            <param name="newTechnicianId">The unique identifier of the technician to assign to the ticket. Cannot be null or empty.</param>
+            <returns>A result indicating the outcome of the operation. Returns a 204 No Content response if the assignment is
+            successful.</returns>
+        </member>
+        <member name="M:Fixi.WebAPI.Controllers.TicketsController.UpdateTicketPriority(System.Int32,System.Int32)">
+            <summary>
+            Updates the priority of the specified ticket.
+            </summary>
+            <param name="ticketId">The unique identifier of the ticket to update.</param>
+            <param name="newPriority">The new priority value to assign to the ticket. Must be an integer between 1 and 3, inclusive.</param>
+            <returns>A result indicating the outcome of the operation. Returns 204 No Content if the update is successful, or 400
+            Bad Request if the new priority value is invalid.</returns>
+        </member>
+        <member name="M:Fixi.WebAPI.Controllers.TicketsController.DeleteTicket(System.Int32)">
+            <summary>
+            delete ticket of specidied Id
+            </summary>
+            <remarks>Admin only can delete tickets.</remarks>
+            <param name="id">The unique identifier of the ticket to delete.</param>
+            <returns>A result indicating the outcome of the operation. Returns 204 No Content if the deletion is successful, or 400 Bad Request if the ticket cannot be deleted.</returns>
+        </member>
+        <member name="M:Fixi.WebAPI.Controllers.TicketsController.GetTicketHistory(System.Int32)">
+            <summary>
+            Retrieves the audit history for a specified ticket.
+            </summary>
+            <remarks>Returns a 404 response if the ticket does not exist, or a 401 response if the caller
+            does not have permission to view the ticket's history.</remarks>
+            <param name="ticketId">The unique identifier of the ticket for which to retrieve the audit history. Must be a valid ticket ID.</param>
+            <returns>An <see cref="T:Microsoft.AspNetCore.Mvc.ActionResult`1"/> containing a collection of <see cref="T:Fixi.Core.DTOs.TicketDTOs.TicketAuditHistoryDTO"/> objects
+            representing the ticket's audit history if found and authorized; otherwise, an error response indicating the
+            reason for failure.</returns>
+        </member>
+        <member name="M:Fixi.WebAPI.Controllers.UsersController.register(Fixi.Core.DTOs.UsersDTOs.RegisterUserDTO)">
+            <summary>
+            Registers a new user account with the specified registration details. Accessible only to users in the Admin
+            role.
+            </summary>
+            <remarks>This action requires authentication and is restricted to users with the Admin role.</remarks>
+            <param name="registerDTO">An object containing the registration information for the new user, including email, full name, department,
+            phone number, and password. All fields are required.</param>
+            <returns>A 201 Created result if the user is successfully registered; otherwise, a 400 Bad Request result containing
+            validation errors or identity errors.</returns>
+        </member>
+        <member name="M:Fixi.WebAPI.Controllers.UsersController.UpdateUser(System.String,Fixi.Core.DTOs.UsersDTOs.UpdateUserDTO)">
+            <summary>
+            Update user deatails
+            </summary>
+            <remarks>Accessible only for Admin users.</remarks>
+            <param name="id"></param>
+            <param name="updateDTO"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Fixi.WebAPI.Controllers.UsersController.DeleteUser(System.String)">
+            <summary>
+            Deletes the user with the specified identifier.
+            </summary>
+            <remarks>Accissable only for admin role.</remarks>
+            <param name="id">The unique identifier of the user to delete. Cannot be null or empty.</param>
+            <returns>A 204 No Content response if the user is deleted successfully; otherwise, a 400 Bad Request response
+            containing error details.</returns>
+        </member>
+        <member name="M:Fixi.WebAPI.Controllers.UsersController.GetUserById(System.String)">
+            <summary>
+            Get user deatails by id.
+            </summary>
+            <remarks>Accessible for Admin, Manager and the user himself. Managers can only access users in their department.</remarks>
+            <param name="id">The unique identifier of the user to retrieve. Cannot be null or empty.</param>
+            <returns>A 200 OK response containing the user details if found; otherwise, a 404 Not Found response.</returns>
+        </member>
+        <member name="M:Fixi.WebAPI.Controllers.UsersController.GetAllUsers(Fixi.Core.DTOs.UsersDTOs.UsersQueryParameters)">
+            <summary>
+            Retrives a list of users based on the specified query parameter.
+            </summary>
+            <remarks>Accessible for Admin and Manager roles. Managers can only access users in their department.</remarks>
+            <param name="query">The query parameters for filtering and pagination.</param>
+            <returns>A 200 OK response containing the list of users if found; otherwise, a 404 Not Found response.</returns>
+        </member>
+        <member name="T:Program">
+            <summary>
+            Auto-generated public partial Program class for top-level statement apps.
+            </summary>
+        </member>
+        <member name="M:Microsoft.AspNetCore.OpenApi.Generated.DocumentationCommentIdHelper.CreateDocumentationId(System.Type)">
+            <summary>
+            Generates a documentation comment ID for a type.
+            Example: T:Namespace.Outer+Inner`1 becomes T:Namespace.Outer.Inner`1
+            </summary>
+        </member>
+        <member name="M:Microsoft.AspNetCore.OpenApi.Generated.DocumentationCommentIdHelper.CreateDocumentationId(System.Reflection.PropertyInfo)">
+            <summary>
+            Generates a documentation comment ID for a property.
+            Example: P:Namespace.ContainingType.PropertyName or for an indexer P:Namespace.ContainingType.Item(System.Int32)
+            </summary>
+        </member>
+        <member name="M:Microsoft.AspNetCore.OpenApi.Generated.DocumentationCommentIdHelper.CreateDocumentationId(System.Type,System.String)">
+            <summary>
+            Generates a documentation comment ID for a property given its container type and property name.
+            Example: P:Namespace.ContainingType.PropertyName
+            </summary>
+        </member>
+        <member name="M:Microsoft.AspNetCore.OpenApi.Generated.DocumentationCommentIdHelper.CreateDocumentationId(System.Reflection.MethodInfo)">
+            <summary>
+            Generates a documentation comment ID for a method (or constructor).
+            For example:
+              M:Namespace.ContainingType.MethodName(ParamType1,ParamType2)~ReturnType
+              M:Namespace.ContainingType.#ctor(ParamType)
+            </summary>
+        </member>
+        <member name="M:Microsoft.AspNetCore.OpenApi.Generated.DocumentationCommentIdHelper.GetTypeDocId(System.Type,System.Boolean,System.Boolean)">
+            <summary>
+            Generates a documentation ID string for a type.
+            This method handles nested types (replacing '+' with '.'),
+            generic types, arrays, pointers, by-ref types, and generic parameters.
+            The <paramref name="includeGenericArguments"/> flag controls whether
+            constructed generic type arguments are emitted, while <paramref name="omitGenericArity"/>
+            controls whether the generic arity marker (e.g. "`1") is appended.
+            </summary>
+        </member>
+        <member name="M:Microsoft.AspNetCore.OpenApi.Generated.DocumentationCommentIdHelper.NormalizeDocId(System.String)">
+            <summary>
+            Normalizes a documentation comment ID to match the compiler-style format.
+            Strips the return type suffix for ordinary methods but retains it for conversion operators.
+            </summary>
+            <param name="docId">The documentation comment ID to normalize.</param>
+            <returns>The normalized documentation comment ID.</returns>
+        </member>
+    </members>
+</doc>

@@ -10,6 +10,8 @@ namespace Fixi.Core.ServicesContracts
         public Task AddCommentToTicketAsync(CommentCreateDTO comment);
         public Task DeleteCommentFromTicketAsync(int commentId);
 
+        public Task<CommentResponseDTO?> GetCommentByIdAsync(int commentId);
+
         public Task<IEnumerable<CommentResponseDTO>> GetCommentsForTicketAsync(int ticketId);
     }
 }

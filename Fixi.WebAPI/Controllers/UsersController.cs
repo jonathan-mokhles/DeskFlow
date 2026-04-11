@@ -30,9 +30,7 @@ namespace Fixi.WebAPI.Controllers
         /// Registers a new user account with the specified registration details. Accessible only to users in the Admin
         /// role.
         /// </summary>
-        /// <remarks>This action requires authentication and is restricted to users with the Admin role.
-        /// The user is assigned to a role upon successful registration. The request body must provide valid
-        /// registration data; otherwise, the request will fail validation.</remarks>
+        /// <remarks>This action requires authentication and is restricted to users with the Admin role.</remarks>
         /// <param name="registerDTO">An object containing the registration information for the new user, including email, full name, department,
         /// phone number, and password. All fields are required.</param>
         /// <returns>A 201 Created result if the user is successfully registered; otherwise, a 400 Bad Request result containing
@@ -40,7 +38,7 @@ namespace Fixi.WebAPI.Controllers
         [HttpPost]
         [Authorize(policy: "AdminOnly")]
         [ProducesResponseType(StatusCodes.Status201Created)]
-        [ProducesErrorResponseType(typeof(ApiErrorResponse))]
+        [ProducesResponseType(typeof(ApiErrorResponse), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> register(RegisterUserDTO registerDTO)
         {
             if (!ModelState.IsValid)
@@ -59,11 +57,17 @@ namespace Fixi.WebAPI.Controllers
             return CreatedAtAction(nameof(register), new { email = registerDTO.Email });
         }
 
-
+        /// <summary>
+        /// Update user deatails
+        /// </summary>
+        /// <remarks>Accessible only for Admin users.</remarks>
+        /// <param name="id"></param>
+        /// <param name="updateDTO"></param>
+        /// <returns></returns>
         [HttpPut("{id}")]
         [Authorize(policy: "AdminOnly")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
-        [ProducesErrorResponseType(typeof(ApiErrorResponse))]
+        [ProducesResponseType(typeof(ApiErrorResponse), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> UpdateUser(string id, UpdateUserDTO updateDTO)
         {
             if (!ModelState.IsValid)
@@ -104,11 +108,17 @@ namespace Fixi.WebAPI.Controllers
             return NoContent();
         }
 
-
+        /// <summary>
+        /// Deletes the user with the specified identifier.
+        /// </summary>
+        /// <remarks>Accissable only for admin role.</remarks>
+        /// <param name="id">The unique identifier of the user to delete. Cannot be null or empty.</param>
+        /// <returns>A 204 No Content response if the user is deleted successfully; otherwise, a 400 Bad Request response
+        /// containing error details.</returns>
         [HttpDelete("{id}")]
         [Authorize(policy: "AdminOnly")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
-        [ProducesErrorResponseType(typeof(ApiErrorResponse))]
+        [ProducesResponseType(typeof(ApiErrorResponse), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> DeleteUser(string id)
         {
             var result = await _userService.DeleteUserAsync(id);
@@ -128,9 +138,17 @@ namespace Fixi.WebAPI.Controllers
             return NoContent();
         }
 
+        /// <summary>
+        /// Get user deatails by id.
+        /// </summary>
+        /// <remarks>Accessible for Admin, Manager and the user himself. Managers can only access users in their department.</remarks>
+        /// <param name="id">The unique identifier of the user to retrieve. Cannot be null or empty.</param>
+        /// <returns>A 200 OK response containing the user details if found; otherwise, a 404 Not Found response.</returns>
         [HttpGet("{id}")]
         [ProducesResponseType(typeof(UserResponseDTO), StatusCodes.Status200OK)]
-        [ProducesErrorResponseType(typeof(ApiErrorResponse))]
+        [ProducesResponseType(typeof(ApiErrorResponse), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ApiErrorResponse), StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(typeof(ApiErrorResponse), StatusCodes.Status404NotFound)]
         public async Task<IActionResult> GetUserById(string id)
         {
             var user = await _userService.GetUserByIdAsync(id);
@@ -160,16 +178,22 @@ namespace Fixi.WebAPI.Controllers
                     Errors = new List<string> { "You do not have permission to access this user's information." },
                     TraceId = HttpContext.TraceIdentifier
                 };
-                return Unauthorized(errorResponse);
+                return StatusCode(StatusCodes.Status403Forbidden, errorResponse);
+
             }
 
         }
 
 
+        /// <summary>
+        /// Retrives a list of users based on the specified query parameter.
+        /// </summary>
+        /// <remarks>Accessible for Admin and Manager roles. Managers can only access users in their department.</remarks>
+        /// <param name="query">The query parameters for filtering and pagination.</param>
+        /// <returns>A 200 OK response containing the list of users if found; otherwise, a 404 Not Found response.</returns>
         [HttpGet]
         [Authorize(policy: "AdminOrManager")]
         [ProducesResponseType(typeof(List<UserResponseDTO>), StatusCodes.Status200OK)]
-        [ProducesErrorResponseType(typeof(ApiErrorResponse))]
         public async Task<IActionResult> GetAllUsers([FromQuery] UsersQueryParameters query)
         {
             if (User.IsInRole("Manager"))

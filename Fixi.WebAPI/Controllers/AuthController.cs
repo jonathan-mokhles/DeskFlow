@@ -32,25 +32,19 @@ namespace Fixi.WebAPI.Controllers
 
 
         /// <summary>
-        /// Authenticates a user with the provided credentials and returns a JWT token if successful.
+        /// Handles user login
         /// </summary>
-        /// <remarks>This endpoint does not require authentication. The response includes a JWT token on
-        /// successful authentication, which can be used for subsequent authorized requests. Returns HTTP 401 if the
-        /// credentials are invalid, or HTTP 400 if the input model is invalid.</remarks>
-        /// <param name="loginDTO">The login credentials, including email and password, used to authenticate the user. Cannot be null. The
-        /// model must be valid.</param>
-        /// <returns>An <see cref="OkObjectResult"/> containing an <see cref="AuthResponseDTO"/> with the authentication token if
-        /// the credentials are valid; otherwise, an <see cref="UnauthorizedObjectResult"/> indicating invalid
-        /// credentials or a <see cref="BadRequestObjectResult"/> if the input model is invalid.</returns>
+        /// <param name="loginDTO">The login data transfer object containing the user's email and password.</param>
         [HttpPost("login")]
         [AllowAnonymous]
         [ProducesResponseType(typeof(AuthResponseDTO), StatusCodes.Status200OK)]
-        [ProducesErrorResponseType(typeof(ApiErrorResponse))]
+        [ProducesResponseType(typeof(ApiErrorResponse), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ApiErrorResponse), StatusCodes.Status401Unauthorized)]
         public async Task<IActionResult> login(LoginDTO loginDTO)
         {
             if (!ModelState.IsValid)
             {
-                    ApiErrorResponse errorResponse = new ApiErrorResponse
+                ApiErrorResponse errorResponse = new ApiErrorResponse
                     {
                         Message = "Invalid login data",
                         Errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage).ToList(),
@@ -67,10 +61,11 @@ namespace Fixi.WebAPI.Controllers
                 _logger.LogWarning("Failed login attempt for email: {Email}", loginDTO.Email);
                 return Unauthorized(new ApiErrorResponse
                 {
-                    Message = "Invalid credentials",
-                    Errors = new List<string> { "Email or password is incorrect." },
+                    Message = "Invalid email or password",
+                    Errors = new List<string> { "The provided email or password is incorrect." },
                     TraceId = HttpContext.TraceIdentifier
                 });
+
             }
 
             AuthResponseDTO authResponse = await _jwt.GenerateToken(user);
@@ -82,20 +77,16 @@ namespace Fixi.WebAPI.Controllers
 
 
         /// <summary>
-        /// Handles a request to refresh a JWT access token using a valid refresh token.
+        /// refreshes the access token using a valid refresh token.
         /// </summary>
-        /// <remarks>This endpoint does not require authentication. The client must provide both the
-        /// expired access token and a valid refresh token. If the refresh token is invalid, expired, or does not match
-        /// the user, the request will be rejected.</remarks>
-        /// <param name="request">The refresh token request containing the expired access token and the associated refresh token. Must not be
-        /// null and must contain valid token values.</param>
-        /// <returns>An <see cref="IActionResult"/> that represents the result of the refresh operation. Returns a 200 OK
-        /// response with a new access token and refresh token if successful; otherwise, returns a 400 Bad Request
-        /// response with an error message.</returns>
+        /// <remarks>The client must provide both the expired access token and a valid refresh token. If the refresh token is invalid, expired
+        /// , or does not match the user, the request will be rejected.</remarks>
+        /// <param name="request">The refresh token request containing the expired access token and the associated refresh token.</param>
+        /// <returns> Return the new access token and refresh token if successful</returns>
         [HttpPost("refresh-token")]
         [AllowAnonymous]
         [ProducesResponseType(typeof(AuthResponseDTO), StatusCodes.Status200OK)]
-        [ProducesErrorResponseType(typeof(ApiErrorResponse))]
+        [ProducesResponseType(typeof(ApiErrorResponse), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> refreshToken(RefreshTokenRequestDTO request)
         {
             if (!ModelState.IsValid)
@@ -120,20 +111,12 @@ namespace Fixi.WebAPI.Controllers
                         Errors = new List<string> { "The provided access token is invalid or malformed." },
                         TraceId = HttpContext.TraceIdentifier
                     };
-                return BadRequest(errorResponse);
+                    return BadRequest(errorResponse);
                 }
 
                 string? userEmail = principal.FindFirstValue(ClaimTypes.Email);
-                if (string.IsNullOrEmpty(userEmail))
-                {
-                    return BadRequest(new ApiErrorResponse
-                    {
-                        Message = "Invalid token",
-                        Errors = new List<string> { "Token does not contain a valid email claim." },
-                        TraceId = HttpContext.TraceIdentifier
-                    });
-                }
-            ApplicationUser? user = await _userManager.FindByEmailAsync(userEmail);
+ 
+            ApplicationUser? user = await _userManager.FindByEmailAsync(userEmail!);
             if (user == null || user.RefreshToken != request.RefreshToken || user.RefreshTokenExpiryTime <= DateTime.UtcNow)
                 {
                     ApiErrorResponse errorResponse = new ApiErrorResponse
@@ -142,7 +125,7 @@ namespace Fixi.WebAPI.Controllers
                         Errors = new List<string> { "The provided refresh token is invalid, expired, or does not match the user." },
                         TraceId = HttpContext.TraceIdentifier
                     };
-                return BadRequest(errorResponse);
+                    return BadRequest(errorResponse);
                 }
 
                 var response = await _jwt.GenerateToken(user);
@@ -156,13 +139,12 @@ namespace Fixi.WebAPI.Controllers
         /// <summary>
         /// Resets the password for a user identified by the provided email address.
         /// </summary>
-        /// <param name="passwordRequest">An object containing the user's email address, current password, and new password. All fields are required.
-        /// The email must correspond to an existing user.</param>
-        /// <returns>An HTTP 200 OK response if the password is successfully reset; otherwise, an HTTP 400 Bad Request response
-        /// with error details.</returns>
+        /// <param name="passwordRequest">An object containing the user's email address, current password, and new password.</param>
+        /// <returns>An HTTP 200 OK response if the password is successfully reset</returns>
         [HttpPost("reset-password")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesErrorResponseType(typeof(ApiErrorResponse))]
+        [ProducesResponseType(typeof(ApiErrorResponse), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ApiErrorResponse), StatusCodes.Status404NotFound)]   
         public async Task<IActionResult> resetPassword(ResetPasswordRequestDTO passwordRequest)
         {
             if (!ModelState.IsValid)
@@ -187,7 +169,7 @@ namespace Fixi.WebAPI.Controllers
                     Errors = new List<string> { $"No user found with the email '{UserEmail}'." },
                     TraceId = HttpContext.TraceIdentifier
                 };
-                return BadRequest(errorResponse);
+                return NotFound(errorResponse);
             }
 
             var result =  await _userManager.ChangePasswordAsync(user, passwordRequest.OldPassword, passwordRequest.NewPassword);

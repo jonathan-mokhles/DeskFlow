@@ -27,9 +27,14 @@ namespace Fixi.WebAPI.Controllers
             _ticketRepository = ticketRepository;
         }
 
+        /// <summary>
+        /// open new ticket.
+        /// </summary>
+        /// <param name="createTicketDTO"></param>
+        /// <returns></returns>
         [HttpPost("")]
         [ProducesResponseType(StatusCodes.Status201Created)]
-        [ProducesErrorResponseType(typeof(ApiErrorResponse))]
+        [ProducesResponseType(typeof(ApiErrorResponse), StatusCodes.Status400BadRequest)]
         public async Task<ActionResult> CreateTicket(CreateTicketDTO createTicketDTO)
         {
             if(!ModelState.IsValid)
@@ -45,10 +50,16 @@ namespace Fixi.WebAPI.Controllers
             return CreatedAtAction(nameof(GetTicketById), new { id = createdTicket.Id }, createdTicket);
         }
 
-
+        /// <summary>
+        /// Retrive ticket by Id.
+        /// </summary>
+        /// <remarks> Only the reporter, assigned technician, manager of the department or admin can access the ticket details.</remarks>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [HttpGet("{id}")]
         [ProducesResponseType(typeof(TicketResponseDTO), StatusCodes.Status200OK)]
-        [ProducesErrorResponseType(typeof(ApiErrorResponse))]
+        [ProducesResponseType(typeof(ApiErrorResponse), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(ApiErrorResponse), StatusCodes.Status403Forbidden)]
         public async Task<ActionResult<TicketResponseDTO>> GetTicketById(int id)
         {
             TicketDTO? ticketDto = await _ticketRepository.GetTicketAsync(id);
@@ -65,7 +76,7 @@ namespace Fixi.WebAPI.Controllers
             var authorizationResult = await _authorizationService.AuthorizeAsync(User, ticketDto, "ManagerOrReporterOrAssignedTo");
             if(!authorizationResult.Succeeded)
             {
-                return Unauthorized(new ApiErrorResponse
+                return StatusCode(StatusCodes.Status403Forbidden,new ApiErrorResponse
                 {
                     Message = "You do not have permission to view this ticket.",
                     Errors = new List<string> { "Unauthorized access." },
@@ -77,7 +88,11 @@ namespace Fixi.WebAPI.Controllers
             return Ok(ticket);
         }
 
-
+        /// <summary>
+        /// Retrives all tickets with pagination and optional filtering by status, priority, department, category, reporter or assigned technician.
+        /// </summary>
+        /// <param name="queryParams">The query parameters for filtering and pagination.</param>
+        /// <returns>A list of tickets matching the specified criteria.</returns>
         [HttpGet("")]
         [ProducesResponseType(typeof(IEnumerable<TicketResponseDTO>), StatusCodes.Status200OK)]
         public async Task<ActionResult<IEnumerable<TicketResponseDTO>>> GetAllTickets([FromQuery] TicketQueryParams queryParams)
@@ -89,10 +104,16 @@ namespace Fixi.WebAPI.Controllers
             return Ok(tickets);
         }
 
-
+        /// <summary>
+        /// Udpate all ticket details except status, assigned technician and priority.
+        /// </summary>
+        /// <remarks> Only the reporter, assigned technician, manager of the department or admin can update the ticket details.</remarks>
+        /// <param name="id">The unique identifier of the ticket to update. Cannot be null or empty.</param>
+        /// <param name="updateTicketDTO">An object containing the updated ticket details. All fields are required.</param>
+        /// <returns>A 204 No Content response if the ticket is updated successfully; otherwise, a 400 Bad Request response containing error details.</returns>
         [HttpPut("{id}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
-        [ProducesErrorResponseType(typeof(ApiErrorResponse))]
+        [ProducesResponseType(typeof(ApiErrorResponse), StatusCodes.Status400BadRequest)]
         public async Task<ActionResult> UpdateTicket(int id, UpdateTicketDTO updateTicketDTO)
         {
             if(id != updateTicketDTO.Id)
@@ -118,10 +139,19 @@ namespace Fixi.WebAPI.Controllers
         }
 
 
-
+        /// <summary>
+        /// Updates the status of the specified ticket to a new value.
+        /// </summary>
+        /// <remarks>This operation requires the caller to have appropriate permissions to modify the
+        /// ticket. </remarks>
+        /// <param name="ticketId">The unique identifier of the ticket to update.</param>
+        /// <param name="newStatus">The new status value to assign to the ticket. Must be an integer between 0 and 6, inclusive.</param>
+        /// <returns>A result indicating the outcome of the operation. Returns 204 No Content if the update is successful, or 400
+        /// Bad Request if the new status value is invalid.</returns>
         [HttpPatch("{ticketId}/status")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
-        [ProducesErrorResponseType(typeof(ApiErrorResponse))]
+        [ProducesResponseType(typeof(ApiErrorResponse), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ApiErrorResponse), StatusCodes.Status403Forbidden)]
         public async Task<ActionResult> UpdateTicketStatus(int ticketId, int newStatus)
         {
             if(newStatus < 0 || newStatus > 6)
@@ -138,11 +168,20 @@ namespace Fixi.WebAPI.Controllers
         }
 
 
-
+        /// <summary>
+        /// Assigns a technician to the specified support ticket.
+        /// </summary>
+        /// <remarks>This action requires the caller to have the ManagerOrTechnician authorization policy.</remarks>
+        /// <param name="ticketId">The unique identifier of the support ticket to which the technician will be assigned.</param>
+        /// <param name="newTechnicianId">The unique identifier of the technician to assign to the ticket. Cannot be null or empty.</param>
+        /// <returns>A result indicating the outcome of the operation. Returns a 204 No Content response if the assignment is
+        /// successful.</returns>
         [HttpPatch("{ticketId}/assign")]
         [Authorize(policy: "ManagerOrTechnician")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
-        [ProducesErrorResponseType(typeof(ApiErrorResponse))]
+        [ProducesResponseType(typeof(ApiErrorResponse), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ApiErrorResponse), StatusCodes.Status403Forbidden)]
+
         public async Task<ActionResult> AssignTechnician(int ticketId, string newTechnicianId)
         {
             await _ticketService.AssignTechnician(ticketId, newTechnicianId, GetUserClaims());
@@ -150,10 +189,17 @@ namespace Fixi.WebAPI.Controllers
         }
 
 
-
+        /// <summary>
+        /// Updates the priority of the specified ticket.
+        /// </summary>
+        /// <param name="ticketId">The unique identifier of the ticket to update.</param>
+        /// <param name="newPriority">The new priority value to assign to the ticket. Must be an integer between 1 and 3, inclusive.</param>
+        /// <returns>A result indicating the outcome of the operation. Returns 204 No Content if the update is successful, or 400
+        /// Bad Request if the new priority value is invalid.</returns>
         [HttpPatch("{ticketId}/priority")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
-        [ProducesErrorResponseType(typeof(ApiErrorResponse))]
+        [ProducesResponseType(typeof(ApiErrorResponse), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ApiErrorResponse), StatusCodes.Status403Forbidden)]
         public async Task<ActionResult> UpdateTicketPriority(int ticketId, int newPriority)
         {
             if(newPriority < 1 || newPriority > 3)
@@ -180,7 +226,7 @@ namespace Fixi.WebAPI.Controllers
             var authorizationResult = await _authorizationService.AuthorizeAsync(User, ticket.DepartmentId, "ManagerOrAdmin");
             if(!authorizationResult.Succeeded)
             {
-                return Unauthorized(new ApiErrorResponse
+                return StatusCode(StatusCodes.Status403Forbidden, new ApiErrorResponse
                 {
                     Message = "You do not have permission to change this ticket's priority.",
                     Errors = new List<string> { "Unauthorized access." },
@@ -192,11 +238,16 @@ namespace Fixi.WebAPI.Controllers
             return NoContent();
         }
 
-
+        /// <summary>
+        /// delete ticket of specidied Id
+        /// </summary>
+        /// <remarks>Admin only can delete tickets.</remarks>
+        /// <param name="id">The unique identifier of the ticket to delete.</param>
+        /// <returns>A result indicating the outcome of the operation. Returns 204 No Content if the deletion is successful, or 400 Bad Request if the ticket cannot be deleted.</returns>
         [HttpDelete("{id}")]
         [Authorize(policy: "AdminOnly")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
-        [ProducesErrorResponseType(typeof(ApiErrorResponse))]
+        [ProducesResponseType(typeof(ApiErrorResponse), StatusCodes.Status400BadRequest)]
         public async Task<ActionResult> DeleteTicket(int id)
         {
             string userid = User.FindFirstValue(JwtRegisteredClaimNames.Sub)!;
@@ -204,10 +255,19 @@ namespace Fixi.WebAPI.Controllers
             return NoContent();
         }
 
-
+        /// <summary>
+        /// Retrieves the audit history for a specified ticket.
+        /// </summary>
+        /// <remarks>Returns a 404 response if the ticket does not exist, or a 401 response if the caller
+        /// does not have permission to view the ticket's history.</remarks>
+        /// <param name="ticketId">The unique identifier of the ticket for which to retrieve the audit history. Must be a valid ticket ID.</param>
+        /// <returns>An <see cref="ActionResult{T}"/> containing a collection of <see cref="TicketAuditHistoryDTO"/> objects
+        /// representing the ticket's audit history if found and authorized; otherwise, an error response indicating the
+        /// reason for failure.</returns>
         [HttpGet("{ticketId}/history")]
         [ProducesResponseType(typeof(IEnumerable<TicketAuditHistoryDTO>), StatusCodes.Status200OK)]
-        [ProducesErrorResponseType(typeof(ApiErrorResponse))]
+        [ProducesResponseType(typeof(ApiErrorResponse), StatusCodes.Status400BadRequest )]
+        [ProducesResponseType(typeof(ApiErrorResponse), StatusCodes.Status403Forbidden )]
         public async Task<ActionResult<IEnumerable<TicketAuditHistoryDTO>>> GetTicketHistory(int ticketId)
         {
             TicketDTO? ticket = await _ticketRepository.GetTicketAsync(ticketId);
@@ -223,7 +283,7 @@ namespace Fixi.WebAPI.Controllers
             var result = await _authorizationService.AuthorizeAsync(User, ticket, "ManagerOrReporterOrAssignedTo");
             if(!result.Succeeded)
             {
-                return Unauthorized( new ApiErrorResponse
+                return StatusCode(StatusCodes.Status403Forbidden, new ApiErrorResponse
                 {
                     Message = "You do not have permission to view this ticket's history.",
                     Errors = new List<string> { "Unauthorized access." },

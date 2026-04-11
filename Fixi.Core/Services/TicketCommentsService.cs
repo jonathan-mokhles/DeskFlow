@@ -32,6 +32,11 @@ namespace Fixi.Core.Services
             return _repo.DeleteAsync(commentId);
         }
 
+        public Task<CommentResponseDTO?> GetCommentByIdAsync(int commentId)
+        {
+            return _repo.GetCommentByIdAsync(commentId);
+        }
+
         public Task<IEnumerable<CommentResponseDTO>> GetCommentsForTicketAsync(int ticketId)
         {
             return _repo.GetByticketIdAsync(ticketId);

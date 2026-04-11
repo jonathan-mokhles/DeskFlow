@@ -1,13 +1,19 @@
-﻿using Fixi.Core.ServicesContracts;
+﻿using Fixi.Core.Domain.Entity;
+using Fixi.Core.ServicesContracts;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Fixi.WebAPI.Controllers
 {
+    /// <summary>
+    /// Represents an API controller that manages department resources.
+    /// </summary>
+    /// <remarks>Access to this controller is restricted to users with the AdminOnly policy</remarks>
     [Route("api/[controller]")]
     [ApiController]
     [Authorize(policy: "AdminOnly")]
+    
     public class DepartmentController : ControllerBase
     {
         IDepartmentService _departmentService;
@@ -16,7 +22,11 @@ namespace Fixi.WebAPI.Controllers
             _departmentService = departmentService;
         }
 
-
+        /// <summary>
+        /// Retrive all the departments
+        /// </summary>
+        /// <returns>list of departments</returns>
+        [ProducesResponseType(typeof(IEnumerable<Department>),StatusCodes.Status200OK)]
         [HttpGet]
         public IActionResult GetAllDepartments()
         {
@@ -24,8 +34,13 @@ namespace Fixi.WebAPI.Controllers
             return Ok(departments);
         }
 
-
+        /// <summary>
+        /// Deletes the department with Id.
+        /// </summary>
+        /// <param name="id">The Id of the department to delete.</param>
+        /// <returns>An HTTP 204 No Content response if the department was successfully deleted.</returns>
         [HttpDelete("{id}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
         public IActionResult DeleteDepartment(int id)
         {
             _departmentService.DeleteDepartmentAsync(id);
@@ -33,7 +48,12 @@ namespace Fixi.WebAPI.Controllers
 
         }
 
+        /// <summary>
+        /// Creates a new department with the specified name.
+        /// </summary>
+        /// <param name="name">The name of the department to create. Cannot be null or empty.</param>
         [HttpPost]
+        [ProducesResponseType(StatusCodes.Status201Created)]
         public IActionResult AddDepartment(string name)
         {
             _departmentService.CreateDepartmentAsync(name);
