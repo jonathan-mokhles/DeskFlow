@@ -21,13 +21,13 @@ namespace Fixi.Core.Services
         ITicketRepository _ticketRepository;
         ISLASettingRepository _slaRepo;
         ITicketAuditLogRepository _ticketAuditLogRepo;
-        UserManager<ApplicationUser> _userManager;
-        public TicketService(ITicketRepository ticketRepository, ISLASettingRepository sLASetting, ITicketAuditLogRepository ticketAudit, UserManager<ApplicationUser> userManager)
+        IIdentityService _identityService;
+        public TicketService(ITicketRepository ticketRepository, ISLASettingRepository sLASetting, ITicketAuditLogRepository ticketAudit, IIdentityService identityService)
         {
             _ticketRepository = ticketRepository;
             _slaRepo = sLASetting;
             _ticketAuditLogRepo = ticketAudit;
-            _userManager = userManager;
+            _identityService = identityService;
         }
 
 
@@ -172,7 +172,7 @@ namespace Fixi.Core.Services
             {
                 throw new BusinessRuleViolationException("Technician can only assign themselves to a ticket.");
             }
-            ApplicationUser? NewAssigned = await _userManager.FindByIdAsync(newtechnicianId);
+            ApplicationUser? NewAssigned = await _identityService.FindByIdAsync(newtechnicianId);
             if (NewAssigned == null)
             {
                 throw new NotFoundException("Technician not found.");

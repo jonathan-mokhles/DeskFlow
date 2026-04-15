@@ -1,58 +1,61 @@
 ﻿using Fixi.Core.Domain.IdentityEntity;
 using Fixi.Core.DTOs.AccountDTOs;
 using Fixi.Core.ServicesContracts;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
-using System;
-using System.Data;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
 using Fixi.Core.Exceptions;
+using Fixi.Core.Settings;
+using Microsoft.Extensions.Options;
+using System.ComponentModel.DataAnnotations;
 
 namespace Fixi.Core.Services
 {
     public class JwtService : IJwtService
     {
-        private readonly IConfiguration _config;
-        private readonly UserManager<ApplicationUser> _userManager;
-        public JwtService(IConfiguration config, UserManager<ApplicationUser> userManager)
+        private readonly JwtSettings _jwt;
+        private readonly IIdentityService _identityService;
+        public JwtService(IOptions<JwtSettings> jwt, IIdentityService identityService)
         {
-            _config = config;
-            _userManager = userManager;
+            _jwt = jwt.Value;
+            _identityService = identityService;
         }
 
-        public async Task<AuthResponseDTO> GenerateToken(ApplicationUser user)
+        public async Task<AuthResponseDTO> GenerateToken(ApplicationUser user,IList<string> roles)
         {
-            // Get user roles
-            var roles = await _userManager.GetRolesAsync(user);
+            ArgumentNullException.ThrowIfNull(user, nameof(user));
+            ArgumentNullException.ThrowIfNull(roles, nameof(roles));
+            ArgumentException.ThrowIfNullOrEmpty(user.Id, nameof(user.Id));
+            ArgumentException.ThrowIfNullOrEmpty(user.Email, nameof(user.Email));
+            ArgumentException.ThrowIfNullOrEmpty(user.DepartmentId.ToString(), nameof(user.DepartmentId));
+            ArgumentException.ThrowIfNullOrEmpty(_jwt.SecretKey, nameof(_jwt.SecretKey));
+            ArgumentException.ThrowIfNullOrEmpty(_jwt.TokenDurationInMinutes.ToString(), nameof(_jwt.TokenDurationInMinutes));
+            ArgumentException.ThrowIfNullOrEmpty(_jwt.RefreshTokenDurationInMinutes.ToString(), nameof(_jwt.RefreshTokenDurationInMinutes));
 
             var claims = new List<Claim>
             {
             new Claim(JwtRegisteredClaimNames.Sub, user.Id), // subject is userId	
             new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()), //Json token Id
-            new Claim(ClaimTypes.Role, roles.FirstOrDefault()),
+            new Claim(ClaimTypes.Role, roles.FirstOrDefault()?? "User"),
             new Claim(ClaimTypes.Email, user.Email),
             new Claim("DeptId", user.DepartmentId.ToString())
             };
 
-            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:SecretKey"])); // Secret key from Secrets Manager 
-            var expiration = DateTime.UtcNow.AddMinutes(Convert.ToDouble(_config["Jwt:DurationInMinutes"]));
+            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwt.SecretKey));  
+            var expiration = DateTime.UtcNow.AddMinutes(_jwt.TokenDurationInMinutes);
             var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
 
             var JwtToken = new JwtSecurityToken(
-                issuer: _config["Jwt:Issuer"],
-                audience: _config["Jwt:Audience"],
                 claims: claims,
                 expires: expiration,
                 signingCredentials: credentials);
 
             string token = new JwtSecurityTokenHandler().WriteToken(JwtToken);
             user.RefreshToken = GenerateRefreshToken();
-            user.RefreshTokenExpiryTime = DateTime.UtcNow.AddMinutes(Convert.ToDouble(_config["RefreshToken:DurationInMinutes"]));
-            await _userManager.UpdateAsync(user);
+            user.RefreshTokenExpiryTime = DateTime.UtcNow.AddMinutes(_jwt.RefreshTokenDurationInMinutes);
+            await _identityService.UpdateUserAsync(user);
             
             return new AuthResponseDTO
             {
@@ -67,15 +70,17 @@ namespace Fixi.Core.Services
 
         }
 
-
         public ClaimsPrincipal? GetPrincipalFromExpiredToken(string token)
         {
+            ArgumentException.ThrowIfNullOrEmpty(token, nameof(token));
+            ArgumentException.ThrowIfNullOrEmpty(_jwt.SecretKey, nameof(_jwt.SecretKey));
+
             var tokenValticketIdationParameters = new TokenValidationParameters
             {
                 ValidateAudience = false,
                 ValidateIssuer = false,
                 ValidateIssuerSigningKey = true,
-                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:SecretKey"])),
+                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwt.SecretKey)),
                 ValidateLifetime = false 
             };
 
@@ -83,7 +88,7 @@ namespace Fixi.Core.Services
             ClaimsPrincipal claims =  tokenHandler.ValidateToken(token, tokenValticketIdationParameters, out SecurityToken securityToken);
             if(securityToken is not JwtSecurityToken jwtSecurityToken || !jwtSecurityToken.Header.Alg.Equals(SecurityAlgorithms.HmacSha256, StringComparison.InvariantCultureIgnoreCase))
             {
-                throw new ValidationException("Invalticket Id token");
+                throw new ValidationException("Invalid token");
             }
             return claims;
         }

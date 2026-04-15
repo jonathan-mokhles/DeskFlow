@@ -10,7 +10,7 @@ namespace Fixi.Core.ServicesContracts
 {
     public  interface IJwtService
     {
-        public Task<AuthResponseDTO> GenerateToken(ApplicationUser user);
+        public Task<AuthResponseDTO> GenerateToken(ApplicationUser user,IList<string> roles);
         public ClaimsPrincipal? GetPrincipalFromExpiredToken(string token);
     }
 }

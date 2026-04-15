@@ -6,30 +6,28 @@ using Fixi.Core.ServicesContracts;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.DataAnnotations;
 namespace Fixi.Core.Services
 {
     public class UserService : IUserService
     {
-        private readonly UserManager<ApplicationUser> _userManager;
-        private readonly RoleManager<IdentityRole> _roleManager;
-
-        public UserService(UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager)
+        private readonly IIdentityService _identityService;
+        public UserService(IIdentityService identityService)
         {
-            _userManager = userManager;
-            _roleManager = roleManager;
+           _identityService = identityService;
         }
 
 
         public async Task RegisterUserAsync(RegisterUserDTO registerDTO)
         {
-            var existingUser = await _userManager.FindByEmailAsync(registerDTO.Email);
+            var existingUser = await _identityService.FindByEmailAsync(registerDTO.Email);
 
             if (existingUser != null)
             {
                 throw new ValidationException($"A user with the email '{registerDTO.Email}' already exists.");
             }
 
-            if (!await _roleManager.RoleExistsAsync(registerDTO.Role))
+            if (!await _identityService.RoleExistsAsync(registerDTO.Role))
             {
                 throw new ValidationException("Specified role does not exist.");
             }
@@ -43,19 +41,19 @@ namespace Fixi.Core.Services
                 PhoneNumber = registerDTO.Phone,
 
             };
-            var result = await _userManager.CreateAsync(newUser, registerDTO.Password);
+            var result = await _identityService.CreateUserAsync(newUser, registerDTO.Password);
 
             if (!result.Succeeded)
             {
                 throw new ValidationException("User creation failed: " + string.Join(", ", result.Errors.Select(e => e.Description)));
             }
 
-            await _userManager.AddToRoleAsync(newUser, registerDTO.Role);
+            await _identityService.AddToRoleAsync(newUser, registerDTO.Role);
         }
 
         public async Task<IdentityResult> UpdateUserAsync(string Id, UpdateUserDTO updateDTO)
         {
-            ApplicationUser? userToUpdate = _userManager.Users.FirstOrDefault(u => u.Id == updateDTO.Id);
+            ApplicationUser? userToUpdate = await _identityService.FindByIdAsync(Id);
 
             if (userToUpdate == null)
             {
@@ -67,34 +65,34 @@ namespace Fixi.Core.Services
             userToUpdate.PhoneNumber = updateDTO.Phone;
             userToUpdate.Email = updateDTO.Email;
 
-            await _userManager.RemoveFromRolesAsync(userToUpdate, await _userManager.GetRolesAsync(userToUpdate));
-            if (!await _roleManager.RoleExistsAsync(updateDTO.Role))
+            await _identityService.RemoveFromRolesAsync(userToUpdate, await _identityService.GetUserRolesAsync(userToUpdate));
+            if (!await _identityService.RoleExistsAsync(updateDTO.Role))
             {
                 throw new ValidationException("Specified role does not exist.");
             }
-            await _userManager.AddToRoleAsync(userToUpdate, updateDTO.Role);
-            return await _userManager.UpdateAsync(userToUpdate);
+            await _identityService.AddToRoleAsync(userToUpdate, updateDTO.Role);
+            return await _identityService.UpdateUserAsync(userToUpdate);
         }
 
         public async Task<IdentityResult> DeleteUserAsync(string Id)
         {
-            ApplicationUser? userToDelete = _userManager.Users.FirstOrDefault(u => u.Id == Id);
+            ApplicationUser? userToDelete = await _identityService.FindByIdAsync(Id);
             if (userToDelete == null)
             {
                 throw new NotFoundException("User not found.");
             }
             userToDelete.IsActive = false;
-            return await _userManager.UpdateAsync(userToDelete);
+            return await _identityService.UpdateUserAsync(userToDelete);
         }
 
         public async Task<UserResponseDTO> GetUserByIdAsync(string Id)
         {
-            ApplicationUser? user = await _userManager.Users.Include(u => u.Department).FirstOrDefaultAsync(u => u.Id == Id);
+            ApplicationUser? user = await _identityService.FindByIdAsync(Id);
             if (user == null)
             {
                 throw new NotFoundException("User not found.");
             }
-            var roles = await _userManager.GetRolesAsync(user);
+            var roles = await _identityService.GetUserRolesAsync(user);
 
             return new UserResponseDTO
             {
@@ -111,7 +109,7 @@ namespace Fixi.Core.Services
 
         public async Task<List<UserResponseDTO>> GetAllUsersAsync(UsersQueryParameters query)
         {
-            var queryable = _userManager.Users.AsQueryable();
+            var queryable = _identityService.GetUsersQueryable();
 
             if (!string.IsNullOrEmpty(query.Name))
             {
@@ -130,7 +128,7 @@ namespace Fixi.Core.Services
             var userResponseList = new List<UserResponseDTO>();
             foreach (var user in users)
             {
-                var roles = await _userManager.GetRolesAsync(user);
+                var roles = await _identityService.GetUserRolesAsync(user);
                 userResponseList.Add(new UserResponseDTO
                 {
                     Id = user.Id,

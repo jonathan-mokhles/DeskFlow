@@ -15,18 +15,14 @@ namespace Fixi.WebAPI.Controllers
     public class AuthController : ControllerBase
     {
         private readonly UserManager<ApplicationUser> _userManager;
-        private readonly SignInManager<ApplicationUser> _signInManager;
-        private readonly RoleManager<IdentityRole> _roleManager;
         private readonly IJwtService _jwt;
         private readonly ILogger<AuthController> _logger;
 
 
-        public AuthController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, IJwtService jwtService, RoleManager<IdentityRole> roleManager, ILogger<AuthController> logger)
+        public AuthController(UserManager<ApplicationUser> userManager, IJwtService jwtService, ILogger<AuthController> logger)
         {
             _userManager = userManager;
-            _signInManager = signInManager;
             _jwt = jwtService;
-            _roleManager = roleManager;
             _logger = logger;
         }
 
@@ -67,8 +63,9 @@ namespace Fixi.WebAPI.Controllers
                 });
 
             }
-
-            AuthResponseDTO authResponse = await _jwt.GenerateToken(user);
+            
+            var roles = await _userManager.GetRolesAsync(user);
+            AuthResponseDTO authResponse = await _jwt.GenerateToken(user,roles);
             _logger.LogInformation("User {Email} logged in successfully", loginDTO.Email);
             return Ok(authResponse);
 
@@ -128,7 +125,8 @@ namespace Fixi.WebAPI.Controllers
                     return BadRequest(errorResponse);
                 }
 
-                var response = await _jwt.GenerateToken(user);
+                var roles = await _userManager.GetRolesAsync(user);
+                var response = await _jwt.GenerateToken(user, roles);
                 return Ok(response);
             
 

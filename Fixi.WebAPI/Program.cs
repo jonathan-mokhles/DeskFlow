@@ -46,7 +46,7 @@ builder.Services.AddAuthentication(options =>
         ValidateIssuerSigningKey = true,
         IssuerSigningKey =
             new SymmetricSecurityKey(
-                Encoding.UTF8.GetBytes(builder.Configuration["JWT:SecretKey"]!))// Secret key from Secrets Manager
+                Encoding.UTF8.GetBytes(builder.Configuration["Jwt:SecretKey"]!))// from Secrets Manager
     };
 });
 
@@ -74,6 +74,7 @@ builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<IDepartmentService, DepartmentService>();
 builder.Services.AddScoped<ISLAService, SLAService>();
 builder.Services.AddScoped<ITicketCommentsService, TicketCommentsService>();
+builder.Services.AddScoped<IIdentityService, IdentityService>();
 
 
 builder.Services.AddScoped<ITicketRepository, TicketRepository>();

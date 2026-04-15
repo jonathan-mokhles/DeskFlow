@@ -1,5 +1,7 @@
 ﻿using Fixi.Core.DTOs.shared;
 using Fixi.Core.Exceptions;
+using System.ComponentModel.DataAnnotations;
+
 
 namespace Fixi.WebAPI.Middlewares
 {
