@@ -121,7 +121,7 @@ namespace Fixi.WebAPI.Controllers
         [ProducesResponseType(typeof(ApiErrorResponse), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> DeleteUser(string id)
         {
-            var result = await _userService.DeleteUserAsync(id);
+            var result = await _userService.DeactivateUserAsync(id);
 
             if (!result.Succeeded)
             {

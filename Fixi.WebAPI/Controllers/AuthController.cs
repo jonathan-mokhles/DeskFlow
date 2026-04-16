@@ -63,6 +63,17 @@ namespace Fixi.WebAPI.Controllers
                 });
 
             }
+
+            if (!user.IsActive)
+            {
+                _logger.LogWarning("Inactive user login attempt for email: {Email}", loginDTO.Email);
+                return Unauthorized(new ApiErrorResponse
+                {
+                    Message = "User account is inactive",
+                    Errors = new List<string> { "The user account is inactive." },
+                    TraceId = HttpContext.TraceIdentifier
+                });
+            }
             
             var roles = await _userManager.GetRolesAsync(user);
             AuthResponseDTO authResponse = await _jwt.GenerateToken(user,roles);

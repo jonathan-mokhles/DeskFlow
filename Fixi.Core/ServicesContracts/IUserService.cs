@@ -11,7 +11,7 @@ namespace Fixi.Core.ServicesContracts
         public Task RegisterUserAsync(RegisterUserDTO registerDTO);
         public Task<IdentityResult> UpdateUserAsync(string Id,UpdateUserDTO updateDTO);
 
-        public Task<IdentityResult> DeleteUserAsync(string Id);
+        public Task<IdentityResult> DeactivateUserAsync(string Id);
 
         public Task<UserResponseDTO> GetUserByIdAsync(string Id);
 

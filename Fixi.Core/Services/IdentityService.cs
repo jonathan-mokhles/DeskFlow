@@ -2,8 +2,6 @@
 using Fixi.Core.DTOs.UsersDTOs;
 using Fixi.Core.ServicesContracts;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace Fixi.Core.Services
 {
@@ -47,22 +45,14 @@ namespace Fixi.Core.Services
             return await _userManager.GetRolesAsync(user);
         }
 
-        public IQueryable<ApplicationUser> GetUsersQueryable()
-        {
-            return _userManager.Users.AsQueryable();
-
-            
-        }
-        
-
         public async Task<bool> RoleExistsAsync(string roleName)
         {
             return await _roleManager.RoleExistsAsync(roleName);
         }
 
-        public Task<IdentityResult> RemoveFromRolesAsync(ApplicationUser user, IEnumerable<string> roles)
+        public Task<IdentityResult> RemoveFromRolesAsync(ApplicationUser user, string role)
         {
-            return _userManager.RemoveFromRolesAsync(user, roles);
+            return _userManager.RemoveFromRolesAsync(user, new[] { role });
         }
     }
 }

@@ -220,6 +220,9 @@ namespace Fixi.Core.Services
             return await _ticketRepository.GetTicketHisoryAsync(ticketId);
         }
 
+
+
+
         private static Dictionary<TicketStatus, List<TicketStatus>> allowedTransitions = new Dictionary<TicketStatus, List<TicketStatus>>
         {
             { TicketStatus.Open, new List<TicketStatus> { TicketStatus.InProgress, TicketStatus.Canceled } },

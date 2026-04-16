@@ -7,7 +7,6 @@ using FluentAssertions;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Moq;
-using System.ComponentModel.DataAnnotations;
 using System.Security.Claims;
 
 namespace Fixi.Tests.UnitTests
@@ -71,8 +70,8 @@ namespace Fixi.Tests.UnitTests
             ApplicationUser user = null;
             var roles = new List<string> { "Admin" };
             // Act & Assert
-            await Assert.ThrowsAsync<ArgumentNullException>(() =>
-            _jwtService.GenerateToken(user, roles));
+            Func<Task> act = async () => await _jwtService.GenerateToken(user, roles);
+            await act.Should().ThrowAsync<ArgumentNullException>();
         }
 
         [Fact]
@@ -87,9 +86,12 @@ namespace Fixi.Tests.UnitTests
                 FullName = "Test User"
             };
             var roles = new List<string> { "Admin" };
+
             // Act & Assert
-            await Assert.ThrowsAsync<ArgumentException>(() =>
-            _jwtService.GenerateToken(user, roles));
+            Func<Task> act = async () => await _jwtService.GenerateToken(user, roles);
+
+            await act.Should().ThrowAsync<ArgumentNullException>();
+                
 
         }
 
@@ -128,7 +130,9 @@ namespace Fixi.Tests.UnitTests
             string Token = "InvalidTokenString";
 
             // Assert
-            Assert.Throws<SecurityTokenMalformedException>(() => _jwtService.GetPrincipalFromExpiredToken(Token));
+
+            var act = () => _jwtService.GetPrincipalFromExpiredToken(Token);
+            act.Should().Throw<SecurityTokenMalformedException>();
         }
         #endregion
 

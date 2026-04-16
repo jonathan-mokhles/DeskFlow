@@ -11,11 +11,10 @@ namespace Fixi.Core.ServicesContracts
     {
         Task<ApplicationUser?> FindByEmailAsync(string email);
         Task<ApplicationUser?> FindByIdAsync(string id);
-        IQueryable<ApplicationUser> GetUsersQueryable();
         Task<bool> RoleExistsAsync(string roleName);
         Task<IdentityResult> CreateUserAsync(ApplicationUser user, string password);
         Task<IdentityResult> UpdateUserAsync(ApplicationUser user);
-        Task<IdentityResult> RemoveFromRolesAsync(ApplicationUser user, IEnumerable<string> roles);
+        Task<IdentityResult> RemoveFromRolesAsync(ApplicationUser user, string role);
         Task<IdentityResult> AddToRoleAsync(ApplicationUser user, string role);
         Task<IList<string>> GetUserRolesAsync(ApplicationUser user);
     }
