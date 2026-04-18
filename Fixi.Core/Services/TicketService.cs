@@ -6,13 +6,7 @@ using Fixi.Core.DTOs.TicketDTOs;
 using Fixi.Core.Enums;
 using Fixi.Core.Exceptions;
 using Fixi.Core.ServicesContracts;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Claims;
-using System.Text;
+using System.ComponentModel.DataAnnotations;
 
 namespace Fixi.Core.Services
 {
@@ -31,35 +25,36 @@ namespace Fixi.Core.Services
         }
 
 
-        public async Task<Ticket> CreateTicketAsync(CreateTicketDTO TicketDTO)
+        public async Task<Ticket> CreateTicketAsync(CreateTicketDTO ticketDTO)
         {
-            SLASetting slaSetting = await _slaRepo.GetByPriorityAsync(TicketDTO.Priority);
+            SLASetting? slaSetting = await _slaRepo.GetByPriorityAsync(ticketDTO.Priority);
             if (slaSetting == null)
             {
-                throw new NotFoundException("SLA settings not found for the specified priority.");
+                throw new ValidationException("SLA settings not found for the specified priority.");
             }
 
             Ticket ticket = new Ticket
             {
-                Title = TicketDTO.Title,
-                Description = TicketDTO.Description,
-                Priority = (TicketPriority)TicketDTO.Priority,
+                Title = ticketDTO.Title,
+                Description = ticketDTO.Description,
+                Priority = (TicketPriority)ticketDTO.Priority,
                 Status = TicketStatus.Open,
-                CategoryId = TicketDTO.CategoryId,
-                ReportedById = TicketDTO.ReportedById,
+                CategoryId = ticketDTO.CategoryId,
+                ReportedById = ticketDTO.ReportedById,
                 CreatedDate = DateTime.UtcNow,
                 LastModifiedDate = DateTime.UtcNow,
                 SLAResolutionDeadline = DateTime.UtcNow.AddMinutes(slaSetting.ResolutionTimeMinutes),
                 SLAResponseDeadline = DateTime.UtcNow.AddMinutes(slaSetting.ResponseTimeMinutes),
-                LastModifiedById = TicketDTO.ReportedById
+                LastModifiedById = ticketDTO.ReportedById
 
             };
+
             await _ticketRepository.CreateAsync(ticket);
 
             TicketAuditLog auditLog = new TicketAuditLog
             {
                 TicketId = ticket.Id,
-                ChangedById = TicketDTO.ReportedById,
+                ChangedById = ticketDTO.ReportedById,
                 ChangeType = "Created",
                 ChangedDate = ticket.CreatedDate,
                 OldValue = null,
@@ -87,6 +82,7 @@ namespace Fixi.Core.Services
         public async Task UpdateTicketAsync(UpdateTicketDTO updateTicketDTO, UserClaims claims)
         {
             TicketDTO? ticket = await _ticketRepository.GetTicketAsync(updateTicketDTO.Id);
+
             if (ticket == null)
             {
                 throw new TicketNotFoundException();
@@ -95,6 +91,7 @@ namespace Fixi.Core.Services
             {
                 throw new UnauthorizedTicketAccessException();
             }
+
             await _ticketAuditLogRepo.CreateAsync(new TicketAuditLog
             {
                 TicketId = updateTicketDTO.Id,
@@ -107,7 +104,12 @@ namespace Fixi.Core.Services
 
         public async Task<TicketFullResponseDTO> GetTicketByIdAsync(int ticketId)
         {
-            return await _ticketRepository.GetFullTicketAsync(ticketId);
+            var ticket =  await _ticketRepository.GetFullTicketAsync(ticketId);
+            if (ticket == null)
+            {
+                throw new TicketNotFoundException();
+            }
+            return ticket;
         }
 
         public async Task UpdateTicketPriority(TicketDTO ticket, int newPriority, string userID )
@@ -219,7 +221,6 @@ namespace Fixi.Core.Services
         {
             return await _ticketRepository.GetTicketHisoryAsync(ticketId);
         }
-
 
 
 
