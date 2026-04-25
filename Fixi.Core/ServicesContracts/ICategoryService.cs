@@ -7,7 +7,7 @@ namespace Fixi.Core.ServicesContracts
 {
     public interface ICategoryService
     {
-       public Task CreateCategoryAsync(CreateCategoryDTO categoryDTO);
+       public Task<CategoryResponseDTO> CreateCategoryAsync(CreateCategoryDTO categoryDTO);
        public Task DeleteCategoryAsync(int Id);
        public Task<IEnumerable<CategoryResponseDTO>> GetAllCategoriesAsync();
         public Task UpdateAsync(UpdateCategoryDTO categoryDTO);

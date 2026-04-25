@@ -28,9 +28,9 @@ namespace Fixi.WebAPI.Controllers
         /// <returns>list of departments</returns>
         [ProducesResponseType(typeof(IEnumerable<Department>),StatusCodes.Status200OK)]
         [HttpGet]
-        public IActionResult GetAllDepartments()
+        public async Task<IActionResult> GetAllDepartments()
         {
-            var departments = _departmentService.GetAllDepartmentsAsync();
+            var departments = await _departmentService.GetAllDepartmentsAsync();
             return Ok(departments);
         }
 
@@ -41,9 +41,9 @@ namespace Fixi.WebAPI.Controllers
         /// <returns>An HTTP 204 No Content response if the department was successfully deleted.</returns>
         [HttpDelete("{id}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
-        public IActionResult DeleteDepartment(int id)
+        public async Task<IActionResult> DeleteDepartment(int id)
         {
-            _departmentService.DeleteDepartmentAsync(id);
+            await _departmentService.DeleteDepartmentAsync(id);
             return NoContent();
 
         }
@@ -54,10 +54,10 @@ namespace Fixi.WebAPI.Controllers
         /// <param name="name">The name of the department to create. Cannot be null or empty.</param>
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created)]
-        public IActionResult AddDepartment(string name)
+        public async Task<IActionResult> AddDepartment(string name)
         {
-            _departmentService.CreateDepartmentAsync(name);
-            return NoContent();
+            var department = await _departmentService.CreateDepartmentAsync(name);
+            return CreatedAtAction(nameof(GetAllDepartments), new { name = department.Name }, department);
         }
     }
 }

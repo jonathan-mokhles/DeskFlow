@@ -16,14 +16,23 @@ namespace Fixi.Core.Services
         {
             _repo = repo;
         }
-        public async Task CreateCategoryAsync(CreateCategoryDTO categoryDTO)
+        public async Task<CategoryResponseDTO> CreateCategoryAsync(CreateCategoryDTO categoryDTO)
         {
-            await _repo.CreateAsync(new Category
+            var category = await _repo.CreateAsync(new Category
             {
                 Name = categoryDTO.Name,
                 Description = categoryDTO.Description,
                 DepartmentId = categoryDTO.DepartmentId
             });
+
+            return new CategoryResponseDTO
+            {
+                Id = category.Id,
+                Name = category.Name,
+                Description = category.Description,
+                DepartmentId = category.DepartmentId,
+                DepartmentName = category.Department.Name
+            };
         }
 
         public async Task DeleteCategoryAsync(int Id)

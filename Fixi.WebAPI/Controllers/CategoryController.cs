@@ -54,8 +54,8 @@ namespace Fixi.WebAPI.Controllers
                     TraceId = HttpContext.TraceIdentifier
                 });
             }
-            await _categoryService.CreateCategoryAsync(category);
-            return Created();
+            var createdCategory = await _categoryService.CreateCategoryAsync(category);
+            return CreatedAtAction(nameof(GetAllCategories), new { id = createdCategory.Id }, createdCategory);
         }
 
         /// <summary>

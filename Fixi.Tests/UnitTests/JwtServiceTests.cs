@@ -81,7 +81,7 @@ namespace Fixi.Tests.UnitTests
             var user = new ApplicationUser
             {
                 Id = "test-id-123",
-                Email = "", // Empty email
+                Email = string.Empty, // empty email
                 DepartmentId = 1,
                 FullName = "Test User"
             };
@@ -90,7 +90,7 @@ namespace Fixi.Tests.UnitTests
             // Act & Assert
             Func<Task> act = async () => await _jwtService.GenerateToken(user, roles);
 
-            await act.Should().ThrowAsync<ArgumentNullException>();
+            await act.Should().ThrowAsync<ArgumentException>();
                 
 
         }

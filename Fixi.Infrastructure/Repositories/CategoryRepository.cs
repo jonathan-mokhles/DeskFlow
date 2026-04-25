@@ -18,10 +18,11 @@ namespace Fixi.Infrastructure.Repositories
             _db = db;
         }
 
-        public async Task CreateAsync(Category category)
+        public async Task<Category> CreateAsync(Category category)
         {
             await _db.Categories.AddAsync(category);
             await _db.SaveChangesAsync();
+            return category;
 
         }
 

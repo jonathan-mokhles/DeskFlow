@@ -8,7 +8,7 @@ namespace Fixi.Core.Domain.Repositories_Contracts
     public interface IDepartmentRepository
     {
         Task<IEnumerable<Department>> GetAllAsync();
-        Task CreateAsync(string  DepartmentName);
+        Task<Department> CreateAsync(string  DepartmentName);
         Task DeleteAsync(int id);
     }
 }

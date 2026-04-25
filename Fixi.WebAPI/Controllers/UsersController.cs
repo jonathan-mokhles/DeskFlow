@@ -52,9 +52,9 @@ namespace Fixi.WebAPI.Controllers
                 return BadRequest(errorResponse);
             }
 
-            await _userService.RegisterUserAsync(registerDTO);
+             await _userService.RegisterUserAsync(registerDTO);
             _logger.LogInformation("User {Email} registered successfully", registerDTO.Email);
-            return CreatedAtAction(nameof(register), new { email = registerDTO.Email });
+            return CreatedAtAction(nameof(register), new { email = registerDTO.Email }, null);
         }
 
         /// <summary>

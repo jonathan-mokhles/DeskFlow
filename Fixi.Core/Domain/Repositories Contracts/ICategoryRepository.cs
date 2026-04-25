@@ -9,7 +9,7 @@ namespace Fixi.Core.Domain.Repositories_Contracts
     public interface ICategoryRepository
     {
         Task<IEnumerable<Category>> GetAllAsync();
-        Task CreateAsync(Category category);
+        Task<Category> CreateAsync(Category category);
         Task UpdateAsync(Category category);
         Task DeleteAsync(int Id);
 

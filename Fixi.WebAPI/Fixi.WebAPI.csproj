@@ -25,4 +25,8 @@
     <ProjectReference Include="..\Fixi.Infrastructure\Fixi.Infrastructure.csproj" />
   </ItemGroup>
 
+	<ItemGroup>
+		<InternalsVisibleTo Include="Fixi.Tests" />
+	</ItemGroup>
+
 </Project>

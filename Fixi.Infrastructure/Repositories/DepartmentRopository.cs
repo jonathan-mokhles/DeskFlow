@@ -18,10 +18,12 @@ namespace Fixi.Infrastructure.Repositories
         }
 
 
-        public async Task CreateAsync(string DepartmentName)
+        public async Task<Department> CreateAsync(string DepartmentName)
         {
-            await _db.Departments.AddAsync(new Department { Name = DepartmentName });
+            var department = new Department { Name = DepartmentName };
+            await _db.Departments.AddAsync(department);
             await _db.SaveChangesAsync();
+            return department;
         }
 
         public Task DeleteAsync(int id)

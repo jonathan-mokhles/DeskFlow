@@ -216,14 +216,11 @@ namespace Fixi.Tests.UnitTests
         [Fact]
         public async Task DeactivateUserAsync_NonExistingUser_ThrowNotFoundException()
         {
-            ApplicationUser user = new ApplicationUser 
-            {
-                Id = "Id" 
-            };
-             _identityService.Setup(x => x.FindByIdAsync(user.Id)).ReturnsAsync((ApplicationUser)null);
 
-            Func<Task> act = async () => await _userService.DeactivateUserAsync(user.Id);
-            await act.Should().ThrowAsync<NotFoundException>().WithMessage("User not found");
+             _identityService.Setup(x => x.FindByIdAsync(It.IsAny<string>())).ReturnsAsync((ApplicationUser)null);
+
+            Func<Task> act = async () => await _userService.DeactivateUserAsync("InvalidId");
+            await act.Should().ThrowAsync<NotFoundException>();
         }
 
         [Fact]

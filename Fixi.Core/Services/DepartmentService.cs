@@ -16,9 +16,9 @@ namespace Fixi.Core.Services
             _departmentRepository = departmentRepository;
         }
 
-        public async Task CreateDepartmentAsync(string name)
+        public async Task<Department> CreateDepartmentAsync(string name)
         {
-            await _departmentRepository.CreateAsync(name);
+            return await _departmentRepository.CreateAsync(name);
         }
 
         public async Task DeleteDepartmentAsync(int Id)
