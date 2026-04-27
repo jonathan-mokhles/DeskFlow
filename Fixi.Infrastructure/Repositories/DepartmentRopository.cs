@@ -22,14 +22,13 @@ namespace Fixi.Infrastructure.Repositories
         {
             var department = new Department { Name = DepartmentName };
             await _db.Departments.AddAsync(department);
-            await _db.SaveChangesAsync();
             return department;
         }
 
         public Task DeleteAsync(int id)
         {
             _db.Departments.Remove(new Department { Id = id });
-            return _db.SaveChangesAsync();
+            return Task.CompletedTask;
         }
 
         public async Task<IEnumerable<Department>> GetAllAsync()

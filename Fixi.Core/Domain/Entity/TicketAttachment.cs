@@ -36,9 +36,6 @@ namespace Fixi.Core.Domain.Entity
         [Required]
         public DateTime UploadedDate { get; set; }
 
-        [Required]
-        [MaxLength(50)]
-        public string AttachmentType { get; set; } = string.Empty; // Issue, Resolution, Other
 
         // Navigation Properties
         [ForeignKey(nameof(TicketId))]

@@ -25,7 +25,6 @@ namespace Fixi.Infrastructure.Repositories
         public async Task<Ticket> CreateAsync(Ticket ticket)
         {
             await _db.Tickets.AddAsync(ticket);
-            await _db.SaveChangesAsync();
             return ticket;
         }
 
@@ -88,10 +87,10 @@ namespace Fixi.Infrastructure.Repositories
                 );
         }
 
-        public async Task DeleteAsync(int id)
+        public Task DeleteAsync(int id)
         {
             _db.Tickets.Remove(new Ticket { Id = id });
-            await _db.SaveChangesAsync();
+            return Task.CompletedTask;
         }
 
         public async Task<TicketFullResponseDTO?> GetFullTicketAsync(int ticketId)

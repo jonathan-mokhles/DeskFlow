@@ -10,42 +10,48 @@ namespace Fixi.Core.Services
 {
     public  class SLAService : ISLAService
     {
-        private readonly ISLASettingRepository _slaRepository;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public SLAService(ISLASettingRepository slaRepository)
+        public SLAService(IUnitOfWork unitOfWork)
         {
-            _slaRepository = slaRepository;
+            _unitOfWork = unitOfWork;
         }
 
 
-        public Task<int> CreateSLA(SLACreateDTO createDTO)
+        public async Task<int> CreateSLA(SLACreateDTO createDTO)
         {
-            return _slaRepository.CreateAsync(new SLASetting 
-            { 
+            var setting = new SLASetting
+            {
                 Priority = createDTO.Priority,
                 ResolutionTimeMinutes = createDTO.ResolutionTimeMinutes,
                 ResponseTimeMinutes = createDTO.ResponseTimeMinutes
-            });
+            };
+
+            await _unitOfWork.SLASetting.CreateAsync(setting);
+            await _unitOfWork.CommitAsync();
+            return setting.Id;
         }
 
-        public Task DeleteSLA(int id)
+        public async Task DeleteSLA(int id)
         {
-            return _slaRepository.DeleteAsync(id);
+            await _unitOfWork.SLASetting.DeleteAsync(id);
+            await _unitOfWork.CommitAsync();
         }
 
         public async Task<IEnumerable<SLASetting>> GetAllSLA()
         {
-            return await _slaRepository.GetAllAsync();
+            return await _unitOfWork.SLASetting.GetAllAsync();
         }
 
         public Task<SLASetting?> GetSLAById(int id)
         {
-            return _slaRepository.GetByIdAsync(id);
+            return _unitOfWork.SLASetting.GetByIdAsync(id);
         }
 
-        public Task UpdateSLA(SLASetting setting)
+        public async Task UpdateSLA(SLASetting setting)
         {
-            return _slaRepository.UpdateAsync(setting);
+            await _unitOfWork.SLASetting.UpdateAsync(setting);
+            await _unitOfWork.CommitAsync();
         }
     }
 }

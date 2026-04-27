@@ -53,18 +53,7 @@ namespace Fixi.WebAPI.Controllers
         [ProducesResponseType(typeof(ApiErrorResponse), StatusCodes.Status403Forbidden)]
         public async Task<ActionResult<TicketResponseDTO>> GetTicketById(int id)
         {
-            TicketDTO? ticketDto = await _ticketRepository.GetTicketAsync(id);
-            if(ticketDto is null)
-            {
-                return NotFound(new ApiErrorResponse
-                {
-                    Message = "Ticket not found.",
-                    Errors = new List<string> { "No ticket with the specified ID." },
-                    TraceId = HttpContext.TraceIdentifier
-                });
-            }
-
-            var authorizationResult = await _authorizationService.AuthorizeAsync(User, ticketDto, "ManagerOrReporterOrAssignedTo");
+            var authorizationResult = await _authorizationService.AuthorizeAsync(User, id, "ManagerOrReporterOrAssignedTo");
             if(!authorizationResult.Succeeded)
             {
                 return StatusCode(StatusCodes.Status403Forbidden,new ApiErrorResponse
@@ -252,17 +241,7 @@ namespace Fixi.WebAPI.Controllers
         [ProducesResponseType(typeof(ApiErrorResponse), StatusCodes.Status403Forbidden )]
         public async Task<ActionResult<IEnumerable<TicketAuditHistoryDTO>>> GetTicketHistory(int ticketId)
         {
-            TicketDTO? ticket = await _ticketRepository.GetTicketAsync(ticketId);
-            if(ticket is null)
-            {
-                return NotFound(new ApiErrorResponse
-                {
-                    Message = "Ticket not found.",
-                    Errors = new List<string> { "No ticket with the specified ID." },
-                    TraceId = HttpContext.TraceIdentifier
-                });
-            }
-            var result = await _authorizationService.AuthorizeAsync(User, ticket, "ManagerOrReporterOrAssignedTo");
+            var result = await _authorizationService.AuthorizeAsync(User, ticketId, "ManagerOrReporterOrAssignedTo");
             if(!result.Succeeded)
             {
                 return StatusCode(StatusCodes.Status403Forbidden, new ApiErrorResponse

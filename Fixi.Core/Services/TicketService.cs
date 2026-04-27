@@ -12,22 +12,18 @@ namespace Fixi.Core.Services
 {
     public class TicketService : ITicketService
     {
-        ITicketRepository _ticketRepository;
-        ISLASettingRepository _slaRepo;
-        ITicketAuditLogRepository _ticketAuditLogRepo;
+        IUnitOfWork _unitOfWork;
         IIdentityService _identityService;
-        public TicketService(ITicketRepository ticketRepository, ISLASettingRepository sLASetting, ITicketAuditLogRepository ticketAudit, IIdentityService identityService)
+        public TicketService(IUnitOfWork unitOfWork, IIdentityService identityService)
         {
-            _ticketRepository = ticketRepository;
-            _slaRepo = sLASetting;
-            _ticketAuditLogRepo = ticketAudit;
+            _unitOfWork = unitOfWork;
             _identityService = identityService;
         }
 
 
         public async Task<Ticket> CreateTicketAsync(CreateTicketDTO ticketDTO)
         {
-            SLASetting? slaSetting = await _slaRepo.GetByPriorityAsync(ticketDTO.Priority);
+            SLASetting? slaSetting = await _unitOfWork.SLASetting.GetByPriorityAsync(ticketDTO.Priority);
             if (slaSetting == null)
             {
                 throw new ValidationException("SLA settings not found for the specified priority.");
@@ -49,18 +45,19 @@ namespace Fixi.Core.Services
 
             };
 
-            await _ticketRepository.CreateAsync(ticket);
+            await _unitOfWork.Ticket.CreateAsync(ticket);
 
             TicketAuditLog auditLog = new TicketAuditLog
             {
-                TicketId = ticket.Id,
+                Ticket = ticket,
                 ChangedById = ticketDTO.ReportedById,
                 ChangeType = "Created",
                 ChangedDate = ticket.CreatedDate,
                 OldValue = null,
                 NewValue = $"Title: {ticket.Title}, Description: {ticket.Description}, Priority: {ticket.Priority}, Status: {ticket.Status}, CategoryId: {ticket.CategoryId}"
             };
-            await _ticketAuditLogRepo.CreateAsync(auditLog);
+            await _unitOfWork.TicketAuditLog.CreateAsync(auditLog);
+            await _unitOfWork.CommitAsync();
 
             return ticket;
 
@@ -76,12 +73,12 @@ namespace Fixi.Core.Services
             {
                 queryParams.ReporterId = claims.UserId;
             }
-            return await _ticketRepository.GetAllAsync(queryParams);
+            return await _unitOfWork.Ticket.GetAllAsync(queryParams);
         }
 
         public async Task UpdateTicketAsync(UpdateTicketDTO updateTicketDTO, UserClaims claims)
         {
-            TicketDTO? ticket = await _ticketRepository.GetTicketAsync(updateTicketDTO.Id);
+            TicketDTO? ticket = await _unitOfWork.Ticket.GetTicketAsync(updateTicketDTO.Id);
 
             if (ticket == null)
             {
@@ -92,19 +89,20 @@ namespace Fixi.Core.Services
                 throw new UnauthorizedTicketAccessException();
             }
 
-            await _ticketAuditLogRepo.CreateAsync(new TicketAuditLog
+            await _unitOfWork.TicketAuditLog.CreateAsync(new TicketAuditLog
             {
                 TicketId = updateTicketDTO.Id,
                 ChangedById = claims.UserId,
                 ChangeType = "Updated Ticket",
                 ChangedDate = DateTime.UtcNow,
             });
-            await _ticketRepository.UpdateAsync(updateTicketDTO);
+            await _unitOfWork.Ticket.UpdateAsync(updateTicketDTO);
+            await _unitOfWork.CommitAsync();
         }
 
         public async Task<TicketFullResponseDTO> GetTicketByIdAsync(int ticketId)
         {
-            var ticket =  await _ticketRepository.GetFullTicketAsync(ticketId);
+            var ticket =  await _unitOfWork.Ticket.GetFullTicketAsync(ticketId);
             if (ticket == null)
             {
                 throw new TicketNotFoundException();
@@ -115,7 +113,7 @@ namespace Fixi.Core.Services
         public async Task UpdateTicketPriority(TicketDTO ticket, int newPriority, string userID )
         {
 
-            await _ticketAuditLogRepo.CreateAsync(new TicketAuditLog
+            await _unitOfWork.TicketAuditLog.CreateAsync(new TicketAuditLog
             {
                 TicketId = ticket.Id,
                 ChangedById = userID,
@@ -124,12 +122,13 @@ namespace Fixi.Core.Services
                 OldValue = ((TicketPriority)ticket.priority).ToString(),
                 NewValue = ((TicketPriority)newPriority).ToString()
             });
-            await _ticketRepository.UpdatePriority(ticket.Id, newPriority);
+            await _unitOfWork.Ticket.UpdatePriority(ticket.Id, newPriority);
+            await _unitOfWork.CommitAsync();
         }
 
         public async Task UpdateTicketStatus(int ticketId, TicketStatus newStatus, UserClaims claims)
         {
-            TicketDTO? ticket =  await _ticketRepository.GetTicketAsync(ticketId);
+            TicketDTO? ticket =  await _unitOfWork.Ticket.GetTicketAsync(ticketId);
             string Role = claims.Role;
             if (ticket == null)
             {
@@ -147,7 +146,7 @@ namespace Fixi.Core.Services
             {
                 throw new BusinessRuleViolationException("Only technicians can move tickets to or from In Progress status.");
             }  
-            await _ticketAuditLogRepo .CreateAsync(new TicketAuditLog
+            await _unitOfWork.TicketAuditLog.CreateAsync(new TicketAuditLog
             {
                 TicketId = ticketId,
                 ChangedById = claims.UserId,
@@ -156,12 +155,13 @@ namespace Fixi.Core.Services
                 OldValue = ticket.status.ToString(),
                 NewValue = newStatus.ToString()
             });
-            await _ticketRepository.UpdateStatus(ticketId, newStatus);
+            await _unitOfWork.Ticket.UpdateStatus(ticketId, newStatus);
+            await _unitOfWork.CommitAsync();
         }
 
         public async Task AssignTechnician(int ticketId, string newtechnicianId, UserClaims calims)
         {
-            TicketDTO? ticket = await _ticketRepository.GetTicketAsync(ticketId);
+            TicketDTO? ticket = await _unitOfWork.Ticket.GetTicketAsync(ticketId);
             if (ticket == null)
             {
                 throw new TicketNotFoundException();
@@ -184,7 +184,7 @@ namespace Fixi.Core.Services
                 throw new BusinessRuleViolationException("Cannot assign technician from a different department.");
             }
             
-            await _ticketAuditLogRepo.CreateAsync(new TicketAuditLog
+            await _unitOfWork.TicketAuditLog.CreateAsync(new TicketAuditLog
             {
                 TicketId = ticketId,
                 ChangedById = calims.UserId,
@@ -194,12 +194,13 @@ namespace Fixi.Core.Services
                 NewValue = NewAssigned.FullName
 
             });
-            await _ticketRepository.AssignTechnician(ticketId, newtechnicianId);
+            await _unitOfWork.Ticket.AssignTechnician(ticketId, newtechnicianId);
+            await _unitOfWork.CommitAsync();
         }
 
         public async Task DeleteTicket(int ticketId, string userId)
         {
-            TicketDTO? ticket = await _ticketRepository.GetTicketAsync(ticketId);
+            TicketDTO? ticket = await _unitOfWork.Ticket.GetTicketAsync(ticketId);
             if (ticket == null)
             {
                 throw new TicketNotFoundException();
@@ -213,13 +214,14 @@ namespace Fixi.Core.Services
                 OldValue = $"Priority: {ticket.priority}, Status: {ticket.status}",
                 NewValue = null
             };
-            await _ticketAuditLogRepo.CreateAsync(auditLog);
-            await _ticketRepository.DeleteAsync(ticketId);
+            await _unitOfWork.TicketAuditLog.CreateAsync(auditLog);
+            await _unitOfWork.Ticket.DeleteAsync(ticketId);
+            await _unitOfWork.CommitAsync();
         }
 
         public async Task<IEnumerable<TicketAuditHistoryDTO>> GetTicketHistoryAsync(int ticketId)
         {
-            return await _ticketRepository.GetTicketHisoryAsync(ticketId);
+            return await _unitOfWork.Ticket.GetTicketHisoryAsync(ticketId);
         }
 
 

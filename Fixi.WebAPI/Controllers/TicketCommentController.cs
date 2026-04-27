@@ -16,6 +16,7 @@ namespace Fixi.WebAPI.Controllers
     /// </summary>
     [Route("api/tickets/{ticketId}/comments")]
     [ApiController]
+    [Authorize]
     public class TicketCommentController : ControllerBase
     {
         ITicketCommentsService _CommentsService;
@@ -45,17 +46,8 @@ namespace Fixi.WebAPI.Controllers
         [HttpPost]
         public async Task<IActionResult> AddComment(int ticketId, CommentCreateDTO comment)
         {
-            TicketDTO? ticket = await _ticketRepository.GetTicketAsync(ticketId);
-            if (ticket is null)
-            {
-                return NotFound(new ApiErrorResponse
-                {
-                    Message = "Ticket not found.",
-                    Errors = new List<string> { "No ticket with the specified ID." },
-                    TraceId = HttpContext.TraceIdentifier
-                });
-            }
-            var result = await _authorizationService.AuthorizeAsync(User, ticket, "ManagerOrReporterOrAssignedTo");
+
+            var result = await _authorizationService.AuthorizeAsync(User, ticketId, "ManagerOrReporterOrAssignedTo");
             if (!result.Succeeded)
             {
                 return StatusCode(StatusCodes.Status403Forbidden, new ApiErrorResponse
@@ -92,17 +84,8 @@ namespace Fixi.WebAPI.Controllers
         [ProducesResponseType(typeof(ApiErrorResponse), StatusCodes.Status403Forbidden)]
         public async Task<IActionResult> GetComments(int ticketId)
         {
-            TicketDTO? ticket = await _ticketRepository.GetTicketAsync(ticketId);
-            if (ticket is null)
-            {
-                return NotFound(new ApiErrorResponse
-                {
-                    Message = "Ticket not found.",
-                    Errors = new List<string> { "No ticket with the specified ID." },
-                    TraceId = HttpContext.TraceIdentifier
-                });
-            }
-            var result = await _authorizationService.AuthorizeAsync(User, ticket, "ManagerOrReporterOrAssignedTo");
+
+            var result = await _authorizationService.AuthorizeAsync(User, ticketId, "ManagerOrReporterOrAssignedTo");
             if (!result.Succeeded)
             {
                 return StatusCode(StatusCodes.Status403Forbidden, new ApiErrorResponse

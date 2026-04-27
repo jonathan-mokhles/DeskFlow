@@ -16,12 +16,15 @@ namespace Fixi.Tests.UnitTests
         private readonly IUserService _userService;
         private readonly Mock<IIdentityService> _identityService;
         private readonly Mock<IUserRepository> _userRepository;
+        private readonly Mock<IUnitOfWork> _unitOfWork;
 
         public UserServiceTests()
         {
             _identityService = new Mock<IIdentityService>();
             _userRepository = new Mock<IUserRepository>();
-            _userService = new UserService(_identityService.Object, _userRepository.Object);
+            _unitOfWork = new Mock<IUnitOfWork>();
+            _unitOfWork.SetupGet(x => x.User).Returns(_userRepository.Object);
+            _userService = new UserService(_identityService.Object, _unitOfWork.Object);
         }
 
 
@@ -73,11 +76,8 @@ namespace Fixi.Tests.UnitTests
 
             _identityService.Setup(x => x.FindByEmailAsync(registerDTO.Email)).ReturnsAsync((ApplicationUser)null);
             _identityService.Setup(x => x.RoleExistsAsync(registerDTO.Role)).ReturnsAsync(true);
-            _identityService.Setup(x=> x.AddToRoleAsync(It.IsAny<ApplicationUser>(), registerDTO.Role))
-                .ReturnsAsync(IdentityResult.Success);
             _identityService.Setup(x => x.CreateUserAsync(It.IsAny<ApplicationUser>(), registerDTO.Password))
                 .ReturnsAsync(IdentityResult.Failed(new IdentityError { Description = "Failed to create user" }));
-            _identityService.Setup(x => x.RemoveFromRolesAsync(It.IsAny<ApplicationUser>(), registerDTO.Role)).ReturnsAsync(IdentityResult.Success);
 
 
             // Act & Assert
@@ -96,6 +96,7 @@ namespace Fixi.Tests.UnitTests
             };
             _identityService.Setup(x => x.FindByEmailAsync(registerDTO.Email)).ReturnsAsync((ApplicationUser)null);
             _identityService.Setup(x => x.RoleExistsAsync(registerDTO.Role)).ReturnsAsync(true);
+            _identityService.Setup(x => x.CreateUserAsync(It.IsAny<ApplicationUser>(), registerDTO.Password)).ReturnsAsync(IdentityResult.Success);
             _identityService.Setup(x => x.AddToRoleAsync(It.IsAny<ApplicationUser>(), registerDTO.Role))
                 .ReturnsAsync(IdentityResult.Failed(new IdentityError()));
 

@@ -1,4 +1,5 @@
 ﻿using Fixi.Core.Authorization.Requirements;
+using Fixi.Core.Domain.Repositories_Contracts;
 using Fixi.Core.DTOs.TicketDTOs;
 using Fixi.Core.Enums;
 using Microsoft.AspNetCore.Authorization;
@@ -10,25 +11,34 @@ using System.Text;
 
 namespace Fixi.Core.Authorization.Handlers
 {
-    public class ManagerOrReporterOrAssignedToHandler : AuthorizationHandler<ManagerOrReporterOrAssignedToRequirement, TicketDTO>
+    public class ManagerOrReporterOrAssignedToHandler : AuthorizationHandler<ManagerOrReporterOrAssignedToRequirement, int>
     {
-        protected override Task HandleRequirementAsync(AuthorizationHandlerContext context, ManagerOrReporterOrAssignedToRequirement requirement, TicketDTO resource)
+        private readonly ITicketRepository _ticketRepository;
+        public ManagerOrReporterOrAssignedToHandler(ITicketRepository ticketRepository)
         {
+            _ticketRepository = ticketRepository;
+        }
+        protected override async Task HandleRequirementAsync(AuthorizationHandlerContext context, ManagerOrReporterOrAssignedToRequirement requirement, int resource)
+        {
+            var ticket = await _ticketRepository.GetTicketAsync(resource);
+            if (ticket == null)
+            {
+                return;
+            }
+
             string userId = context.User.FindFirstValue(JwtRegisteredClaimNames.Sub)!;
             string Role = context.User.FindFirstValue(ClaimTypes.Role)!;
             int deptId = int.Parse(context.User.FindFirstValue("DeptId")!);
 
-            if (resource.AssignedToId == userId || resource.ReportedById == userId)
+            if (ticket.AssignedToId == userId || ticket.ReportedById == userId)
             {
                 context.Succeed(requirement);
             }
 
-            if (Role == nameof(RoleEnum.Manager) && deptId == resource.DepartmentId)
+            if (Role == nameof(RoleEnum.Manager) && deptId == ticket.DepartmentId)
             {
                 context.Succeed(requirement);
             }
-            return Task.CompletedTask;
-
         }
     }
 }

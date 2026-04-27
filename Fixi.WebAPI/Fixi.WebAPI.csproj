@@ -29,4 +29,8 @@
 		<InternalsVisibleTo Include="Fixi.Tests" />
 	</ItemGroup>
 
+	<ItemGroup>
+	  <Folder Include="wwwroot\Attachments\" />
+	</ItemGroup>
+
 </Project>

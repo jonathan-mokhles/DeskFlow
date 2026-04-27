@@ -10,20 +10,21 @@ namespace Fixi.Core.Services
 {
     public class CategoryService : ICategoryService
     {
-        ICategoryRepository _repo;
+        IUnitOfWork _unitOfWork;
 
-        public CategoryService(ICategoryRepository repo)
+        public CategoryService(IUnitOfWork unitOfWork)
         {
-            _repo = repo;
+            _unitOfWork = unitOfWork;
         }
         public async Task<CategoryResponseDTO> CreateCategoryAsync(CreateCategoryDTO categoryDTO)
         {
-            var category = await _repo.CreateAsync(new Category
+            var category = await _unitOfWork.Category.CreateAsync(new Category
             {
                 Name = categoryDTO.Name,
                 Description = categoryDTO.Description,
                 DepartmentId = categoryDTO.DepartmentId
             });
+            await _unitOfWork.CommitAsync();
 
             return new CategoryResponseDTO
             {
@@ -37,12 +38,13 @@ namespace Fixi.Core.Services
 
         public async Task DeleteCategoryAsync(int Id)
         {
-            await _repo.DeleteAsync(Id);
+            await _unitOfWork.Category.DeleteAsync(Id);
+            await _unitOfWork.CommitAsync();
         }
 
         public async Task<IEnumerable<CategoryResponseDTO>> GetAllCategoriesAsync()
         {
-            var result = await _repo.GetAllAsync();
+            var result = await _unitOfWork.Category.GetAllAsync();
 
             return result.Select(c => new CategoryResponseDTO
             {
@@ -56,13 +58,19 @@ namespace Fixi.Core.Services
 
         public Task UpdateAsync(UpdateCategoryDTO categoryDTO)
         {
-            return  _repo.UpdateAsync(new Category
+            return UpdateAndCommitAsync(categoryDTO);
+        }
+
+        private async Task UpdateAndCommitAsync(UpdateCategoryDTO categoryDTO)
+        {
+            await _unitOfWork.Category.UpdateAsync(new Category
             {
                 Id = categoryDTO.Id,
                 Name = categoryDTO.Name,
                 Description = categoryDTO.Description,
                 DepartmentId = categoryDTO.DepartmentId
             });
+            await _unitOfWork.CommitAsync();
         }
     }
 }

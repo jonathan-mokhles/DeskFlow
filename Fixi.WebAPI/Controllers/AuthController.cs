@@ -130,7 +130,8 @@ namespace Fixi.WebAPI.Controllers
         [HttpPost("reset-password")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApiErrorResponse), StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(typeof(ApiErrorResponse), StatusCodes.Status404NotFound)]   
+        [ProducesResponseType(typeof(ApiErrorResponse), StatusCodes.Status404NotFound)]
+        [Authorize]
         public async Task<IActionResult> resetPassword(ResetPasswordRequestDTO passwordRequest)
         {
             var UserEmail = User.FindFirstValue(ClaimTypes.Email);

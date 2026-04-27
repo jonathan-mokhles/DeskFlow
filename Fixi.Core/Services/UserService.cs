@@ -12,11 +12,11 @@ namespace Fixi.Core.Services
     public class UserService : IUserService
     {
         private readonly IIdentityService _identityService;
-        private readonly IUserRepository _userRepository;
-        public UserService(IIdentityService identityService, IUserRepository userRepository)
+        private readonly IUnitOfWork _unitOfWork;
+        public UserService(IIdentityService identityService, IUnitOfWork unitOfWork)
         {
            _identityService = identityService;
-           _userRepository = userRepository;
+           _unitOfWork = unitOfWork;
         }
 
 
@@ -44,18 +44,17 @@ namespace Fixi.Core.Services
 
             };
 
-            var result = await _identityService.AddToRoleAsync(newUser, registerDTO.Role);
+            var result = await _identityService.CreateUserAsync(newUser, registerDTO.Password);
 
             if (!result.Succeeded)
             {
                 throw new ValidationException(string.Join(", ", result.Errors.Select(e => e.Description)));
             }
 
-            result = await _identityService.CreateUserAsync(newUser, registerDTO.Password);
+            result = await _identityService.AddToRoleAsync(newUser, registerDTO.Role);
 
             if (!result.Succeeded)
             {
-                await _identityService.RemoveFromRolesAsync(newUser,  registerDTO.Role);
                 throw new ValidationException(string.Join(", ", result.Errors.Select(e => e.Description)));
             }
 
@@ -101,7 +100,7 @@ namespace Fixi.Core.Services
 
         public async Task<UserResponseDTO> GetUserByIdAsync(string Id)
         {
-            var user =  await _userRepository.GetUserByIdAsync(Id);
+            var user =  await _unitOfWork.User.GetUserByIdAsync(Id);
             if (user == null)
             {
                 throw new NotFoundException("User not found");
@@ -111,7 +110,7 @@ namespace Fixi.Core.Services
 
         public async Task<List<UserResponseDTO>> GetAllUsersAsync(UsersQueryParameters query)
         {
-            return await _userRepository.GetAllUsersAsync(query);
+            return await _unitOfWork.User.GetAllUsersAsync(query);
         }
     }
 

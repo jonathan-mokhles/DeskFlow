@@ -7,17 +7,17 @@ namespace Fixi.Core.Services
 {
     public class TicketCommentsService : ITicketCommentsService
     {
-        ITicketCommentRepository _repo;
+        IUnitOfWork _unitOfWork;
 
-        public TicketCommentsService(ITicketCommentRepository repo)
+        public TicketCommentsService(IUnitOfWork unitOfWork)
         {
-            _repo = repo;
+            _unitOfWork = unitOfWork;
         }
 
 
         public async Task AddCommentToTicketAsync(CommentCreateDTO comment)
         {
-            await _repo.CreateAsync(new TicketComment { 
+            await _unitOfWork.TicketComment.CreateAsync(new TicketComment {
                 CommentText = comment.CommentText,
                 TicketId = comment.TicketId,
                 CreatedDate = comment.CreatedDate,
@@ -25,21 +25,23 @@ namespace Fixi.Core.Services
                 UserId = comment.UserId,
 
             });
+            await _unitOfWork.CommitAsync();
         }
 
-        public Task DeleteCommentFromTicketAsync(int commentId)
+        public async Task DeleteCommentFromTicketAsync(int commentId)
         {
-            return _repo.DeleteAsync(commentId);
+            await _unitOfWork.TicketComment.DeleteAsync(commentId);
+            await _unitOfWork.CommitAsync();
         }
 
         public Task<CommentResponseDTO?> GetCommentByIdAsync(int commentId)
         {
-            return _repo.GetCommentByIdAsync(commentId);
+            return _unitOfWork.TicketComment.GetCommentByIdAsync(commentId);
         }
 
         public Task<IEnumerable<CommentResponseDTO>> GetCommentsForTicketAsync(int ticketId)
         {
-            return _repo.GetByticketIdAsync(ticketId);
+            return _unitOfWork.TicketComment.GetByticketIdAsync(ticketId);
         }
     }
 }

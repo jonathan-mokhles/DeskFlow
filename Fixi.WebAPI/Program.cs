@@ -85,8 +85,9 @@ builder.Services.AddScoped<ITicketAuditLogRepository, TicketAuditLogRepository>(
 builder.Services.AddScoped<ISLASettingRepository, SLASettingRepository>();
 builder.Services.AddScoped<ICategoryRepository,CategoryRepository >();
 builder.Services.AddScoped<IDepartmentRepository, DepartmentRopository>();
-builder.Services.AddScoped<ITicketCommentRepository, CommentRepository>();
+builder.Services.AddScoped<ITicketCommentRepository, TicketCommentRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
 
 
@@ -128,7 +129,7 @@ app.UseSwagger();
 app.UseSwaggerUI();
 
 app.UseHttpsRedirection();
-
+app.UseStaticFiles();
 app.UseAuthentication();
 app.UseAuthorization();
 

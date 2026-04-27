@@ -9,11 +9,11 @@ using System.Text;
 
 namespace Fixi.Infrastructure.Repositories
 {
-    public class CommentRepository : ITicketCommentRepository
+    public class TicketCommentRepository : ITicketCommentRepository
     {
         ApplicationDbContext _db;
 
-        public CommentRepository(ApplicationDbContext db)
+        public TicketCommentRepository(ApplicationDbContext db)
         {
             _db = db;
         }
@@ -36,13 +36,12 @@ namespace Fixi.Infrastructure.Repositories
         public async Task CreateAsync(TicketComment comment)
         {
             await _db.AddAsync(comment);
-            await _db.SaveChangesAsync();
         }
 
         public async Task DeleteAsync(int CommentId)
         {
             _db.TicketComments.Remove(new TicketComment { Id = CommentId});
-            await _db.SaveChangesAsync();
+            await Task.CompletedTask;
         }
 
         public async Task<IEnumerable<CommentResponseDTO>> GetByticketIdAsync(int ticketId)

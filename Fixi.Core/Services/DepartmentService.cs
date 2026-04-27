@@ -9,26 +9,29 @@ namespace Fixi.Core.Services
 {
     public class DepartmentService : IDepartmentService
     {
-        private readonly IDepartmentRepository _departmentRepository;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public DepartmentService(IDepartmentRepository departmentRepository)
+        public DepartmentService(IUnitOfWork unitOfWork)
         {
-            _departmentRepository = departmentRepository;
+            _unitOfWork = unitOfWork;
         }
 
         public async Task<Department> CreateDepartmentAsync(string name)
         {
-            return await _departmentRepository.CreateAsync(name);
+            var department = await _unitOfWork.Department.CreateAsync(name);
+            await _unitOfWork.CommitAsync();
+            return department;
         }
 
         public async Task DeleteDepartmentAsync(int Id)
         {
-            await _departmentRepository.DeleteAsync(Id);
+            await _unitOfWork.Department.DeleteAsync(Id);
+            await _unitOfWork.CommitAsync();
         }
 
         public async Task<IEnumerable<Department>> GetAllDepartmentsAsync()
         {
-            return await _departmentRepository.GetAllAsync();
+            return await _unitOfWork.Department.GetAllAsync();
         }
     }
 }

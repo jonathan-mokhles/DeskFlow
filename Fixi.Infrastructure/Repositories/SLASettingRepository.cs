@@ -23,14 +23,12 @@ namespace Fixi.Infrastructure.Repositories
         public async Task<int> CreateAsync(SLASetting slaSetting)
         {
             _db.SLASettings.Add(slaSetting);
-            await _db.SaveChangesAsync();
             return slaSetting.Id;
         }
 
         public Task DeleteAsync(int id)
         {
             _db.SLASettings.Remove(new SLASetting { Id = id });
-            _db.SaveChanges();
             return Task.CompletedTask;
         }
 
@@ -54,7 +52,6 @@ namespace Fixi.Infrastructure.Repositories
         public Task UpdateAsync(SLASetting slaSetting)
         {
             _db.SLASettings.Update(slaSetting);
-            _db.SaveChanges();
             return Task.CompletedTask;
         }
     }

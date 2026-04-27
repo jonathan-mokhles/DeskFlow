@@ -22,7 +22,6 @@ namespace Fixi.Infrastructure.Repositories
         public async Task<TicketAuditLog> CreateAsync(TicketAuditLog history)
         {
             await _db.TicketAuditLog.AddAsync(history);
-            await _db.SaveChangesAsync();
             return history;
         }
 

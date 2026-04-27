@@ -21,15 +21,13 @@ namespace Fixi.Infrastructure.Repositories
         public async Task<Category> CreateAsync(Category category)
         {
             await _db.Categories.AddAsync(category);
-            await _db.SaveChangesAsync();
             return category;
-
         }
 
         public Task DeleteAsync(int Id)
         {
             _db.Categories.Remove(_db.Categories.Find(Id)!);
-            return _db.SaveChangesAsync();
+            return Task.CompletedTask;
         }
 
         public async Task<IEnumerable<Category>> GetAllAsync()
@@ -40,7 +38,7 @@ namespace Fixi.Infrastructure.Repositories
         public Task UpdateAsync(Category category)
         {
             _db.Categories.Update(category);
-            return _db.SaveChangesAsync();
+            return Task.CompletedTask;
         }
     }
 }
