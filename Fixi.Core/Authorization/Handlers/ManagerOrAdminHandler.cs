@@ -1,5 +1,6 @@
 ﻿using Fixi.Core.Authorization.Requirements;
 using Fixi.Core.DTOs.TicketDTOs;
+using Fixi.Core.Enums;
 using Microsoft.AspNetCore.Authorization;
 using System;
 using System.Collections.Generic;
@@ -13,7 +14,7 @@ namespace Fixi.Core.Authorization.Handlers
         {
             string role = context.User.Claims.FirstOrDefault(c => c.Type == "role")?.Value!;
             int deptID = int.Parse(context.User.Claims.FirstOrDefault(c => c.Type == "DeptId")?.Value ?? "0");
-            if ((role == "Manager" && deptID == resource) || role == "Admin")
+            if ((role == nameof(RoleEnum.Manager) && deptID == resource) || role == nameof(RoleEnum.Admin))
             {
                 context.Succeed(requirement);
             }

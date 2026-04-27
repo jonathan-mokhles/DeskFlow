@@ -38,17 +38,6 @@ namespace Fixi.WebAPI.Controllers
         [ProducesResponseType(typeof(ApiErrorResponse), StatusCodes.Status401Unauthorized)]
         public async Task<IActionResult> login(LoginDTO loginDTO)
         {
-            if (!ModelState.IsValid)
-            {
-                ApiErrorResponse errorResponse = new ApiErrorResponse
-                    {
-                        Message = "Invalid login data",
-                        Errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage).ToList(),
-                        TraceId = HttpContext.TraceIdentifier
-                    };
-                return BadRequest(errorResponse);
-            }
-
             var user = await _userManager.FindByEmailAsync(loginDTO.Email);
             var isPasswordValid = user != null && await _userManager.CheckPasswordAsync(user, loginDTO.Password);
 
@@ -97,18 +86,6 @@ namespace Fixi.WebAPI.Controllers
         [ProducesResponseType(typeof(ApiErrorResponse), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> refreshToken(RefreshTokenRequestDTO request)
         {
-            if (!ModelState.IsValid)
-            {
-                ApiErrorResponse errorResponse = new ApiErrorResponse
-                {
-                    Message = "Invalid request data",
-                    Errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage).ToList(),
-                    TraceId = HttpContext.TraceIdentifier
-                };
-                return BadRequest(errorResponse);
-            }
-
-
                 var principal = _jwt.GetPrincipalFromExpiredToken(request.Token);
 
                 if(principal == null)
@@ -156,17 +133,6 @@ namespace Fixi.WebAPI.Controllers
         [ProducesResponseType(typeof(ApiErrorResponse), StatusCodes.Status404NotFound)]   
         public async Task<IActionResult> resetPassword(ResetPasswordRequestDTO passwordRequest)
         {
-            if (!ModelState.IsValid)
-            {
-                ApiErrorResponse errorResponse = new ApiErrorResponse
-                {
-                    Message = "Invalid request data",
-                    Errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage).ToList(),
-                    TraceId = HttpContext.TraceIdentifier
-                };
-                return BadRequest(errorResponse);
-            }
-
             var UserEmail = User.FindFirstValue(ClaimTypes.Email);
             ApplicationUser? user = await _userManager.FindByEmailAsync(UserEmail!);
 

@@ -7,8 +7,7 @@ namespace Fixi.Core.Domain.Repositories_Contracts
 {
     public interface ITicketAuditLogRepository
     {
-        public Task<TicketAuditLog?> GetByticketIdAsync(int ticketId);
-        public Task<IEnumerable<TicketAuditLog>> GetAllAsync();
+        public Task<IEnumerable<TicketAuditLog>> GetByticketIdAsync(int ticketId);
         public Task<TicketAuditLog> CreateAsync(TicketAuditLog history);
     }
 }

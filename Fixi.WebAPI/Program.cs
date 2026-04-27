@@ -2,6 +2,8 @@ using Fixi.Core.Authorization.Handlers;
 using Fixi.Core.Authorization.Requirements;
 using Fixi.Core.Domain.IdentityEntity;
 using Fixi.Core.Domain.Repositories_Contracts;
+using Fixi.Core.DTOs.shared;
+using Fixi.Core.Enums;
 using Fixi.Core.Services;
 using Fixi.Core.ServicesContracts;
 using Fixi.Infrastructure.DbContext;
@@ -10,6 +12,7 @@ using Fixi.WebAPI.Middlewares;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -52,9 +55,9 @@ builder.Services.AddAuthentication(options =>
 
 builder.Services.AddAuthorization( options =>
      {
-         options.AddPolicy("AdminOrManager", policy => policy.RequireRole("Manager","Admin"));
-         options.AddPolicy("AdminOnly", policy => policy.RequireRole("Admin"));
-         options.AddPolicy("ManagerOrTechnician", policy => policy.RequireRole("Manager", "Technician"));
+         options.AddPolicy("AdminOrManager", policy => policy.RequireRole(nameof(RoleEnum.Manager), nameof(RoleEnum.Admin)));
+         options.AddPolicy("AdminOnly", policy => policy.RequireRole(nameof(RoleEnum.Admin)));
+         options.AddPolicy("ManagerOrTechnician", policy => policy.RequireRole(nameof(RoleEnum.Manager), nameof(RoleEnum.Technician)));
 
          options.AddPolicy("ManagerOrReporterOrAssignedTo", policy =>
              policy.Requirements.Add(new ManagerOrReporterOrAssignedToRequirement()));
@@ -83,15 +86,30 @@ builder.Services.AddScoped<ISLASettingRepository, SLASettingRepository>();
 builder.Services.AddScoped<ICategoryRepository,CategoryRepository >();
 builder.Services.AddScoped<IDepartmentRepository, DepartmentRopository>();
 builder.Services.AddScoped<ITicketCommentRepository, CommentRepository>();
+builder.Services.AddScoped<IUserRepository, UserRepository>();
 
 
 
 
-builder.Services.AddControllers(options =>
-{
-    var policy = new AuthorizationPolicyBuilder().RequireAuthenticatedUser().Build();
-    options.Filters.Add(new AuthorizeFilter(policy));
-});
+
+builder.Services.AddControllers()
+    .ConfigureApiBehaviorOptions(options =>
+    {
+        options.InvalidModelStateResponseFactory = context =>
+        {
+            var error = new ApiErrorResponse
+            {
+                Message = "Validation failed",
+                Errors = context.ModelState.Values
+                    .SelectMany(v => v.Errors)
+                    .Select(e => e.ErrorMessage)
+                    .ToList(),
+                TraceId = context.HttpContext.TraceIdentifier
+            };
+
+            return new BadRequestObjectResult(error);
+        };
+    });
 
 builder.Services.AddSwaggerGen(options =>
 {

@@ -6,6 +6,8 @@ using Fixi.Core.ServicesContracts;
 using Fixi.Infrastructure.Migrations;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 
 namespace Fixi.WebAPI.Controllers
 {
@@ -61,17 +63,6 @@ namespace Fixi.WebAPI.Controllers
                     Message = "You do not have permission to add comment.",
                     Errors = new List<string> { "Forbidden access." },
                     TraceId = HttpContext.TraceIdentifier
-                });
-            }
-
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(new ApiErrorResponse
-                {
-                    Errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage).ToList(),
-                    Message = "Invalid comment data",
-                    TraceId = HttpContext.TraceIdentifier,
-                    
                 });
             }
 
@@ -135,10 +126,10 @@ namespace Fixi.WebAPI.Controllers
         [HttpDelete("{commentId}")]
         [ProducesResponseType(typeof(ApiErrorResponse), StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(ApiErrorResponse), StatusCodes.Status403Forbidden)]
-        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
         public async Task<IActionResult> DeleteComment(int commentId)
         {
-            string userId = User.Claims.FirstOrDefault(c => c.Type == "UserID")?.Value ?? string.Empty;
+            string userId = User.Claims.FirstOrDefault(c => c.Type == JwtRegisteredClaimNames.Sub)?.Value ?? string.Empty;
             CommentResponseDTO? comment = await _CommentsService.GetCommentByIdAsync(commentId);
             if(comment is null)
             {
@@ -161,7 +152,7 @@ namespace Fixi.WebAPI.Controllers
             }
 
             await _CommentsService.DeleteCommentFromTicketAsync(commentId);
-            return Ok();
+            return NoContent();
         }
 
 

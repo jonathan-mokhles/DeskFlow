@@ -37,15 +37,6 @@ namespace Fixi.WebAPI.Controllers
         [ProducesResponseType(typeof(ApiErrorResponse), StatusCodes.Status400BadRequest)]
         public async Task<ActionResult> CreateSLA(SLACreateDTO createDTO)
         {
-            if(!ModelState.IsValid)
-            {
-                return BadRequest(new ApiErrorResponse
-                {
-                    Message = "Invalid data",
-                    Errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage).ToList(),
-                    TraceId = HttpContext.TraceIdentifier
-                });
-            }
             int id = await _slaService.CreateSLA(createDTO);
 
             return CreatedAtAction(nameof(GetSLAById), new { id });
@@ -122,9 +113,9 @@ namespace Fixi.WebAPI.Controllers
         [HttpDelete("{id}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(typeof(ApiErrorResponse), StatusCodes.Status404NotFound)]
-        public IActionResult DeleteSLA(int id)
+        public async Task<IActionResult> DeleteSLA(int id)
         {
-            var existingSLA = _slaService.GetSLAById(id).Result;
+            var existingSLA = await _slaService.GetSLAById(id);
             if (existingSLA == null)
             {
                 return NotFound(new ApiErrorResponse
@@ -133,7 +124,7 @@ namespace Fixi.WebAPI.Controllers
                     TraceId = HttpContext.TraceIdentifier
                 });
             }
-            _slaService.DeleteSLA(id);
+            await _slaService.DeleteSLA(id);
             return NoContent();
         }
     }

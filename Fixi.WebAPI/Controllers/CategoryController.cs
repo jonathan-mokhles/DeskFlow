@@ -46,14 +46,6 @@ namespace Fixi.WebAPI.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateCategory(CreateCategoryDTO category)
         {
-            if(!ModelState.IsValid)
-            {
-                return BadRequest(new ApiErrorResponse {
-                    Errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage).ToList(),
-                    Message = "Validation failed for the category data.",
-                    TraceId = HttpContext.TraceIdentifier
-                });
-            }
             var createdCategory = await _categoryService.CreateCategoryAsync(category);
             return CreatedAtAction(nameof(GetAllCategories), new { id = createdCategory.Id }, createdCategory);
         }
@@ -69,15 +61,6 @@ namespace Fixi.WebAPI.Controllers
         [ProducesResponseType(typeof(ApiErrorResponse), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> UpdateCategory(int id, UpdateCategoryDTO category)
         {
-            if(!ModelState.IsValid)
-            {
-                return BadRequest(new ApiErrorResponse
-                {
-                    Errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage).ToList(),
-                    Message = "Validation failed for the category data.",
-                    TraceId = HttpContext.TraceIdentifier
-                });
-            }
             if (id != category.Id)
             {
                 return BadRequest("Category ID mismatch.");

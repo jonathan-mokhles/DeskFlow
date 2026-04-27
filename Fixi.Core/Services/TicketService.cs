@@ -68,11 +68,11 @@ namespace Fixi.Core.Services
 
         public async Task<IEnumerable<TicketResponseDTO>> GetAllTicketsAsync(TicketQueryParams queryParams, UserClaims claims)
         {
-            if(claims.Role == "Manager" || claims.Role == "Technician")
+            if(claims.Role == nameof(RoleEnum.Manager) || claims.Role == nameof(RoleEnum.Technician))
             {
                 queryParams.DepartmentId = claims.DeptId;
             }
-            else if(claims.Role == "User")
+            else if(claims.Role == nameof(RoleEnum.User))
             {
                 queryParams.ReporterId = claims.UserId;
             }
@@ -135,7 +135,7 @@ namespace Fixi.Core.Services
             {
                 throw new TicketNotFoundException();
             }
-            if (ticket.DepartmentId != claims.DeptId || (claims.UserId != ticket.AssignedToId && ticket.ReportedById != claims.UserId && Role != "Manager"))
+            if (ticket.DepartmentId != claims.DeptId || (claims.UserId != ticket.AssignedToId && ticket.ReportedById != claims.UserId && Role != nameof(RoleEnum.Manager)))
             {
                 throw new UnauthorizedTicketAccessException();
             }
@@ -143,7 +143,7 @@ namespace Fixi.Core.Services
             {
                 throw new BusinessRuleViolationException($"Invalid status transition");
             }
-            if((ticket.status == TicketStatus.InProgress || newStatus == TicketStatus.InProgress) && Role != "Technician")
+            if((ticket.status == TicketStatus.InProgress || newStatus == TicketStatus.InProgress) && Role != nameof(RoleEnum.Technician))
             {
                 throw new BusinessRuleViolationException("Only technicians can move tickets to or from In Progress status.");
             }  
@@ -170,7 +170,7 @@ namespace Fixi.Core.Services
             {
                 throw new UnauthorizedTicketAccessException();
             }
-            if (calims.Role == "Technician" && newtechnicianId != calims.UserId)
+            if (calims.Role == nameof(RoleEnum.Technician) && newtechnicianId != calims.UserId)
             {
                 throw new BusinessRuleViolationException("Technician can only assign themselves to a ticket.");
             }

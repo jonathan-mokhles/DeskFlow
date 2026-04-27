@@ -1,5 +1,6 @@
 ﻿using Fixi.Core.Authorization.Requirements;
 using Fixi.Core.DTOs.TicketDTOs;
+using Fixi.Core.Enums;
 using Microsoft.AspNetCore.Authorization;
 using System;
 using System.Collections.Generic;
@@ -22,7 +23,7 @@ namespace Fixi.Core.Authorization.Handlers
                 context.Succeed(requirement);
             }
 
-            if (Role == "Manager" && deptId == resource.DepartmentId)
+            if (Role == nameof(RoleEnum.Manager) && deptId == resource.DepartmentId)
             {
                 context.Succeed(requirement);
             }

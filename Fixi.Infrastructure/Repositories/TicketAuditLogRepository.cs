@@ -1,6 +1,7 @@
 ﻿using Fixi.Core.Domain.Entity;
 using Fixi.Core.Domain.Repositories_Contracts;
 using Fixi.Infrastructure.DbContext;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -25,19 +26,9 @@ namespace Fixi.Infrastructure.Repositories
             return history;
         }
 
-        public Task<IEnumerable<TicketAuditLog>> GetAllAsync()
+        public async Task<IEnumerable<TicketAuditLog>> GetByticketIdAsync(int ticketId)
         {
-            throw new NotImplementedException();
-        }
-
-        public Task<TicketAuditLog?> GetByidAsync(int id)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<TicketAuditLog?> GetByticketIdAsync(int ticketId)
-        {
-            throw new NotImplementedException();
+            return await _db.TicketAuditLog.Where(a => a.TicketId == ticketId).ToListAsync();
         }
     }
 }

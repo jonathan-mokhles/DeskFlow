@@ -37,15 +37,6 @@ namespace Fixi.WebAPI.Controllers
         [ProducesResponseType(typeof(ApiErrorResponse), StatusCodes.Status400BadRequest)]
         public async Task<ActionResult> CreateTicket(CreateTicketDTO createTicketDTO)
         {
-            if(!ModelState.IsValid)
-            {
-                return BadRequest(new ApiErrorResponse
-                {
-                    Message = "Invalid input data.",
-                    Errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage).ToList(),
-                    TraceId = HttpContext.TraceIdentifier
-                });
-            }
             Ticket createdTicket = await _ticketService.CreateTicketAsync(createTicketDTO);
             return CreatedAtAction(nameof(GetTicketById), new { id = createdTicket.Id }, createdTicket);
         }
@@ -122,15 +113,6 @@ namespace Fixi.WebAPI.Controllers
                 {
                     Message = "Ticket ID is wrong.",
                     Errors = new List<string> { "ID mismatch." },
-                    TraceId = HttpContext.TraceIdentifier
-                });
-            }
-            if(!ModelState.IsValid )
-            {
-                return BadRequest(new ApiErrorResponse
-                {
-                    Message = "Invalid input data.",
-                    Errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage).ToList(),
                     TraceId = HttpContext.TraceIdentifier
                 });
             }
