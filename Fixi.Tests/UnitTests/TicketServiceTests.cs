@@ -23,6 +23,7 @@ namespace Fixi.Tests.UnitTests
         Mock<ISLASettingRepository> _slaRepo;
         Mock<ITicketAuditLogRepository> _ticketAuditLogRepo;
         Mock<IIdentityService> _identityService;
+        Mock<MailService> _mailService;
         ITicketService _ticketService;
         Fixture _fixture;
 
@@ -34,13 +35,14 @@ namespace Fixi.Tests.UnitTests
             _slaRepo = new Mock<ISLASettingRepository>();
             _ticketAuditLogRepo = new Mock<ITicketAuditLogRepository>();
             _identityService = new Mock<IIdentityService>();
+            _mailService = new Mock<MailService>();
 
             _unitOfWork.SetupGet(x => x.Ticket).Returns(_ticketRepository.Object);
             _unitOfWork.SetupGet(x => x.TicketAuditLog).Returns(_ticketAuditLogRepo.Object);
             _unitOfWork.SetupGet(x => x.SLASetting).Returns(_slaRepo.Object);
             _unitOfWork.Setup(x => x.CommitAsync()).ReturnsAsync(1);
 
-            _ticketService = new TicketService(_unitOfWork.Object, _identityService.Object);
+            _ticketService = new TicketService(_unitOfWork.Object, _identityService.Object, _mailService.Object);
 
             _fixture = new Fixture();
             _fixture.Behaviors.OfType<ThrowingRecursionBehavior>()

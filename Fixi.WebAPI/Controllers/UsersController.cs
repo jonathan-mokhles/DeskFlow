@@ -1,11 +1,8 @@
-﻿using Fixi.Core.Domain.IdentityEntity;
-using Fixi.Core.DTOs.shared;
+﻿using Fixi.Core.DTOs.shared;
 using Fixi.Core.DTOs.UsersDTOs;
 using Fixi.Core.Enums;
 using Fixi.Core.ServicesContracts;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -14,13 +11,14 @@ namespace Fixi.WebAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class UsersController : ControllerBase
     {
         private readonly IUserService _userService;
-        private readonly Logger<UsersController> _logger;
+        private readonly ILogger<UsersController> _logger;
 
 
-        public UsersController(IUserService userService, Logger<UsersController> logger)
+        public UsersController(IUserService userService, ILogger<UsersController> logger)
         {
             _userService = userService;
             _logger = logger;
@@ -40,7 +38,7 @@ namespace Fixi.WebAPI.Controllers
         [Authorize(policy: "AdminOnly")]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(typeof(ApiErrorResponse), StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> register(RegisterUserDTO registerDTO)
+        public async Task<IActionResult> register([FromBody]RegisterUserDTO registerDTO)
         {
              await _userService.RegisterUserAsync(registerDTO);
             _logger.LogInformation("User {Email} registered successfully", registerDTO.Email);

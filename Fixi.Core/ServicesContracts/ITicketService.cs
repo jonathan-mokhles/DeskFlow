@@ -12,7 +12,7 @@ namespace Fixi.Core.ServicesContracts
 {
     public interface ITicketService
     {
-        public Task<Ticket> CreateTicketAsync(CreateTicketDTO createTicketDTO);
+        public Task<Ticket> CreateTicketAsync(CreateTicketDTO createTicketDTO,string UserID);
         public Task<IEnumerable<TicketResponseDTO>> GetAllTicketsAsync(TicketQueryParams queryParams, UserClaims claims);
         public Task<TicketFullResponseDTO> GetTicketByIdAsync(int ticketId);
 

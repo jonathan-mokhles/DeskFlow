@@ -14,6 +14,7 @@ namespace Fixi.WebAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class TicketsController : ControllerBase
     {
         ITicketService _ticketService;
@@ -35,10 +36,34 @@ namespace Fixi.WebAPI.Controllers
         [HttpPost("")]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(typeof(ApiErrorResponse), StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult> CreateTicket(CreateTicketDTO createTicketDTO)
+        public async Task<ActionResult> CreateTicket([FromBody] CreateTicketDTO createTicketDTO)
         {
-            Ticket createdTicket = await _ticketService.CreateTicketAsync(createTicketDTO);
-            return CreatedAtAction(nameof(GetTicketById), new { id = createdTicket.Id }, createdTicket);
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            Ticket createdTicket = await _ticketService.CreateTicketAsync(createTicketDTO, userId);
+            TicketFullResponseDTO responseDTO = new TicketFullResponseDTO
+            {
+                Title = createdTicket.Title,
+                Description = createdTicket.Description,
+                AssignedDate = createdTicket.AssignedDate,
+                AssignedToName = createdTicket.AssignedTo?.UserName,
+                CategoryName = createdTicket.Category?.Name,
+                DepartmentName = createdTicket.Category?.Department?.Name,
+                ClosedDate = createdTicket.ClosedDate,
+                CreatedDate = createdTicket.CreatedDate,
+                Id = createdTicket.Id,
+                LastModifiedById = createdTicket.LastModifiedById,
+                LastModifiedByName = createdTicket.LastModifiedBy?.UserName,
+                LastModifiedDate = createdTicket.LastModifiedDate,
+                Priority = createdTicket.Priority,
+                Status = createdTicket.Status,
+                ReportedByName = createdTicket.ReportedBy?.UserName,
+                ResolvedDate = createdTicket.ResolvedDate,
+                SLAResolutionBreached = createdTicket.SLAResolutionBreached,
+                SLAResolutionDeadline = createdTicket.SLAResolutionDeadline,
+                SLAResponseBreached = createdTicket.SLAResponseBreached,
+                SLAResponseDeadline = createdTicket.SLAResponseDeadline
+            };
+            return CreatedAtAction(nameof(GetTicketById), new { id = createdTicket.Id }, responseDTO);
         }
 
         /// <summary>
@@ -259,13 +284,13 @@ namespace Fixi.WebAPI.Controllers
         private UserClaims GetUserClaims()
         {
             string role = User.FindFirstValue(ClaimTypes.Role)!;
-            string userid = User.FindFirstValue(JwtRegisteredClaimNames.Sub)!;
-            
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier)!;
+
             string deptId = User.FindFirstValue("DeptId")!;
             int.TryParse(deptId, out var parsedDeptId);
             return new UserClaims
             {
-                UserId = userid,
+                UserId = userId,
                 Role = role,
                 DeptId = parsedDeptId,
             };

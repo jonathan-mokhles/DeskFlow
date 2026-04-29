@@ -6,6 +6,7 @@ using Fixi.Core.DTOs.TicketDTOs;
 using Fixi.Core.Enums;
 using Fixi.Core.Exceptions;
 using Fixi.Core.ServicesContracts;
+using Hangfire;
 using System.ComponentModel.DataAnnotations;
 
 namespace Fixi.Core.Services
@@ -14,14 +15,16 @@ namespace Fixi.Core.Services
     {
         IUnitOfWork _unitOfWork;
         IIdentityService _identityService;
-        public TicketService(IUnitOfWork unitOfWork, IIdentityService identityService)
+        IMailService _mailService;
+        public TicketService(IUnitOfWork unitOfWork, IIdentityService identityService, IMailService mailService)
         {
             _unitOfWork = unitOfWork;
             _identityService = identityService;
+            _mailService = mailService;
         }
 
 
-        public async Task<Ticket> CreateTicketAsync(CreateTicketDTO ticketDTO)
+        public async Task<Ticket> CreateTicketAsync(CreateTicketDTO ticketDTO,string UserID)
         {
             SLASetting? slaSetting = await _unitOfWork.SLASetting.GetByPriorityAsync(ticketDTO.Priority);
             if (slaSetting == null)
@@ -36,12 +39,12 @@ namespace Fixi.Core.Services
                 Priority = (TicketPriority)ticketDTO.Priority,
                 Status = TicketStatus.Open,
                 CategoryId = ticketDTO.CategoryId,
-                ReportedById = ticketDTO.ReportedById,
+                ReportedById = UserID,
                 CreatedDate = DateTime.UtcNow,
                 LastModifiedDate = DateTime.UtcNow,
                 SLAResolutionDeadline = DateTime.UtcNow.AddMinutes(slaSetting.ResolutionTimeMinutes),
                 SLAResponseDeadline = DateTime.UtcNow.AddMinutes(slaSetting.ResponseTimeMinutes),
-                LastModifiedById = ticketDTO.ReportedById
+                LastModifiedById = UserID
 
             };
 
@@ -50,7 +53,7 @@ namespace Fixi.Core.Services
             TicketAuditLog auditLog = new TicketAuditLog
             {
                 Ticket = ticket,
-                ChangedById = ticketDTO.ReportedById,
+                ChangedById = UserID,
                 ChangeType = "Created",
                 ChangedDate = ticket.CreatedDate,
                 OldValue = null,
@@ -196,6 +199,10 @@ namespace Fixi.Core.Services
             });
             await _unitOfWork.Ticket.AssignTechnician(ticketId, newtechnicianId);
             await _unitOfWork.CommitAsync();
+            if(NewAssigned.Id != calims.UserId)
+            {
+                BackgroundJob.Enqueue(() => _mailService.SendEmailAsync(NewAssigned.Email, "New Ticket Assignment", $"You have been assigned to ticket, With priority: {ticket.priority}. Please check the system for details."));
+            }
         }
 
         public async Task DeleteTicket(int ticketId, string userId)

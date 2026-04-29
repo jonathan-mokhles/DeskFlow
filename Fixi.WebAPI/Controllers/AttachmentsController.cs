@@ -10,6 +10,7 @@ namespace Fixi.WebAPI.Controllers
 {
     [ApiController]
     [Route("api/tickets/{ticketId}/[controller]")]
+    [Authorize]
     public class AttachmentsController : ControllerBase
     {
         private readonly IAuthorizationService _authorizationService;
@@ -43,7 +44,8 @@ namespace Fixi.WebAPI.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> UploadAttachment([FromRoute] int ticketId, [FromForm] IFormFile file)
+        [Consumes("multipart/form-data")]
+        public async Task<IActionResult> UploadAttachment([FromRoute] int ticketId, [FromForm] UploadFileDTO fileDTO)
         {
             var authorizationResult = await _authorizationService.AuthorizeAsync(User, ticketId, "ManagerOrReporterOrAssignedTo");
             if (!authorizationResult.Succeeded)
@@ -57,15 +59,20 @@ namespace Fixi.WebAPI.Controllers
                 return Unauthorized();
             }
 
-            await _ticketAttachmentService.UploadAttachmentAsync(ticketId, file, userId);
+            if (fileDTO.File == null || fileDTO.File.Length == 0)
+            {
+                return BadRequest("No file uploaded or file is empty.");
+            }
+            await _ticketAttachmentService.UploadAttachmentAsync(ticketId, fileDTO.File, userId);
             return Ok();
         }
 
 
         [HttpGet("{id:int}/download")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(FileResult))]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
+
         public async Task<IActionResult> DownloadAttachment([FromRoute] int ticketId, [FromRoute] int id)
         {
             var authorizationResult = await _authorizationService.AuthorizeAsync(User, ticketId, "ManagerOrReporterOrAssignedTo");

@@ -19,9 +19,6 @@ namespace Fixi.Core.DTOs.TicketDTOs
         public int Priority { get; set; }
 
         [Required]
-        public string ReportedById { get; set; } = string.Empty;
-
-        [Required]
         public int CategoryId { get; set; }
     }
 }

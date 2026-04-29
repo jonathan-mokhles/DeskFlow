@@ -6,9 +6,11 @@ using Fixi.Core.DTOs.shared;
 using Fixi.Core.Enums;
 using Fixi.Core.Services;
 using Fixi.Core.ServicesContracts;
+using Fixi.Core.Settings;
 using Fixi.Infrastructure.DbContext;
 using Fixi.Infrastructure.Repositories;
 using Fixi.WebAPI.Middlewares;
+using Hangfire;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -70,6 +72,9 @@ builder.Services.AddScoped<IAuthorizationHandler,ManagerOrReporterOrAssignedToHa
 builder.Services.AddScoped<IAuthorizationHandler,ManagerOrAdminHandler >();
 
 
+builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection("Jwt"));
+builder.Services.Configure<MailSettings>(builder.Configuration.GetSection("Mail"));
+
 builder.Services.AddScoped<IJwtService, JwtService>();
 builder.Services.AddScoped<ITicketService, TicketService>();
 builder.Services.AddScoped<IUserService, UserService>();
@@ -78,6 +83,11 @@ builder.Services.AddScoped<IDepartmentService, DepartmentService>();
 builder.Services.AddScoped<ISLAService, SLAService>();
 builder.Services.AddScoped<ITicketCommentsService, TicketCommentsService>();
 builder.Services.AddScoped<IIdentityService, IdentityService>();
+builder.Services.AddScoped<ITicketAttachmentService, TicketAttachmentService>();
+builder.Services.AddScoped<IFileStorageService, FileStorageService>();
+builder.Services.AddScoped<IMailService, MailService>();
+
+
 
 
 builder.Services.AddScoped<ITicketRepository, TicketRepository>();
@@ -87,6 +97,7 @@ builder.Services.AddScoped<ICategoryRepository,CategoryRepository >();
 builder.Services.AddScoped<IDepartmentRepository, DepartmentRopository>();
 builder.Services.AddScoped<ITicketCommentRepository, TicketCommentRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<ITicketAttachmentRepository, TicketAttachmentRepository>();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
 
@@ -119,6 +130,14 @@ builder.Services.AddSwaggerGen(options =>
 }
 );
 
+// Add Hangfire services
+builder.Services.AddHangfire(configuration =>
+{
+    configuration.UseSqlServerStorage(builder.Configuration.GetConnectionString("DefaultConnection"));
+});
+builder.Services.AddHangfireServer();
+
+
 var app = builder.Build();
 
 
@@ -132,6 +151,8 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseAuthentication();
 app.UseAuthorization();
+
+app.UseHangfireDashboard("/hangfire");
 
 app.MapControllers();
 
