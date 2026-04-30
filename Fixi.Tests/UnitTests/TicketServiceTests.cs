@@ -60,7 +60,7 @@ namespace Fixi.Tests.UnitTests
             _slaRepo.Setup(x =>  x.GetByPriorityAsync(ticketDTO.Priority)).ReturnsAsync((SLASetting)null);
 
 
-            var act = async  () => await _ticketService.CreateTicketAsync(ticketDTO);
+            var act = async  () => await _ticketService.CreateTicketAsync(ticketDTO, "userId");
              await act.Should().ThrowAsync<ValidationException>();
         }
 
@@ -76,18 +76,18 @@ namespace Fixi.Tests.UnitTests
                 Priority = (TicketPriority)ticketDTO.Priority,
                 Status = TicketStatus.Open,
                 CategoryId = ticketDTO.CategoryId,
-                ReportedById = ticketDTO.ReportedById,
+                ReportedById = "userId",
                 CreatedDate = DateTime.UtcNow,
                 LastModifiedDate = DateTime.UtcNow,
                 SLAResolutionDeadline = DateTime.UtcNow.AddMinutes(SLA.ResolutionTimeMinutes),
                 SLAResponseDeadline = DateTime.UtcNow.AddMinutes(SLA.ResponseTimeMinutes),
-                LastModifiedById = ticketDTO.ReportedById
+                LastModifiedById = "userId"
 
             };
             TicketAuditLog audit = new TicketAuditLog
             {
                 TicketId = ticket.Id,
-                ChangedById = ticketDTO.ReportedById,
+                ChangedById = "userId",
                 ChangeType = "Created",
                 ChangedDate = ticket.CreatedDate,
                 OldValue = null,
@@ -100,7 +100,7 @@ namespace Fixi.Tests.UnitTests
             _ticketAuditLogRepo.Setup(x => x.CreateAsync(It.IsAny<TicketAuditLog>())).ReturnsAsync(audit);
 
 
-            var act = async  () => await _ticketService.CreateTicketAsync(ticketDTO);
+            var act = async  () => await _ticketService.CreateTicketAsync(ticketDTO, "userId");
              await act.Should().NotThrowAsync();
             _ticketRepository.Verify(x => x.CreateAsync(It.IsAny<Ticket>()),Times.Once);
             _ticketAuditLogRepo.Verify(x => x.CreateAsync(It.IsAny<TicketAuditLog>()),Times.Once);

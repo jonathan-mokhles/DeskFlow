@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using Fixi.Core.Domain.Entity;
 using Fixi.Core.Domain.Repositories_Contracts;
 using Fixi.Core.DTOs.CategoryDTOs;
+using Fixi.Core.Mappings;
 using Fixi.Core.ServicesContracts;
 
 namespace Fixi.Core.Services
@@ -18,22 +18,10 @@ namespace Fixi.Core.Services
         }
         public async Task<CategoryResponseDTO> CreateCategoryAsync(CreateCategoryDTO categoryDTO)
         {
-            var category = await _unitOfWork.Category.CreateAsync(new Category
-            {
-                Name = categoryDTO.Name,
-                Description = categoryDTO.Description,
-                DepartmentId = categoryDTO.DepartmentId
-            });
+            var category = await _unitOfWork.Category.CreateAsync(categoryDTO.ToEntity());
             await _unitOfWork.CommitAsync();
 
-            return new CategoryResponseDTO
-            {
-                Id = category.Id,
-                Name = category.Name,
-                Description = category.Description,
-                DepartmentId = category.DepartmentId,
-                DepartmentName = category.Department.Name
-            };
+            return category.ToResponseDto();
         }
 
         public async Task DeleteCategoryAsync(int Id)
@@ -46,14 +34,7 @@ namespace Fixi.Core.Services
         {
             var result = await _unitOfWork.Category.GetAllAsync();
 
-            return result.Select(c => new CategoryResponseDTO
-            {
-                Id = c.Id,
-                Name = c.Name,
-                Description = c.Description,
-                DepartmentId = c.DepartmentId,
-                DepartmentName = c.Department.Name
-            });
+            return result.Select(c => c.ToResponseDto());
         }
 
         public Task UpdateAsync(UpdateCategoryDTO categoryDTO)
@@ -63,13 +44,7 @@ namespace Fixi.Core.Services
 
         private async Task UpdateAndCommitAsync(UpdateCategoryDTO categoryDTO)
         {
-            await _unitOfWork.Category.UpdateAsync(new Category
-            {
-                Id = categoryDTO.Id,
-                Name = categoryDTO.Name,
-                Description = categoryDTO.Description,
-                DepartmentId = categoryDTO.DepartmentId
-            });
+            await _unitOfWork.Category.UpdateAsync(categoryDTO.ToEntity());
             await _unitOfWork.CommitAsync();
         }
     }

@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Text;
 using Fixi.Core.Domain.Repositories_Contracts;
 using Fixi.Core.DTOs.SLADTOs;
+using Fixi.Core.Mappings;
 
 namespace Fixi.Core.Services
 {
@@ -20,12 +21,7 @@ namespace Fixi.Core.Services
 
         public async Task<int> CreateSLA(SLACreateDTO createDTO)
         {
-            var setting = new SLASetting
-            {
-                Priority = createDTO.Priority,
-                ResolutionTimeMinutes = createDTO.ResolutionTimeMinutes,
-                ResponseTimeMinutes = createDTO.ResponseTimeMinutes
-            };
+            var setting = createDTO.ToEntity();
 
             await _unitOfWork.SLASetting.CreateAsync(setting);
             await _unitOfWork.CommitAsync();

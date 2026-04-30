@@ -3,6 +3,7 @@ using Fixi.Core.Domain.Repositories_Contracts;
 using Fixi.Core.DTOs.shared;
 using Fixi.Core.DTOs.TicketDTOs;
 using Fixi.Core.Enums;
+using Fixi.Core.Mappings;
 using Fixi.Core.ServicesContracts;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -40,29 +41,7 @@ namespace Fixi.WebAPI.Controllers
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             Ticket createdTicket = await _ticketService.CreateTicketAsync(createTicketDTO, userId);
-            TicketFullResponseDTO responseDTO = new TicketFullResponseDTO
-            {
-                Title = createdTicket.Title,
-                Description = createdTicket.Description,
-                AssignedDate = createdTicket.AssignedDate,
-                AssignedToName = createdTicket.AssignedTo?.UserName,
-                CategoryName = createdTicket.Category?.Name,
-                DepartmentName = createdTicket.Category?.Department?.Name,
-                ClosedDate = createdTicket.ClosedDate,
-                CreatedDate = createdTicket.CreatedDate,
-                Id = createdTicket.Id,
-                LastModifiedById = createdTicket.LastModifiedById,
-                LastModifiedByName = createdTicket.LastModifiedBy?.UserName,
-                LastModifiedDate = createdTicket.LastModifiedDate,
-                Priority = createdTicket.Priority,
-                Status = createdTicket.Status,
-                ReportedByName = createdTicket.ReportedBy?.UserName,
-                ResolvedDate = createdTicket.ResolvedDate,
-                SLAResolutionBreached = createdTicket.SLAResolutionBreached,
-                SLAResolutionDeadline = createdTicket.SLAResolutionDeadline,
-                SLAResponseBreached = createdTicket.SLAResponseBreached,
-                SLAResponseDeadline = createdTicket.SLAResponseDeadline
-            };
+            var responseDTO = createdTicket.ToFullResponseDto();
             return CreatedAtAction(nameof(GetTicketById), new { id = createdTicket.Id }, responseDTO);
         }
 

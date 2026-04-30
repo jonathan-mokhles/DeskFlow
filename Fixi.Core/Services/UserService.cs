@@ -3,6 +3,7 @@ using Fixi.Core.Domain.Repositories_Contracts;
 using Fixi.Core.DTOs.shared;
 using Fixi.Core.DTOs.UsersDTOs;
 using Fixi.Core.Exceptions;
+using Fixi.Core.Mappings;
 using Fixi.Core.ServicesContracts;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -34,15 +35,7 @@ namespace Fixi.Core.Services
                 throw new ValidationException("Specified role does not exist");
             }
 
-            ApplicationUser newUser = new ApplicationUser
-            {
-                UserName = registerDTO.Email,
-                Email = registerDTO.Email,
-                FullName = registerDTO.FullName,
-                DepartmentId = registerDTO.DepartmentId,
-                PhoneNumber = registerDTO.Phone,
-
-            };
+            ApplicationUser newUser = registerDTO.ToEntity();
 
             var result = await _identityService.CreateUserAsync(newUser, registerDTO.Password);
 
@@ -69,9 +62,7 @@ namespace Fixi.Core.Services
                 throw new NotFoundException("User not found");
             }
 
-            userToUpdate.FullName = updateDTO.FullName;
-            userToUpdate.DepartmentId = updateDTO.DepartmentId;
-            userToUpdate.PhoneNumber = updateDTO.Phone;
+            updateDTO.ApplyTo(userToUpdate);
             var oldRoles = await _identityService.GetUserRolesAsync(userToUpdate);
 
             if(oldRoles.FirstOrDefault() != updateDTO.Role)

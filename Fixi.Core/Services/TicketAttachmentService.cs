@@ -2,6 +2,7 @@
 using Fixi.Core.Domain.Repositories_Contracts;
 using Fixi.Core.DTOs.AttachementDTOs;
 using Fixi.Core.Exceptions;
+using Fixi.Core.Mappings;
 using Fixi.Core.ServicesContracts;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
@@ -42,21 +43,9 @@ namespace Fixi.Core.Services
         public async Task UploadAttachmentAsync(int ticketId, IFormFile file, string userId)
         {
             string filePath = await _fileStorageService.SaveFileAsync(file, ticketId);
-            var attachment = new TicketAttachment
-            {
-                TicketId = ticketId,
-                FileName = file.FileName,
-                FilePath = filePath,
-                FileSize = file.Length,
-                MimeType = file.ContentType,
-                UploadedById = userId,
-                UploadedDate = DateTime.UtcNow,
-                
+            var attachment = file.ToEntity(ticketId, filePath, userId);
 
-            
-            };
-
-             await _attachmentRepository.CreateAsync(attachment);
+            await _attachmentRepository.CreateAsync(attachment);
 
         }
 

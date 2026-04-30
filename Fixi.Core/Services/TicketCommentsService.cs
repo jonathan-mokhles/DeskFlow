@@ -1,7 +1,7 @@
 ﻿using Fixi.Core.Domain.Repositories_Contracts;
 using Fixi.Core.DTOs.CommentDTOs;
+using Fixi.Core.Mappings;
 using Fixi.Core.ServicesContracts;
-using Fixi.Core.Domain.Entity;
 
 namespace Fixi.Core.Services
 {
@@ -17,14 +17,7 @@ namespace Fixi.Core.Services
 
         public async Task AddCommentToTicketAsync(CommentCreateDTO comment)
         {
-            await _unitOfWork.TicketComment.CreateAsync(new TicketComment {
-                CommentText = comment.CommentText,
-                TicketId = comment.TicketId,
-                CreatedDate = comment.CreatedDate,
-                IsInternal = comment.IsInternal,
-                UserId = comment.UserId,
-
-            });
+            await _unitOfWork.TicketComment.CreateAsync(comment.ToEntity());
             await _unitOfWork.CommitAsync();
         }
 

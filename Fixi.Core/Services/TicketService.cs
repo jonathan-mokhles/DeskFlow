@@ -5,6 +5,7 @@ using Fixi.Core.DTOs.shared;
 using Fixi.Core.DTOs.TicketDTOs;
 using Fixi.Core.Enums;
 using Fixi.Core.Exceptions;
+using Fixi.Core.Mappings;
 using Fixi.Core.ServicesContracts;
 using Hangfire;
 using System.ComponentModel.DataAnnotations;
@@ -32,21 +33,14 @@ namespace Fixi.Core.Services
                 throw new ValidationException("SLA settings not found for the specified priority.");
             }
 
-            Ticket ticket = new Ticket
-            {
-                Title = ticketDTO.Title,
-                Description = ticketDTO.Description,
-                Priority = (TicketPriority)ticketDTO.Priority,
-                Status = TicketStatus.Open,
-                CategoryId = ticketDTO.CategoryId,
-                ReportedById = UserID,
-                CreatedDate = DateTime.UtcNow,
-                LastModifiedDate = DateTime.UtcNow,
-                SLAResolutionDeadline = DateTime.UtcNow.AddMinutes(slaSetting.ResolutionTimeMinutes),
-                SLAResponseDeadline = DateTime.UtcNow.AddMinutes(slaSetting.ResponseTimeMinutes),
-                LastModifiedById = UserID
-
-            };
+            Ticket ticket = ticketDTO.ToEntity();
+            ticket.Status = TicketStatus.Open;
+            ticket.ReportedById = UserID;
+            ticket.CreatedDate = DateTime.UtcNow;
+            ticket.LastModifiedDate = DateTime.UtcNow;
+            ticket.SLAResolutionDeadline = DateTime.UtcNow.AddMinutes(slaSetting.ResolutionTimeMinutes);
+            ticket.SLAResponseDeadline = DateTime.UtcNow.AddMinutes(slaSetting.ResponseTimeMinutes);
+            ticket.LastModifiedById = UserID;
 
             await _unitOfWork.Ticket.CreateAsync(ticket);
 
