@@ -183,14 +183,14 @@
             <param name="updateTicketDTO">An object containing the updated ticket details. All fields are required.</param>
             <returns>A 204 No Content response if the ticket is updated successfully; otherwise, a 400 Bad Request response containing error details.</returns>
         </member>
-        <member name="M:Fixi.WebAPI.Controllers.TicketsController.UpdateTicketStatus(System.Int32,System.Int32)">
+        <member name="M:Fixi.WebAPI.Controllers.TicketsController.UpdateTicketStatus(System.Int32,Fixi.Core.DTOs.TicketDTOs.TicketUpdateStatusDTO)">
             <summary>
             Updates the status of the specified ticket to a new value.
             </summary>
             <remarks>This operation requires the caller to have appropriate permissions to modify the
             ticket. </remarks>
             <param name="ticketId">The unique identifier of the ticket to update.</param>
-            <param name="newStatus">The new status value to assign to the ticket. Must be an integer between 0 and 6, inclusive.</param>
+            <param name="statusDTO">An object containing the new status value and an optional comment.</param>
             <returns>A result indicating the outcome of the operation. Returns 204 No Content if the update is successful, or 400
             Bad Request if the new status value is invalid.</returns>
         </member>

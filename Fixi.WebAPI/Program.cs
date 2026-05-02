@@ -18,9 +18,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using Microsoft.OpenApi;
-using System.Security.Claims;
 using System.Text;
+using Hangfire;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -155,5 +154,8 @@ app.UseAuthorization();
 app.UseHangfireDashboard("/hangfire");
 
 app.MapControllers();
+
+
+RecurringJob.AddOrUpdate<ITicketService>("CheckSLA", service => service.UpdateSLAStatusesAsync(), Cron.Hourly);
 
 app.Run();

@@ -168,5 +168,50 @@ namespace Fixi.Infrastructure.Repositories
                 ChangeReason = a.ChangeReason
             }).ToListAsync();
         }
+
+        public async Task<TicketUsersEmails> GetTicketUsersEmailsAsync(int ticketId)
+        {
+            return await _db.Tickets
+                .Where(t => t.Id == ticketId)
+                .Select(t => new TicketUsersEmails
+                {
+                    ReporterEmail = t.ReportedBy.Email ?? string.Empty,
+                    TechnicianEmail = t.AssignedTo != null
+                        ? t.AssignedTo.Email ?? string.Empty
+                        : string.Empty
+                })
+                .FirstOrDefaultAsync() ?? new TicketUsersEmails();
+        }
+
+
+        public async Task<IEnumerable<int>> GetTicketIdsResponseDeadlineBreachedAsync()
+        {
+            _db.ChangeTracker.Clear(); // Clear the change tracker to avoid tracking issues
+            return await _db.Tickets
+                .Where(t => !t.SLAResponseBreached && t.SLAResponseDeadline < DateTime.UtcNow && t.Status == TicketStatus.Open)
+                .Select(t => t.Id)
+                .ToListAsync()
+                .ContinueWith(task => (IEnumerable<int>)task);
+        }
+
+        public Task<IEnumerable<int>> GetTicketIdsResolutionDeadlineBreachedAsync()
+        {
+            _db.ChangeTracker.Clear(); // Clear the change tracker to avoid tracking issues
+            return _db.Tickets
+                .Where(t => !t.SLAResolutionBreached && t.SLAResolutionDeadline < DateTime.UtcNow && t.Status != TicketStatus.Canceled && t.Status != TicketStatus.Resolved && t.Status != TicketStatus.Closed)
+                .Select(t => t.Id)
+                .ToListAsync()
+                .ContinueWith(task => (IEnumerable<int>)task);
+        }
+
+        public async Task UpdateSLAResponseBreachedStatus(int ticketId)
+        {
+            await _db.Tickets.Where(t => t.Id == ticketId).ExecuteUpdateAsync(t => t.SetProperty(t => t.SLAResponseBreached, true));
+        }
+
+        public async Task UpdateSLAResolutionStatus(int ticketId)
+        {
+            await _db.Tickets.Where(t => t.Id == ticketId).ExecuteUpdateAsync(t => t.SetProperty(t => t.SLAResolutionBreached, true));
+        }
     }
 }

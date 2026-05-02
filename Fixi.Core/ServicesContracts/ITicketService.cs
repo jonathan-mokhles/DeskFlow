@@ -17,12 +17,14 @@ namespace Fixi.Core.ServicesContracts
         public Task<TicketFullResponseDTO> GetTicketByIdAsync(int ticketId);
 
         public Task UpdateTicketAsync(UpdateTicketDTO updateTicketDTO, UserClaims claims);
-        public Task UpdateTicketStatus(int ticketId, TicketStatus newStatus, UserClaims calims);
+        public Task UpdateTicketStatus(int ticketId, TicketUpdateStatusDTO statusDTO, UserClaims calims);
         public Task UpdateTicketPriority(TicketDTO ticket, int newPriority, string userID);
         public Task AssignTechnician(int ticketId, string newtechnicianId, UserClaims calims);
         public Task DeleteTicket(int ticketId, string userId);
 
         public Task<IEnumerable<TicketAuditHistoryDTO>> GetTicketHistoryAsync(int ticketId);
+
+        public Task UpdateSLAStatusesAsync();
 
     }
 }

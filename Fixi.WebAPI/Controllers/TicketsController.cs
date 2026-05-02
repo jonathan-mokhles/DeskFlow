@@ -120,16 +120,16 @@ namespace Fixi.WebAPI.Controllers
         /// <remarks>This operation requires the caller to have appropriate permissions to modify the
         /// ticket. </remarks>
         /// <param name="ticketId">The unique identifier of the ticket to update.</param>
-        /// <param name="newStatus">The new status value to assign to the ticket. Must be an integer between 0 and 6, inclusive.</param>
+        /// <param name="statusDTO">An object containing the new status value and an optional comment.</param>
         /// <returns>A result indicating the outcome of the operation. Returns 204 No Content if the update is successful, or 400
         /// Bad Request if the new status value is invalid.</returns>
         [HttpPatch("{ticketId}/status")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(typeof(ApiErrorResponse), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ApiErrorResponse), StatusCodes.Status403Forbidden)]
-        public async Task<ActionResult> UpdateTicketStatus(int ticketId, int newStatus)
+        public async Task<ActionResult> UpdateTicketStatus(int ticketId, TicketUpdateStatusDTO statusDTO)
         {
-            if(newStatus < 0 || newStatus > 6)
+            if(statusDTO.NewStatus < 0 || statusDTO.NewStatus > 6)
             {
                 return BadRequest(new ApiErrorResponse
                 {
@@ -138,7 +138,7 @@ namespace Fixi.WebAPI.Controllers
                     TraceId = HttpContext.TraceIdentifier
                 });
             }
-            await _ticketService.UpdateTicketStatus(ticketId, (TicketStatus)newStatus, GetUserClaims());
+            await _ticketService.UpdateTicketStatus(ticketId, statusDTO, GetUserClaims());
             return NoContent();
         }
 

@@ -19,5 +19,10 @@ namespace Fixi.Core.Domain.Repositories_Contracts
         Task AssignTechnician(int ticketId, string technicianId);
         Task<TicketDTO?> GetTicketAsync(int ticketId);
         Task<IEnumerable<TicketAuditHistoryDTO>> GetTicketHisoryAsync(int ticketId);
+        Task<TicketUsersEmails> GetTicketUsersEmailsAsync(int ticketId);
+        Task UpdateSLAResponseBreachedStatus(int ticketId);
+        Task UpdateSLAResolutionStatus(int ticketId);
+        Task <IEnumerable<int>> GetTicketIdsResponseDeadlineBreachedAsync();
+        Task <IEnumerable<int>> GetTicketIdsResolutionDeadlineBreachedAsync();
     }
 }

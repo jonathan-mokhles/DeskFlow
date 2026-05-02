@@ -1,6 +1,7 @@
 ﻿using Fixi.Core.Domain.Entity;
 using Fixi.Core.Domain.IdentityEntity;
 using Fixi.Core.Domain.Repositories_Contracts;
+using Fixi.Core.Domain.Rules;
 using Fixi.Core.DTOs.shared;
 using Fixi.Core.DTOs.TicketDTOs;
 using Fixi.Core.Enums;
@@ -9,6 +10,7 @@ using Fixi.Core.Mappings;
 using Fixi.Core.ServicesContracts;
 using Hangfire;
 using System.ComponentModel.DataAnnotations;
+using System.Net.NetworkInformation;
 
 namespace Fixi.Core.Services
 {
@@ -123,26 +125,19 @@ namespace Fixi.Core.Services
             await _unitOfWork.CommitAsync();
         }
 
-        public async Task UpdateTicketStatus(int ticketId, TicketStatus newStatus, UserClaims claims)
+        public async Task UpdateTicketStatus(int ticketId, TicketUpdateStatusDTO statusDTO, UserClaims claims)
         {
             TicketDTO? ticket =  await _unitOfWork.Ticket.GetTicketAsync(ticketId);
-            string Role = claims.Role;
+            RoleEnum Role = (RoleEnum)Enum.Parse(typeof(RoleEnum), claims.Role);
             if (ticket == null)
             {
                 throw new TicketNotFoundException();
             }
-            if (ticket.DepartmentId != claims.DeptId || (claims.UserId != ticket.AssignedToId && ticket.ReportedById != claims.UserId && Role != nameof(RoleEnum.Manager)))
+            if(!TicketStatusRules.TransitionRules.Any(x => x.From == ticket.status && x.Role == Role && x.To == (TicketStatus)statusDTO.NewStatus))
             {
-                throw new UnauthorizedTicketAccessException();
+                throw new BusinessRuleViolationException($"User with role {claims.Role} is not allowed to change status from {ticket.status} to {(TicketStatus)statusDTO.NewStatus}.");
             }
-            if (!allowedTransitions[ticket.status].Contains(newStatus))
-            {
-                throw new BusinessRuleViolationException($"Invalid status transition");
-            }
-            if((ticket.status == TicketStatus.InProgress || newStatus == TicketStatus.InProgress) && Role != nameof(RoleEnum.Technician))
-            {
-                throw new BusinessRuleViolationException("Only technicians can move tickets to or from In Progress status.");
-            }  
+
             await _unitOfWork.TicketAuditLog.CreateAsync(new TicketAuditLog
             {
                 TicketId = ticketId,
@@ -150,10 +145,13 @@ namespace Fixi.Core.Services
                 ChangeType = "Updated Status",
                 ChangedDate = DateTime.UtcNow,
                 OldValue = ticket.status.ToString(),
-                NewValue = newStatus.ToString()
+                NewValue = ((TicketStatus)statusDTO.NewStatus).ToString(),
+                ChangeReason = statusDTO.Comment
+
             });
-            await _unitOfWork.Ticket.UpdateStatus(ticketId, newStatus);
+            await _unitOfWork.Ticket.UpdateStatus(ticketId, (TicketStatus)statusDTO.NewStatus);
             await _unitOfWork.CommitAsync();
+            await SendEmail((TicketStatus)statusDTO.NewStatus, ticketId);
         }
 
         public async Task AssignTechnician(int ticketId, string newtechnicianId, UserClaims calims)
@@ -193,7 +191,7 @@ namespace Fixi.Core.Services
             });
             await _unitOfWork.Ticket.AssignTechnician(ticketId, newtechnicianId);
             await _unitOfWork.CommitAsync();
-            if(NewAssigned.Id != calims.UserId)
+            if(NewAssigned.Id != calims.UserId && !string.IsNullOrEmpty(NewAssigned.Email))
             {
                 BackgroundJob.Enqueue(() => _mailService.SendEmailAsync(NewAssigned.Email, "New Ticket Assignment", $"You have been assigned to ticket, With priority: {ticket.priority}. Please check the system for details."));
             }
@@ -225,17 +223,52 @@ namespace Fixi.Core.Services
             return await _unitOfWork.Ticket.GetTicketHisoryAsync(ticketId);
         }
 
-
-
-        private static Dictionary<TicketStatus, List<TicketStatus>> allowedTransitions = new Dictionary<TicketStatus, List<TicketStatus>>
+        public async Task UpdateSLAStatusesAsync()
         {
-            { TicketStatus.Open, new List<TicketStatus> { TicketStatus.InProgress, TicketStatus.Canceled } },
-            { TicketStatus.InProgress, new List<TicketStatus> { TicketStatus.Resolved, TicketStatus.OnHold } },
-            {TicketStatus.OnHold, new List<TicketStatus> { TicketStatus.InProgress, TicketStatus.Canceled }  },
-            { TicketStatus.Resolved, new List<TicketStatus> { TicketStatus.Closed, TicketStatus.InProgress } },
-            { TicketStatus.Closed, new List<TicketStatus>() },
-            { TicketStatus.Canceled, new List<TicketStatus>() },
-        };
+            var responseBreachedTicketIds = await _unitOfWork.Ticket.GetTicketIdsResponseDeadlineBreachedAsync();
+            foreach (var ticketId in responseBreachedTicketIds)
+            {
+                var emails = await _unitOfWork.Ticket.GetTicketUsersEmailsAsync(ticketId);
+                await _unitOfWork.Ticket.UpdateSLAResponseBreachedStatus(ticketId);
+                BackgroundJob.Enqueue(() => _mailService.SendEmailAsync(emails.TechnicianEmail, "SLA Response Breached", "The SLA response time for your ticket has been breached."));
+            }
+            var resolutionBreachedTicketIds = await _unitOfWork.Ticket.GetTicketIdsResolutionDeadlineBreachedAsync();
+            foreach (var ticketId in resolutionBreachedTicketIds)
+            {
+                var emails = await _unitOfWork.Ticket.GetTicketUsersEmailsAsync(ticketId);
+                await _unitOfWork.Ticket.UpdateSLAResolutionStatus(ticketId);
+                BackgroundJob.Enqueue(() => _mailService.SendEmailAsync(emails.TechnicianEmail, "SLA Resolution Breached", "The SLA resolution time for your ticket has been breached."));
+            }
+        }
+
+        private async Task SendEmail(TicketStatus status,int ticketId)
+        {
+            TicketUsersEmails? usersEmails = await _unitOfWork.Ticket.GetTicketUsersEmailsAsync(ticketId);
+            if (usersEmails == null)
+            {
+                return;
+            }
+            switch (status)
+            {
+                case TicketStatus.Resolved:
+                    if (string.IsNullOrEmpty(usersEmails.ReporterEmail))
+                    {
+                        BackgroundJob.Enqueue(() => _mailService.SendEmailAsync(usersEmails.ReporterEmail, "Ticket Resolved", $"Your ticket with ID {ticketId} has been resolved. Please check the system for details."));
+                        return;
+                    }
+                    break;
+                case TicketStatus.Canceled:
+                    if (string.IsNullOrEmpty(usersEmails.TechnicianEmail))
+                    {
+                        BackgroundJob.Enqueue(() => _mailService.SendEmailAsync(usersEmails.TechnicianEmail, "Ticket Canceled", $"ticket with ID {ticketId} has been canceled. Please check the system for details."));
+                        return;
+                    }
+                    break;
+                default:
+                    return;
+            }
+        }
+
 
     }
 }
