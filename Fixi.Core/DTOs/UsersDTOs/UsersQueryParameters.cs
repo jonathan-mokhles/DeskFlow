@@ -1,9 +1,9 @@
-﻿using Fixi.Core.DTOs.shared;
+﻿using DeskFkow.Core.DTOs.shared;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Fixi.Core.DTOs.UsersDTOs
+namespace DeskFkow.Core.DTOs.UsersDTOs
 {
     public class UsersQueryParameters: PaginationParams
     {

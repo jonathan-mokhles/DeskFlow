@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Fixi.Core.Settings
+namespace DeskFkow.Core.Settings
 {
     public class JwtSettings
     {

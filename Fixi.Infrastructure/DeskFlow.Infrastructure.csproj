@@ -15,7 +15,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Fixi.Core\Fixi.Core.csproj" />
+    <ProjectReference Include="..\Fixi.Core\DeskFlow.Core.csproj" />
   </ItemGroup>
 
   <ItemGroup>

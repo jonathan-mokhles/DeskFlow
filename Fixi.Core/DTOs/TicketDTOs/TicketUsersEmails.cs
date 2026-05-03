@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Fixi.Core.DTOs.TicketDTOs
+namespace DeskFkow.Core.DTOs.TicketDTOs
 {
     public class TicketUsersEmails
     {

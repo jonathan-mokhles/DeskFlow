@@ -1,14 +1,14 @@
-﻿using Fixi.Core.Domain.IdentityEntity;
-using Fixi.Core.DTOs.AccountDTOs;
-using Fixi.Core.DTOs.shared;
-using Fixi.Core.ServicesContracts;
+﻿using DeskFkow.Core.Domain.IdentityEntity;
+using DeskFkow.Core.DTOs.AccountDTOs;
+using DeskFkow.Core.DTOs.shared;
+using DeskFkow.Core.ServicesContracts;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 using System.Security.Claims;
 
-namespace Fixi.WebAPI.Controllers
+namespace DeskFkow.WebAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]

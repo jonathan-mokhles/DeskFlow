@@ -1,9 +1,9 @@
-﻿using Fixi.Core.Domain.Entity;
+﻿using DeskFkow.Core.Domain.Entity;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Fixi.Core.Domain.Repositories_Contracts
+namespace DeskFkow.Core.Domain.RepositoriesContracts
 {
     public interface ITicketAuditLogRepository
     {

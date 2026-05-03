@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using Fixi.Core.Domain.Repositories_Contracts;
-using Fixi.Infrastructure.DbContext;
+using DeskFkow.Core.Domain.RepositoriesContracts;
+using DeskFkow.Infrastructure.DbContext;
 
-namespace Fixi.Infrastructure.Repositories
+namespace DeskFkow.Infrastructure.Repositories
 {
     public class UnitOfWork : IUnitOfWork
     {

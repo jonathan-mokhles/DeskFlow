@@ -1,7 +1,7 @@
-﻿using Fixi.Core.Authorization.Requirements;
-using Fixi.Core.Domain.Repositories_Contracts;
-using Fixi.Core.DTOs.TicketDTOs;
-using Fixi.Core.Enums;
+﻿using DeskFkow.Core.Authorization.Requirements;
+using DeskFkow.Core.Domain.RepositoriesContracts;
+using DeskFkow.Core.DTOs.TicketDTOs;
+using DeskFkow.Core.Enums;
 using Microsoft.AspNetCore.Authorization;
 using System;
 using System.Collections.Generic;
@@ -9,7 +9,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 
-namespace Fixi.Core.Authorization.Handlers
+namespace DeskFkow.Core.Authorization.Handlers
 {
     public class ManagerOrReporterOrAssignedToHandler : AuthorizationHandler<ManagerOrReporterOrAssignedToRequirement, int>
     {

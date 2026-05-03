@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Fixi.Core.DTOs.AccountDTOs
+namespace DeskFkow.Core.DTOs.AccountDTOs
 {
     public record AuthResponseDTO
     {

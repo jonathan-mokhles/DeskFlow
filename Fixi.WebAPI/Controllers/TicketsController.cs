@@ -1,17 +1,17 @@
-﻿using Fixi.Core.Domain.Entity;
-using Fixi.Core.Domain.Repositories_Contracts;
-using Fixi.Core.DTOs.shared;
-using Fixi.Core.DTOs.TicketDTOs;
-using Fixi.Core.Enums;
-using Fixi.Core.Mappings;
-using Fixi.Core.ServicesContracts;
+﻿using DeskFkow.Core.Domain.Entity;
+using DeskFkow.Core.Domain.RepositoriesContracts;
+using DeskFkow.Core.DTOs.shared;
+using DeskFkow.Core.DTOs.TicketDTOs;
+using DeskFkow.Core.Enums;
+using DeskFkow.Core.Mappings;
+using DeskFkow.Core.ServicesContracts;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 
-namespace Fixi.WebAPI.Controllers
+namespace DeskFkow.WebAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
@@ -38,7 +38,7 @@ namespace Fixi.WebAPI.Controllers
         public async Task<ActionResult> CreateTicket([FromBody] CreateTicketDTO createTicketDTO)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            Ticket createdTicket = await _ticketService.CreateTicketAsync(createTicketDTO, userId);
+            Ticket createdTicket = await _ticketService.CreateTicketAsync(createTicketDTO);
             var responseDTO = createdTicket.ToFullResponseDto();
             return CreatedAtAction(nameof(GetTicketById), new { id = createdTicket.Id }, responseDTO);
         }
@@ -82,7 +82,7 @@ namespace Fixi.WebAPI.Controllers
             var role = User.FindFirstValue(ClaimTypes.Role);
             string userid = User.FindFirstValue(JwtRegisteredClaimNames.Sub)!;
 
-            var tickets = await _ticketService.GetAllTicketsAsync(queryParams, GetUserClaims());
+            var tickets = await _ticketService.GetAllTicketsAsync(queryParams);
             return Ok(tickets);
         }
 
@@ -107,7 +107,12 @@ namespace Fixi.WebAPI.Controllers
                     TraceId = HttpContext.TraceIdentifier
                 });
             }
-            await _ticketService.UpdateTicketAsync(updateTicketDTO.ToEntity(), GetUserClaims());
+            var authorizationResult = await _authorizationService.AuthorizeAsync(User, id, "ReporterOnly");
+            if (!authorizationResult.Succeeded)
+            {
+                return Forbid();
+            }
+            await _ticketService.UpdateTicketAsync(updateTicketDTO.ToEntity());
             return NoContent();
         }
 
@@ -136,7 +141,7 @@ namespace Fixi.WebAPI.Controllers
                     TraceId = HttpContext.TraceIdentifier
                 });
             }
-            await _ticketService.UpdateTicketStatus(ticketId, statusDTO, GetUserClaims());
+            await _ticketService.UpdateTicketStatus(ticketId, statusDTO);
             return NoContent();
         }
 
@@ -150,14 +155,23 @@ namespace Fixi.WebAPI.Controllers
         /// <returns>A result indicating the outcome of the operation. Returns a 204 No Content response if the assignment is
         /// successful.</returns>
         [HttpPatch("{ticketId}/assign")]
-        [Authorize(policy: "ManagerOrTechnician")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(typeof(ApiErrorResponse), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ApiErrorResponse), StatusCodes.Status403Forbidden)]
 
         public async Task<ActionResult> AssignTechnician(int ticketId, string newTechnicianId)
         {
-            await _ticketService.AssignTechnician(ticketId, newTechnicianId, GetUserClaims());
+            var authorizationResult = await _authorizationService.AuthorizeAsync(User, ticketId, "ManagerOrTechnician");
+            if(!authorizationResult.Succeeded)
+            {
+                return StatusCode(StatusCodes.Status403Forbidden, new ApiErrorResponse
+                {
+                    Message = "You do not have permission to assign a technician to this ticket.",
+                    Errors = new List<string> { "Unauthorized access." },
+                    TraceId = HttpContext.TraceIdentifier
+                });
+            }
+            await _ticketService.AssignTechnician(ticketId, newTechnicianId);
             return NoContent();
         }
 
@@ -196,7 +210,7 @@ namespace Fixi.WebAPI.Controllers
                 });
             }
 
-            await _ticketService.UpdateTicketPriority(ticketId, newPriority, User.FindFirstValue(JwtRegisteredClaimNames.Sub)!);
+            await _ticketService.UpdateTicketPriority(ticketId, newPriority);
             return NoContent();
         }
 
@@ -212,8 +226,7 @@ namespace Fixi.WebAPI.Controllers
         [ProducesResponseType(typeof(ApiErrorResponse), StatusCodes.Status400BadRequest)]
         public async Task<ActionResult> DeleteTicket(int id)
         {
-            string userid = User.FindFirstValue(JwtRegisteredClaimNames.Sub)!;
-            await _ticketService.DeleteTicket(id, userid);
+            await _ticketService.DeleteTicket(id);
             return NoContent();
         }
 
@@ -247,19 +260,6 @@ namespace Fixi.WebAPI.Controllers
         }
 
 
-        private UserClaims GetUserClaims()
-        {
-            string role = User.FindFirstValue(ClaimTypes.Role)!;
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier)!;
-
-            string deptId = User.FindFirstValue("DeptId")!;
-            int.TryParse(deptId, out var parsedDeptId);
-            return new UserClaims
-            {
-                UserId = userId,
-                Role = role,
-                DeptId = parsedDeptId,
-            };
-        }
+        
     }
 }

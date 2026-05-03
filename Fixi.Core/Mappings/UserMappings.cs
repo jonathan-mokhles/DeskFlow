@@ -1,9 +1,9 @@
-using Fixi.Core.Domain.IdentityEntity;
-using Fixi.Core.DTOs.AccountDTOs;
-using Fixi.Core.DTOs.UsersDTOs;
+using DeskFkow.Core.Domain.IdentityEntity;
+using DeskFkow.Core.DTOs.AccountDTOs;
+using DeskFkow.Core.DTOs.UsersDTOs;
 using System;
 
-namespace Fixi.Core.Mappings
+namespace DeskFkow.Core.Mappings
 {
     public static class UserMappings
     {

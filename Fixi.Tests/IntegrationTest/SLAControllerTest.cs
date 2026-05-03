@@ -1,8 +1,8 @@
-using Fixi.Tests.IntegrationTest.Helpers;
+using DeskFkow.Tests.IntegrationTest.Helpers;
 using FluentAssertions;
 using System.Net;
 
-namespace Fixi.Tests.IntegrationTest
+namespace DeskFkow.Tests.IntegrationTest
 {
     public class SLAControllerTest : IClassFixture<CustomWebApplicationFactory>
     {

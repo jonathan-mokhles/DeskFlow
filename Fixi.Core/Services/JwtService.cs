@@ -1,17 +1,17 @@
-﻿using Fixi.Core.Domain.IdentityEntity;
-using Fixi.Core.DTOs.AccountDTOs;
-using Fixi.Core.ServicesContracts;
+﻿using DeskFkow.Core.Domain.IdentityEntity;
+using DeskFkow.Core.DTOs.AccountDTOs;
+using DeskFkow.Core.ServicesContracts;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
-using Fixi.Core.Exceptions;
-using Fixi.Core.Settings;
+using DeskFkow.Core.Exceptions;
+using DeskFkow.Core.Settings;
 using Microsoft.Extensions.Options;
 using System.ComponentModel.DataAnnotations;
 
-namespace Fixi.Core.Services
+namespace DeskFkow.Core.Services
 {
     public class JwtService : IJwtService
     {

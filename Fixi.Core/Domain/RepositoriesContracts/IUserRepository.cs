@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using Fixi.Core.DTOs.UsersDTOs;
+using DeskFkow.Core.DTOs.UsersDTOs;
 
-namespace Fixi.Core.Domain.Repositories_Contracts
+namespace DeskFkow.Core.Domain.RepositoriesContracts
 {
     public interface IUserRepository
     {

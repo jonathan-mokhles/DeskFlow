@@ -1,15 +1,17 @@
-using Fixi.Core.Authorization.Handlers;
-using Fixi.Core.Authorization.Requirements;
-using Fixi.Core.Domain.IdentityEntity;
-using Fixi.Core.Domain.Repositories_Contracts;
-using Fixi.Core.DTOs.shared;
-using Fixi.Core.Enums;
-using Fixi.Core.Services;
-using Fixi.Core.ServicesContracts;
-using Fixi.Core.Settings;
-using Fixi.Infrastructure.DbContext;
-using Fixi.Infrastructure.Repositories;
-using Fixi.WebAPI.Middlewares;
+using DeskFkow.Core.Authorization.Handlers;
+using DeskFkow.Core.Authorization.Requirements;
+using DeskFkow.Core.Domain.IdentityEntity;
+using DeskFkow.Core.Domain.RepositoriesContracts;
+using DeskFkow.Core.DTOs.shared;
+using DeskFkow.Core.Enums;
+using DeskFkow.Core.Services;
+using DeskFkow.Core.ServicesContracts;
+using DeskFkow.Core.Settings;
+using DeskFkow.Infrastructure.DbContext;
+using DeskFkow.Infrastructure.Repositories;
+using DeskFkow.WebAPI;
+using DeskFkow.WebAPI.Middlewares;
+using Hangfire;
 using Hangfire;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
@@ -19,7 +21,6 @@ using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
-using Hangfire;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -58,21 +59,28 @@ builder.Services.AddAuthorization( options =>
      {
          options.AddPolicy("AdminOrManager", policy => policy.RequireRole(nameof(RoleEnum.Manager), nameof(RoleEnum.Admin)));
          options.AddPolicy("AdminOnly", policy => policy.RequireRole(nameof(RoleEnum.Admin)));
-         options.AddPolicy("ManagerOrTechnician", policy => policy.RequireRole(nameof(RoleEnum.Manager), nameof(RoleEnum.Technician)));
 
          options.AddPolicy("ManagerOrReporterOrAssignedTo", policy =>
              policy.Requirements.Add(new ManagerOrReporterOrAssignedToRequirement()));
 
          options.AddPolicy("ManagerOrAdmin", policy =>
              policy.Requirements.Add(new ManagerOrAdminRequirement()));
+         options.AddPolicy("ReporterOnly", policy =>
+             policy.Requirements.Add(new ReporterOnlyRequirement()));
+         options.AddPolicy("ManagerOrAdmin", policy =>
+             policy.Requirements.Add(new ManagerOrAdminRequirement()));
      });
 
 builder.Services.AddScoped<IAuthorizationHandler,ManagerOrReporterOrAssignedToHandler >();
 builder.Services.AddScoped<IAuthorizationHandler,ManagerOrAdminHandler >();
-
+builder.Services.AddScoped<IAuthorizationHandler,ReporterOnlyHandler >();
+builder.Services.AddScoped<IAuthorizationHandler,ManagerOrAdminHandler >();
 
 builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection("Jwt"));
 builder.Services.Configure<MailSettings>(builder.Configuration.GetSection("Mail"));
+
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddScoped<ICurrentUserService, CurrentUserService>();
 
 builder.Services.AddScoped<IJwtService, JwtService>();
 builder.Services.AddScoped<ITicketService, TicketService>();

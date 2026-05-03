@@ -1,9 +1,9 @@
-﻿using Fixi.Core.DTOs.CommentDTOs;
+﻿using DeskFkow.Core.DTOs.CommentDTOs;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Fixi.Core.ServicesContracts
+namespace DeskFkow.Core.ServicesContracts
 {
     public interface ITicketCommentsService
     {

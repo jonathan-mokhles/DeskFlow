@@ -2,11 +2,11 @@
 using System.Collections.Generic;
 using System.Text;
 using System.ComponentModel.DataAnnotations;
-using Fixi.Core.Enums;
+using DeskFkow.Core.Enums;
 
 
 
-namespace Fixi.Core.DTOs.SLADTOs
+namespace DeskFkow.Core.DTOs.SLADTOs
 {
     public  class SLACreateDTO
     {

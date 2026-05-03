@@ -1,17 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using Fixi.Core.Domain.Entity;
-using Fixi.Core.Domain.IdentityEntity;
-using Fixi.Core.Domain.Repositories_Contracts;
-using Fixi.Core.DTOs.TicketDTOs;
-using Fixi.Infrastructure.DbContext;
+using DeskFkow.Core.Domain.Entity;
+using DeskFkow.Core.Domain.IdentityEntity;
+using DeskFkow.Core.Domain.RepositoriesContracts;
+using DeskFkow.Core.DTOs.TicketDTOs;
+using DeskFkow.Infrastructure.DbContext;
 using Microsoft.EntityFrameworkCore;
 using System.Threading;
 using System.Threading.Tasks;
-using Fixi.Core.Enums;
+using DeskFkow.Core.Enums;
 
-namespace Fixi.Infrastructure.Repositories
+namespace DeskFkow.Infrastructure.Repositories
 {
     public class TicketRepository : ITicketRepository
     {
@@ -121,19 +121,19 @@ namespace Fixi.Infrastructure.Repositories
 
         }
 
-        public async Task UpdateStatus(int ticketId, TicketStatus newStatus)
+        public async Task UpdateStatus(int ticketId, TicketStatus newStatus, string userID)
         {
-            await _db.Tickets.Where(t => t.Id == ticketId).ExecuteUpdateAsync(t => t.SetProperty(t => t.Status, newStatus));
+            await _db.Tickets.Where(t => t.Id == ticketId).ExecuteUpdateAsync(t => t.SetProperty(t => t.Status, newStatus).SetProperty(t => t.LastModifiedById, userID).SetProperty(t => t.LastModifiedDate, DateTime.UtcNow));
         }
 
-        public async Task UpdatePriority(int ticketId, int newPriority)
+        public async Task UpdatePriority(int ticketId, int newPriority, string userID)
         {
-            await _db.Tickets.Where(t => t.Id == ticketId).ExecuteUpdateAsync(t => t.SetProperty(t => t.Priority, (TicketPriority)newPriority));
+            await _db.Tickets.Where(t => t.Id == ticketId).ExecuteUpdateAsync(t => t.SetProperty(t => t.Priority, (TicketPriority)newPriority).SetProperty(t => t.LastModifiedById, userID).SetProperty(t => t.LastModifiedDate, DateTime.UtcNow));
         }
 
-        public async Task AssignTechnician(int ticketId, string technicianId)
+        public async Task AssignTechnician(int ticketId, string technicianId, string userID)
         {
-            await _db.Tickets.Where(t => t.Id == ticketId).ExecuteUpdateAsync(t => t.SetProperty(t => t.AssignedToId, technicianId));
+            await _db.Tickets.Where(t => t.Id == ticketId).ExecuteUpdateAsync(t => t.SetProperty(t => t.AssignedToId, technicianId).SetProperty(t => t.LastModifiedById, userID).SetProperty(t => t.LastModifiedDate, DateTime.UtcNow));
         }
 
         public async Task<TicketDTO?> GetTicketAsync(int ticketId)
@@ -185,22 +185,19 @@ namespace Fixi.Infrastructure.Repositories
 
         public async Task<IEnumerable<int>> GetTicketIdsResponseDeadlineBreachedAsync()
         {
-            _db.ChangeTracker.Clear(); // Clear the change tracker to avoid tracking issues
             return await _db.Tickets
                 .Where(t => !t.SLAResponseBreached && t.SLAResponseDeadline < DateTime.UtcNow && t.Status == TicketStatus.Open)
                 .Select(t => t.Id)
-                .ToListAsync()
-                .ContinueWith(task => (IEnumerable<int>)task);
+                .ToListAsync();
+                
         }
 
-        public Task<IEnumerable<int>> GetTicketIdsResolutionDeadlineBreachedAsync()
+        public async Task<IEnumerable<int>> GetTicketIdsResolutionDeadlineBreachedAsync()
         {
-            _db.ChangeTracker.Clear(); // Clear the change tracker to avoid tracking issues
-            return _db.Tickets
+            return await _db.Tickets
                 .Where(t => !t.SLAResolutionBreached && t.SLAResolutionDeadline < DateTime.UtcNow && t.Status != TicketStatus.Canceled && t.Status != TicketStatus.Resolved && t.Status != TicketStatus.Closed)
                 .Select(t => t.Id)
-                .ToListAsync()
-                .ContinueWith(task => (IEnumerable<int>)task);
+                .ToListAsync();
         }
 
         public async Task UpdateSLAResponseBreachedStatus(int ticketId)

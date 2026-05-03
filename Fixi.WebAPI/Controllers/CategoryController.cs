@@ -1,11 +1,11 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Fixi.Core.ServicesContracts;
-using Fixi.Core.DTOs.CategoryDTOs;
-using Fixi.Core.DTOs.shared;
+using DeskFkow.Core.ServicesContracts;
+using DeskFkow.Core.DTOs.CategoryDTOs;
+using DeskFkow.Core.DTOs.shared;
 
-namespace Fixi.WebAPI.Controllers
+namespace DeskFkow.WebAPI.Controllers
 {
     /// <summary>
     /// Represents an API controller that manages category resources.</summary>

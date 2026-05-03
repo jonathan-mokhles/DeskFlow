@@ -1,9 +1,9 @@
-using Fixi.Core.Domain.Entity;
-using Fixi.Core.DTOs.AttachementDTOs;
+using DeskFkow.Core.Domain.Entity;
+using DeskFkow.Core.DTOs.AttachementDTOs;
 using Microsoft.AspNetCore.Http;
 using System;
 
-namespace Fixi.Core.Mappings
+namespace DeskFkow.Core.Mappings
 {
     public static class AttachmentMappings
     {

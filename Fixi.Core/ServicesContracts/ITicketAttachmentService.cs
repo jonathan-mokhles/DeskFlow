@@ -1,10 +1,10 @@
-﻿using Fixi.Core.DTOs.AttachementDTOs;
+﻿using DeskFkow.Core.DTOs.AttachementDTOs;
 using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Fixi.Core.ServicesContracts
+namespace DeskFkow.Core.ServicesContracts
 {
     public interface ITicketAttachmentService
     {

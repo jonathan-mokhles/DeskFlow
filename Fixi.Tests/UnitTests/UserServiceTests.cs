@@ -1,15 +1,15 @@
-﻿using Fixi.Core.Services;
-using Fixi.Core.ServicesContracts;
+﻿using DeskFkow.Core.Services;
+using DeskFkow.Core.ServicesContracts;
 using Moq;
-using Fixi.Core.DTOs.UsersDTOs;
-using Fixi.Core.Domain.Repositories_Contracts;
-using Fixi.Core.Domain.IdentityEntity;
+using DeskFkow.Core.DTOs.UsersDTOs;
+using DeskFkow.Core.Domain.RepositoriesContracts;
+using DeskFkow.Core.Domain.IdentityEntity;
 using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Identity;
 using FluentAssertions;
-using Fixi.Core.Exceptions;
+using DeskFkow.Core.Exceptions;
 
-namespace Fixi.Tests.UnitTests
+namespace DeskFkow.Tests.UnitTests
 {
     public class UserServiceTests
     {

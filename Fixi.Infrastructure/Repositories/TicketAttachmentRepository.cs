@@ -1,10 +1,10 @@
-﻿using Fixi.Core.Domain.Entity;
-using Fixi.Core.Domain.Repositories_Contracts;
-using Fixi.Core.DTOs.AttachementDTOs;
-using Fixi.Infrastructure.DbContext;
+﻿using DeskFkow.Core.Domain.Entity;
+using DeskFkow.Core.Domain.RepositoriesContracts;
+using DeskFkow.Core.DTOs.AttachementDTOs;
+using DeskFkow.Infrastructure.DbContext;
 using Microsoft.EntityFrameworkCore;
 
-namespace Fixi.Infrastructure.Repositories
+namespace DeskFkow.Infrastructure.Repositories
 {
     public class TicketAttachmentRepository : ITicketAttachmentRepository
     {

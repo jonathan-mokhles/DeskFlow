@@ -1,7 +1,7 @@
-using Fixi.Core.Domain.Entity;
-using Fixi.Core.DTOs.SLADTOs;
+using DeskFkow.Core.Domain.Entity;
+using DeskFkow.Core.DTOs.SLADTOs;
 
-namespace Fixi.Core.Mappings
+namespace DeskFkow.Core.Mappings
 {
     public static class SlaMappings
     {

@@ -1,48 +1,41 @@
 ﻿using AutoFixture;
-using Fixi.Core.Domain.Entity;
-using Fixi.Core.Domain.IdentityEntity;
-using Fixi.Core.Domain.Repositories_Contracts;
-using Fixi.Core.DTOs.shared;
-using Fixi.Core.DTOs.TicketDTOs;
-using Fixi.Core.Enums;
-using Fixi.Core.Exceptions;
-using Fixi.Core.Services;
-using Fixi.Core.ServicesContracts;
+using DeskFkow.Core.Domain.Entity;
+using DeskFkow.Core.Domain.IdentityEntity;
+using DeskFkow.Core.Domain.RepositoriesContracts;
+using DeskFkow.Core.DTOs.shared;
+using DeskFkow.Core.DTOs.TicketDTOs;
+using DeskFkow.Core.Enums;
+using DeskFkow.Core.Exceptions;
+using DeskFkow.Core.Services;
+using DeskFkow.Core.ServicesContracts;
+using DeskFkow.Core.ServicesContracts.Abstractions;
 using FluentAssertions;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Moq;
 using System.ComponentModel.DataAnnotations;
 
-namespace Fixi.Tests.UnitTests
+namespace DeskFkow.Tests.UnitTests
 {
     public class TicketServiceTests
     {
-        Mock<ITicketRepository> _ticketRepository;
         Mock<IUnitOfWork> _unitOfWork;
-        Mock<ISLASettingRepository> _slaRepo;
-        Mock<ITicketAuditLogRepository> _ticketAuditLogRepo;
         Mock<IIdentityService> _identityService;
-        Mock<MailService> _mailService;
+        Mock<IBackgroundJobService> _backgroundJob;
+        Mock<ICurrentUserService> _currentUserService;
         ITicketService _ticketService;
         Fixture _fixture;
 
 
         public TicketServiceTests()
         {
-            _ticketRepository = new Mock<ITicketRepository>();
             _unitOfWork = new Mock<IUnitOfWork>();
-            _slaRepo = new Mock<ISLASettingRepository>();
-            _ticketAuditLogRepo = new Mock<ITicketAuditLogRepository>();
             _identityService = new Mock<IIdentityService>();
-            _mailService = new Mock<MailService>();
+            _backgroundJob = new Mock<IBackgroundJobService>();
+            _currentUserService = new Mock<ICurrentUserService>();
 
-            _unitOfWork.SetupGet(x => x.Ticket).Returns(_ticketRepository.Object);
-            _unitOfWork.SetupGet(x => x.TicketAuditLog).Returns(_ticketAuditLogRepo.Object);
-            _unitOfWork.SetupGet(x => x.SLASetting).Returns(_slaRepo.Object);
             _unitOfWork.Setup(x => x.CommitAsync()).ReturnsAsync(1);
 
-            _ticketService = new TicketService(_unitOfWork.Object, _identityService.Object, _mailService.Object);
-
+            _ticketService = new TicketService(_unitOfWork.Object, _identityService.Object, _backgroundJob.Object, _currentUserService.Object);
             _fixture = new Fixture();
             _fixture.Behaviors.OfType<ThrowingRecursionBehavior>()
                 .ToList()

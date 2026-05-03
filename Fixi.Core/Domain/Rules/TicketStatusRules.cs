@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using Fixi.Core.Enums;
+using DeskFkow.Core.Enums;
 
-namespace Fixi.Core.Domain.Rules
+namespace DeskFkow.Core.Domain.Rules
 {
     public class TicketStatusRules
     {

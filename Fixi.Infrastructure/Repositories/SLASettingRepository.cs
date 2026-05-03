@@ -1,14 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using Fixi.Core.Domain.Entity;
-using Fixi.Core.Domain.Repositories_Contracts;
-using Fixi.Core.DTOs.SLADTOs;
-using Fixi.Core.Enums;
-using Fixi.Infrastructure.DbContext;
+using DeskFkow.Core.Domain.Entity;
+using DeskFkow.Core.Domain.RepositoriesContracts;
+using DeskFkow.Core.DTOs.SLADTOs;
+using DeskFkow.Core.Enums;
+using DeskFkow.Infrastructure.DbContext;
 using Microsoft.EntityFrameworkCore;
 
-namespace Fixi.Infrastructure.Repositories
+namespace DeskFkow.Infrastructure.Repositories
 {
     public class SLASettingRepository : ISLASettingRepository
     {

@@ -1,10 +1,10 @@
-﻿using Fixi.Core.Domain.Entity;
-using Fixi.Core.DTOs.CommentDTOs;
+﻿using DeskFkow.Core.Domain.Entity;
+using DeskFkow.Core.DTOs.CommentDTOs;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Fixi.Core.Domain.Repositories_Contracts
+namespace DeskFkow.Core.Domain.RepositoriesContracts
 {
     public interface ITicketCommentRepository
     {

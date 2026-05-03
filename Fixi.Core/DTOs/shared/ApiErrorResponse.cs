@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Fixi.Core.DTOs.shared
+namespace DeskFkow.Core.DTOs.shared
 {
     public record ApiErrorResponse
     {

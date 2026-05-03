@@ -5,8 +5,8 @@ using System.Text;
 
 namespace DeskFkow.Core.Authorization.Requirements
 {
-    public class ManagerOrReporterOrAssignedToRequirement : IAuthorizationRequirement
+    public class ReporterOnlyRequirement : IAuthorizationRequirement
     {
-        public ManagerOrReporterOrAssignedToRequirement() { }
+        public ReporterOnlyRequirement() { }
     }
 }

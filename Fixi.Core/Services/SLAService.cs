@@ -1,13 +1,13 @@
-﻿using Fixi.Core.Domain.Entity;
-using Fixi.Core.ServicesContracts;
+﻿using DeskFkow.Core.Domain.Entity;
+using DeskFkow.Core.ServicesContracts;
 using System;
 using System.Collections.Generic;
 using System.Text;
-using Fixi.Core.Domain.Repositories_Contracts;
-using Fixi.Core.DTOs.SLADTOs;
-using Fixi.Core.Mappings;
+using DeskFkow.Core.Domain.RepositoriesContracts;
+using DeskFkow.Core.DTOs.SLADTOs;
+using DeskFkow.Core.Mappings;
 
-namespace Fixi.Core.Services
+namespace DeskFkow.Core.Services
 {
     public  class SLAService : ISLAService
     {

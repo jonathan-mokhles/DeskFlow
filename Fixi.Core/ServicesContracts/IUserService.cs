@@ -1,10 +1,10 @@
-﻿using Fixi.Core.DTOs.UsersDTOs;
+﻿using DeskFkow.Core.DTOs.UsersDTOs;
 using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Fixi.Core.ServicesContracts
+namespace DeskFkow.Core.ServicesContracts
 {
     public interface IUserService
     {

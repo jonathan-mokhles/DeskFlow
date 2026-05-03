@@ -1,10 +1,10 @@
-﻿using Fixi.Core.Domain.Entity;
-using Fixi.Core.ServicesContracts;
+﻿using DeskFkow.Core.Domain.Entity;
+using DeskFkow.Core.ServicesContracts;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Fixi.WebAPI.Controllers
+namespace DeskFkow.WebAPI.Controllers
 {
     /// <summary>
     /// Represents an API controller that manages department resources.

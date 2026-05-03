@@ -1,9 +1,9 @@
-﻿using Fixi.Core.Domain.Entity;
-using Fixi.Core.ServicesContracts;
-using Fixi.Core.ServicesContracts.Abstractions;
+﻿using DeskFkow.Core.Domain.Entity;
+using DeskFkow.Core.ServicesContracts;
+using DeskFkow.Core.ServicesContracts.Abstractions;
 using Hangfire;
 
-namespace Fixi.Infrastructure.BackgroundJobs
+namespace DeskFkow.Infrastructure.BackgroundJobs
 {
     public class BackgroundJobService : IBackgroundJobService
     {

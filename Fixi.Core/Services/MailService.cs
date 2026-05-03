@@ -1,13 +1,13 @@
-﻿using Fixi.Core.ServicesContracts;
+﻿using DeskFkow.Core.ServicesContracts;
 using System;
 using System.Collections.Generic;
 using System.Text;
 using MailKit.Net.Smtp;
 using Microsoft.Extensions.Options;
-using Fixi.Core.Settings;
+using DeskFkow.Core.Settings;
 using MimeKit;
 
-namespace Fixi.Core.Services
+namespace DeskFkow.Core.Services
 {
     public class MailService : IMailService
     {

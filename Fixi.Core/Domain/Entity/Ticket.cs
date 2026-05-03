@@ -1,5 +1,5 @@
-﻿using Fixi.Core.Domain.IdentityEntity;
-using Fixi.Core.Enums;
+﻿using DeskFkow.Core.Domain.IdentityEntity;
+using DeskFkow.Core.Enums;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -7,7 +7,7 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text;
 
-namespace Fixi.Core.Domain.Entity
+namespace DeskFkow.Core.Domain.Entity
 {
     public class Ticket
     {

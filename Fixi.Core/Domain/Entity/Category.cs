@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text;
 
-namespace Fixi.Core.Domain.Entity
+namespace DeskFkow.Core.Domain.Entity
 {
     public class Category
     {

@@ -1,15 +1,15 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Fixi.Core.ServicesContracts;
+using DeskFkow.Core.ServicesContracts;
 
 
 
 using Microsoft.AspNetCore.Authorization;
-using Fixi.Core.DTOs.SLADTOs;
-using Fixi.Core.DTOs.shared;
-using Fixi.Core.Domain.Entity;
+using DeskFkow.Core.DTOs.SLADTOs;
+using DeskFkow.Core.DTOs.shared;
+using DeskFkow.Core.Domain.Entity;
 
-namespace Fixi.WebAPI.Controllers
+namespace DeskFkow.WebAPI.Controllers
 {
     /// <summary>
     /// Provides API endpoints for managing Service Level Agreement (SLA) resources. 

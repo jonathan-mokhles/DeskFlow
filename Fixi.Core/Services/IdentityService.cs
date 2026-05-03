@@ -1,9 +1,9 @@
-﻿using Fixi.Core.Domain.IdentityEntity;
-using Fixi.Core.DTOs.UsersDTOs;
-using Fixi.Core.ServicesContracts;
+﻿using DeskFkow.Core.Domain.IdentityEntity;
+using DeskFkow.Core.DTOs.UsersDTOs;
+using DeskFkow.Core.ServicesContracts;
 using Microsoft.AspNetCore.Identity;
 
-namespace Fixi.Core.Services
+namespace DeskFkow.Core.Services
 {
     public class IdentityService: IIdentityService
     {

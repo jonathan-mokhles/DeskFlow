@@ -1,8 +1,8 @@
-using Fixi.Core.Domain.Entity;
-using Fixi.Core.DTOs.TicketDTOs;
-using Fixi.Core.Enums;
+using DeskFkow.Core.Domain.Entity;
+using DeskFkow.Core.DTOs.TicketDTOs;
+using DeskFkow.Core.Enums;
 
-namespace Fixi.Core.Mappings
+namespace DeskFkow.Core.Mappings
 {
     public static class TicketMappings
     {

@@ -1,13 +1,13 @@
-﻿using Fixi.Core.DTOs.shared;
-using Fixi.Core.DTOs.UsersDTOs;
-using Fixi.Core.Enums;
-using Fixi.Core.ServicesContracts;
+﻿using DeskFkow.Core.DTOs.shared;
+using DeskFkow.Core.DTOs.UsersDTOs;
+using DeskFkow.Core.Enums;
+using DeskFkow.Core.ServicesContracts;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 
-namespace Fixi.WebAPI.Controllers
+namespace DeskFkow.WebAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]

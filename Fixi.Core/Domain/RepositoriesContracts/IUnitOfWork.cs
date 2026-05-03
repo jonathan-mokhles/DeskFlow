@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Fixi.Core.Domain.Repositories_Contracts
+namespace DeskFkow.Core.Domain.RepositoriesContracts
 {
     public interface IUnitOfWork : IDisposable
     {

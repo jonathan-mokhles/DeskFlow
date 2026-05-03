@@ -1,6 +1,6 @@
-@Fixi.WebAPI_HostAddress = http://localhost:5224
+@DeskFkow.WebAPI_HostAddress = http://localhost:5224
 
-GET {{Fixi.WebAPI_HostAddress}}/weatherforecast/
+GET {{DeskFkow.WebAPI_HostAddress}}/weatherforecast/
 Accept: application/json
 
 ###

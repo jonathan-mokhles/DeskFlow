@@ -1,15 +1,15 @@
-﻿using Fixi.Core.Domain.IdentityEntity;
-using Fixi.Core.Exceptions;
-using Fixi.Core.Services;
-using Fixi.Core.ServicesContracts;
-using Fixi.Core.Settings;
+﻿using DeskFkow.Core.Domain.IdentityEntity;
+using DeskFkow.Core.Exceptions;
+using DeskFkow.Core.Services;
+using DeskFkow.Core.ServicesContracts;
+using DeskFkow.Core.Settings;
 using FluentAssertions;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Moq;
 using System.Security.Claims;
 
-namespace Fixi.Tests.UnitTests
+namespace DeskFkow.Tests.UnitTests
 {
     public class JwtServiceTests
     {

@@ -1,8 +1,8 @@
-﻿using Fixi.Core.ServicesContracts;
+﻿using DeskFkow.Core.ServicesContracts;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Hosting;
 
-namespace Fixi.Core.Services
+namespace DeskFkow.Core.Services
 {
     public class FileStorageService : IFileStorageService
     {

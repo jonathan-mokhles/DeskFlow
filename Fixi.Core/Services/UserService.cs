@@ -1,14 +1,14 @@
-﻿using Fixi.Core.Domain.IdentityEntity;
-using Fixi.Core.Domain.Repositories_Contracts;
-using Fixi.Core.DTOs.shared;
-using Fixi.Core.DTOs.UsersDTOs;
-using Fixi.Core.Exceptions;
-using Fixi.Core.Mappings;
-using Fixi.Core.ServicesContracts;
+﻿using DeskFkow.Core.Domain.IdentityEntity;
+using DeskFkow.Core.Domain.RepositoriesContracts;
+using DeskFkow.Core.DTOs.shared;
+using DeskFkow.Core.DTOs.UsersDTOs;
+using DeskFkow.Core.Exceptions;
+using DeskFkow.Core.Mappings;
+using DeskFkow.Core.ServicesContracts;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
-namespace Fixi.Core.Services
+namespace DeskFkow.Core.Services
 {
     public class UserService : IUserService
     {

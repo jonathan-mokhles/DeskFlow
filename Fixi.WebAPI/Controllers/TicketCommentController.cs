@@ -1,12 +1,12 @@
-﻿using Fixi.Core.Domain.Repositories_Contracts;
-using Fixi.Core.DTOs.CommentDTOs;
-using Fixi.Core.DTOs.shared;
-using Fixi.Core.ServicesContracts;
+﻿using DeskFkow.Core.Domain.RepositoriesContracts;
+using DeskFkow.Core.DTOs.CommentDTOs;
+using DeskFkow.Core.DTOs.shared;
+using DeskFkow.Core.ServicesContracts;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.IdentityModel.Tokens.Jwt;
 
-namespace Fixi.WebAPI.Controllers
+namespace DeskFkow.WebAPI.Controllers
 {
     /// <summary>
     /// for managing comments related to tickets.

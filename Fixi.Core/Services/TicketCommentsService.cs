@@ -1,9 +1,9 @@
-﻿using Fixi.Core.Domain.Repositories_Contracts;
-using Fixi.Core.DTOs.CommentDTOs;
-using Fixi.Core.Mappings;
-using Fixi.Core.ServicesContracts;
+﻿using DeskFkow.Core.Domain.RepositoriesContracts;
+using DeskFkow.Core.DTOs.CommentDTOs;
+using DeskFkow.Core.Mappings;
+using DeskFkow.Core.ServicesContracts;
 
-namespace Fixi.Core.Services
+namespace DeskFkow.Core.Services
 {
     public class TicketCommentsService : ITicketCommentsService
     {

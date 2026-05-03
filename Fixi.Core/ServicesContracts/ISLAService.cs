@@ -1,10 +1,10 @@
-﻿using Fixi.Core.Domain.Entity;
-using Fixi.Core.DTOs.SLADTOs;
+﻿using DeskFkow.Core.Domain.Entity;
+using DeskFkow.Core.DTOs.SLADTOs;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Fixi.Core.ServicesContracts
+namespace DeskFkow.Core.ServicesContracts
 {
     public interface ISLAService
     {

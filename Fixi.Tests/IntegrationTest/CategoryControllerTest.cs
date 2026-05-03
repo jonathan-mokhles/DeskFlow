@@ -1,10 +1,10 @@
-using Fixi.Core.DTOs.CategoryDTOs;
-using Fixi.Tests.IntegrationTest.Helpers;
+using DeskFkow.Core.DTOs.CategoryDTOs;
+using DeskFkow.Tests.IntegrationTest.Helpers;
 using FluentAssertions;
 using System.Net;
 using System.Net.Http.Json;
 
-namespace Fixi.Tests.IntegrationTest
+namespace DeskFkow.Tests.IntegrationTest
 {
     public class CategoryControllerTest : IClassFixture<CustomWebApplicationFactory>
     {

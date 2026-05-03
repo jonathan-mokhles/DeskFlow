@@ -1,16 +1,16 @@
-﻿using Fixi.Core.Domain.Entity;
-using Fixi.Core.Domain.Repositories_Contracts;
-using Fixi.Core.DTOs.AttachementDTOs;
-using Fixi.Core.Exceptions;
-using Fixi.Core.Mappings;
-using Fixi.Core.ServicesContracts;
+﻿using DeskFkow.Core.Domain.Entity;
+using DeskFkow.Core.Domain.RepositoriesContracts;
+using DeskFkow.Core.DTOs.AttachementDTOs;
+using DeskFkow.Core.Exceptions;
+using DeskFkow.Core.Mappings;
+using DeskFkow.Core.ServicesContracts;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Fixi.Core.Services
+namespace DeskFkow.Core.Services
 {
     public class TicketAttachmentService : ITicketAttachmentService
     {

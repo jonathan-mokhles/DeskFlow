@@ -1,11 +1,11 @@
-﻿using Fixi.Core.Domain.Entity;
+﻿using DeskFkow.Core.Domain.Entity;
 using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text;
 
-namespace Fixi.Core.Domain.IdentityEntity
+namespace DeskFkow.Core.Domain.IdentityEntity
 {
     public class ApplicationUser:IdentityUser
     {

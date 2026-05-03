@@ -1,7 +1,7 @@
-using Fixi.Core.Domain.Entity;
-using Fixi.Core.DTOs.CategoryDTOs;
+using DeskFkow.Core.Domain.Entity;
+using DeskFkow.Core.DTOs.CategoryDTOs;
 
-namespace Fixi.Core.Mappings
+namespace DeskFkow.Core.Mappings
 {
     public static class CategoryMappings
     {

@@ -1,33 +1,35 @@
-﻿using Fixi.Core.Domain.Entity;
-using Fixi.Core.Domain.IdentityEntity;
-using Fixi.Core.Domain.Repositories_Contracts;
-using Fixi.Core.Domain.Rules;
-using Fixi.Core.DTOs.shared;
-using Fixi.Core.DTOs.TicketDTOs;
-using Fixi.Core.Enums;
-using Fixi.Core.Exceptions;
-using Fixi.Core.Mappings;
-using Fixi.Core.ServicesContracts;
-using Fixi.Core.ServicesContracts.Abstractions;
+﻿using DeskFkow.Core.Domain.Entity;
+using DeskFkow.Core.Domain.IdentityEntity;
+using DeskFkow.Core.Domain.RepositoriesContracts;
+using DeskFkow.Core.Domain.Rules;
+using DeskFkow.Core.DTOs.shared;
+using DeskFkow.Core.DTOs.TicketDTOs;
+using DeskFkow.Core.Enums;
+using DeskFkow.Core.Exceptions;
+using DeskFkow.Core.Mappings;
+using DeskFkow.Core.ServicesContracts;
+using DeskFkow.Core.ServicesContracts.Abstractions;
 using System.ComponentModel.DataAnnotations;
 using System.Net.NetworkInformation;
 
-namespace Fixi.Core.Services
+namespace DeskFkow.Core.Services
 {
     public class TicketService : ITicketService
     {
         IUnitOfWork _unitOfWork;
         IIdentityService _identityService;
         IBackgroundJobService _backgroundJobService;
-        public TicketService(IUnitOfWork unitOfWork, IIdentityService identityService, IBackgroundJobService backgroundJobService)
+        ICurrentUserService _currentUser;
+        public TicketService(IUnitOfWork unitOfWork, IIdentityService identityService, IBackgroundJobService backgroundJobService, ICurrentUserService currentUserService)
         {
             _unitOfWork = unitOfWork;
             _identityService = identityService;
             _backgroundJobService = backgroundJobService;
+            _currentUser = currentUserService;
         }
 
 
-        public async Task<Ticket> CreateTicketAsync(CreateTicketDTO ticketDTO,string UserID)
+        public async Task<Ticket> CreateTicketAsync(CreateTicketDTO ticketDTO)
         {
             SLASetting? slaSetting = await _unitOfWork.SLASetting.GetByPriorityAsync(ticketDTO.Priority);
             if (slaSetting == null)
@@ -37,19 +39,19 @@ namespace Fixi.Core.Services
 
             Ticket ticket = ticketDTO.ToEntity();
             ticket.Status = TicketStatus.Open;
-            ticket.ReportedById = UserID;
+            ticket.ReportedById = _currentUser.UserId;
             ticket.CreatedDate = DateTime.UtcNow;
             ticket.LastModifiedDate = DateTime.UtcNow;
             ticket.SLAResolutionDeadline = DateTime.UtcNow.AddMinutes(slaSetting.ResolutionTimeMinutes);
             ticket.SLAResponseDeadline = DateTime.UtcNow.AddMinutes(slaSetting.ResponseTimeMinutes);
-            ticket.LastModifiedById = UserID;
+            ticket.LastModifiedById = _currentUser.UserId;
 
             await _unitOfWork.Ticket.CreateAsync(ticket);
 
             TicketAuditLog auditLog = new TicketAuditLog
             {
                 Ticket = ticket,
-                ChangedById = UserID,
+                ChangedById = _currentUser.UserId,
                 ChangeType = "Created",
                 ChangedDate = ticket.CreatedDate,
                 OldValue = null,
@@ -68,36 +70,25 @@ namespace Fixi.Core.Services
 
         }
 
-        public async Task<IEnumerable<TicketResponseDTO>> GetAllTicketsAsync(TicketQueryParams queryParams, UserClaims claims)
+        public async Task<IEnumerable<TicketResponseDTO>> GetAllTicketsAsync(TicketQueryParams queryParams)
         {
-            if(claims.Role == nameof(RoleEnum.Manager) || claims.Role == nameof(RoleEnum.Technician))
+            if(_currentUser.Role == nameof(RoleEnum.Manager) || _currentUser.Role == nameof(RoleEnum.Technician))
             {
-                queryParams.DepartmentId = claims.DeptId;
+                queryParams.DepartmentId = _currentUser.DeptId;
             }
-            else if(claims.Role == nameof(RoleEnum.User))
+            else if(_currentUser.Role == nameof(RoleEnum.User))
             {
-                queryParams.ReporterId = claims.UserId;
+                queryParams.ReporterId = _currentUser.UserId;
             }
             return await _unitOfWork.Ticket.GetAllAsync(queryParams);
         }
 
-        public async Task UpdateTicketAsync(Ticket updateTicket, UserClaims claims)
+        public async Task UpdateTicketAsync(Ticket updateTicket)
         {
-            TicketDTO? ticket = await _unitOfWork.Ticket.GetTicketAsync(updateTicket.Id);
-
-            if (ticket == null)
-            {
-                throw new TicketNotFoundException();
-            }
-            if ( ticket.ReportedById != claims.UserId )
-            {
-                throw new UnauthorizedTicketAccessException();
-            }
-
             await _unitOfWork.TicketAuditLog.CreateAsync(new TicketAuditLog
             {
                 TicketId = updateTicket.Id,
-                ChangedById = claims.UserId,
+                ChangedById = updateTicket.LastModifiedById,
                 ChangeType = "Updated Ticket",
                 ChangedDate = DateTime.UtcNow,
             });
@@ -115,7 +106,7 @@ namespace Fixi.Core.Services
             return ticket;
         }
 
-        public async Task UpdateTicketPriority(int ticketId, int newPriority, string userID )
+        public async Task UpdateTicketPriority(int ticketId, int newPriority)
         {
             TicketDTO? ticket = await _unitOfWork.Ticket.GetTicketAsync(ticketId);
             if (ticket == null)
@@ -125,33 +116,34 @@ namespace Fixi.Core.Services
             await _unitOfWork.TicketAuditLog.CreateAsync(new TicketAuditLog
             {
                 TicketId = ticket.Id,
-                ChangedById = userID,
+                ChangedById = _currentUser.UserId,
                 ChangeType = "Updated Priority",
                 ChangedDate = DateTime.UtcNow,
                 OldValue = ((TicketPriority)ticket.priority).ToString(),
                 NewValue = ((TicketPriority)newPriority).ToString()
             });
-            await _unitOfWork.Ticket.UpdatePriority(ticket.Id, newPriority);
+            await _unitOfWork.Ticket.UpdatePriority(ticket.Id, newPriority, _currentUser.UserId);
             await _unitOfWork.CommitAsync();
         }
 
-        public async Task UpdateTicketStatus(int ticketId, TicketUpdateStatusDTO statusDTO, UserClaims claims)
+        public async Task UpdateTicketStatus(int ticketId, TicketUpdateStatusDTO statusDTO)
         {
             TicketDTO? ticket =  await _unitOfWork.Ticket.GetTicketAsync(ticketId);
-            RoleEnum Role = (RoleEnum)Enum.Parse(typeof(RoleEnum), claims.Role);
+            RoleEnum Role = (RoleEnum)Enum.Parse(typeof(RoleEnum), _currentUser .Role);
             if (ticket == null)
             {
                 throw new TicketNotFoundException();
             }
+
             if(!TicketStatusRules.TransitionRules.Any(x => x.From == ticket.status && x.Role == Role && x.To == (TicketStatus)statusDTO.NewStatus))
             {
-                throw new BusinessRuleViolationException($"User with role {claims.Role} is not allowed to change status from {ticket.status} to {(TicketStatus)statusDTO.NewStatus}.");
+                throw new BusinessRuleViolationException($"User with role {_currentUser.Role} is not allowed to change status from {ticket.status} to {(TicketStatus)statusDTO.NewStatus}.");
             }
 
             await _unitOfWork.TicketAuditLog.CreateAsync(new TicketAuditLog
             {
                 TicketId = ticketId,
-                ChangedById = claims.UserId,
+                ChangedById = _currentUser.UserId,
                 ChangeType = "Updated Status",
                 ChangedDate = DateTime.UtcNow,
                 OldValue = ticket.status.ToString(),
@@ -159,32 +151,29 @@ namespace Fixi.Core.Services
                 ChangeReason = statusDTO.Comment
 
             });
-            await _unitOfWork.Ticket.UpdateStatus(ticketId, (TicketStatus)statusDTO.NewStatus);
+            await _unitOfWork.Ticket.UpdateStatus(ticketId, (TicketStatus)statusDTO.NewStatus, _currentUser.UserId);
             await _unitOfWork.CommitAsync();
             await SendEmail((TicketStatus)statusDTO.NewStatus, ticketId);
         }
 
-        public async Task AssignTechnician(int ticketId, string newtechnicianId, UserClaims calims)
+        public async Task AssignTechnician(int ticketId, string newtechnicianId)
         {
             TicketDTO? ticket = await _unitOfWork.Ticket.GetTicketAsync(ticketId);
             if (ticket == null)
             {
                 throw new TicketNotFoundException();
             }
-            if (ticket.DepartmentId != calims.DeptId)
-            {
-                throw new UnauthorizedTicketAccessException();
-            }
-            if (calims.Role == nameof(RoleEnum.Technician) && newtechnicianId != calims.UserId)
+            if (_currentUser.Role == nameof(RoleEnum.Technician) && newtechnicianId != _currentUser.UserId)
             {
                 throw new BusinessRuleViolationException("Technician can only assign themselves to a ticket.");
             }
+
             ApplicationUser? NewAssigned = await _identityService.FindByIdAsync(newtechnicianId);
             if (NewAssigned == null)
             {
                 throw new NotFoundException("Technician not found.");
             }
-            if(NewAssigned.DepartmentId != calims.DeptId)
+            if(NewAssigned.DepartmentId != _currentUser.DeptId)
             {
                 throw new BusinessRuleViolationException("Cannot assign technician from a different department.");
             }
@@ -192,22 +181,22 @@ namespace Fixi.Core.Services
             await _unitOfWork.TicketAuditLog.CreateAsync(new TicketAuditLog
             {
                 TicketId = ticketId,
-                ChangedById = calims.UserId,
+                ChangedById = _currentUser.UserId,
                 ChangeType = "Assigned Technician",
                 ChangedDate = DateTime.UtcNow,
                 OldValue = ticket.AssignedToFullname != null ? ticket.AssignedToFullname : "Unassigned",
                 NewValue = NewAssigned.FullName
 
             });
-            await _unitOfWork.Ticket.AssignTechnician(ticketId, newtechnicianId);
+            await _unitOfWork.Ticket.AssignTechnician(ticketId, newtechnicianId, _currentUser.UserId);
             await _unitOfWork.CommitAsync();
-            if(NewAssigned.Id != calims.UserId && !string.IsNullOrEmpty(NewAssigned.Email))
+            if(NewAssigned.Id != _currentUser.UserId && !string.IsNullOrEmpty(NewAssigned.Email))
             {
                _backgroundJobService.SendEmail(NewAssigned.Email, "New Ticket Assignment", $"You have been assigned to ticket, With priority: {ticket.priority}. Please check the system for details.");
             }
         }
 
-        public async Task DeleteTicket(int ticketId, string userId)
+        public async Task DeleteTicket(int ticketId)
         {
             TicketDTO? ticket = await _unitOfWork.Ticket.GetTicketAsync(ticketId);
             if (ticket == null)
@@ -217,7 +206,7 @@ namespace Fixi.Core.Services
             TicketAuditLog auditLog = new TicketAuditLog
             {
                 TicketId = ticketId,
-                ChangedById = userId,
+                ChangedById = _currentUser.UserId,
                 ChangeType = "Deleted",
                 ChangedDate = DateTime.UtcNow,
                 OldValue = $"Priority: {ticket.priority}, Status: {ticket.status}",

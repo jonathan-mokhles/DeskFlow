@@ -1,13 +1,13 @@
-﻿using Fixi.Core.Domain.Entity;
-using Fixi.Infrastructure.DbContext;
-using Fixi.Tests.IntegrationTest.Helpers;
+﻿using DeskFkow.Core.Domain.Entity;
+using DeskFkow.Infrastructure.DbContext;
+using DeskFkow.Tests.IntegrationTest.Helpers;
 using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
 using System.Net;
 using System.Net.Http.Json;
 using Xunit.Abstractions;
 
-namespace Fixi.Tests.IntegrationTest
+namespace DeskFkow.Tests.IntegrationTest
 {
     public class DepartmentcontrollerTest : IClassFixture<CustomWebApplicationFactory>
     {

@@ -9,14 +9,14 @@ using System.Text;
 
 namespace DeskFkow.Core.Authorization.Handlers
 {
-    public class ManagerOrAdminHandler : AuthorizationHandler<ManagerOrAdminRequirement, int>
+    public class ManagerOrTechnicianHandler : AuthorizationHandler<ManagerOrTechnicianRequirement, int>
     {
         private readonly ITicketRepository _ticketRepository;
-        public ManagerOrAdminHandler(ITicketRepository ticketRepository)
+        public ManagerOrTechnicianHandler(ITicketRepository ticketRepository)
         {
             _ticketRepository = ticketRepository;
         }
-        protected override async Task HandleRequirementAsync(AuthorizationHandlerContext context, ManagerOrAdminRequirement requirement, int resource)
+        protected override async Task HandleRequirementAsync(AuthorizationHandlerContext context, ManagerOrTechnicianRequirement requirement, int resource)
         {
             var ticket = await _ticketRepository.GetTicketAsync(resource);
             if (ticket == null)
@@ -26,7 +26,7 @@ namespace DeskFkow.Core.Authorization.Handlers
             }
             string role = context.User.Claims.FirstOrDefault(c => c.Type == "role")?.Value!;
             int deptID = int.Parse(context.User.Claims.FirstOrDefault(c => c.Type == "DeptId")?.Value ?? "0");
-            if ((role == nameof(RoleEnum.Manager) && deptID == ticket.DepartmentId) || role == nameof(RoleEnum.Admin))
+            if ((role == nameof(RoleEnum.Manager)|| role == nameof(RoleEnum.Technician)) && deptID == ticket.DepartmentId)
             {
                 context.Succeed(requirement);
             }

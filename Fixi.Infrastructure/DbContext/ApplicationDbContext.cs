@@ -1,13 +1,13 @@
-﻿using Fixi.Core.Domain.Entity;
-using Fixi.Core.Domain.IdentityEntity;
-using Fixi.Core.Enums;
+﻿using DeskFkow.Core.Domain.Entity;
+using DeskFkow.Core.Domain.IdentityEntity;
+using DeskFkow.Core.Enums;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 
-namespace Fixi.Infrastructure.DbContext
+namespace DeskFkow.Infrastructure.DbContext
 {
     public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     {

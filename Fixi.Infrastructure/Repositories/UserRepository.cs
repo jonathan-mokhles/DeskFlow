@@ -1,9 +1,9 @@
-﻿using Fixi.Core.Domain.Repositories_Contracts;
-using Fixi.Core.DTOs.UsersDTOs;
+﻿using DeskFkow.Core.Domain.RepositoriesContracts;
+using DeskFkow.Core.DTOs.UsersDTOs;
 using Microsoft.EntityFrameworkCore;
-using Fixi.Infrastructure.DbContext;
+using DeskFkow.Infrastructure.DbContext;
 
-namespace Fixi.Infrastructure.Repositories
+namespace DeskFkow.Infrastructure.Repositories
 {
     public class UserRepository : IUserRepository
     {

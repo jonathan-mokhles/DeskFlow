@@ -1,13 +1,13 @@
-﻿using Fixi.Core.Domain.Entity;
-using Fixi.Core.Domain.Repositories_Contracts;
-using Fixi.Core.DTOs.CategoryDTOs;
-using Fixi.Infrastructure.DbContext;
+﻿using DeskFkow.Core.Domain.Entity;
+using DeskFkow.Core.Domain.RepositoriesContracts;
+using DeskFkow.Core.DTOs.CategoryDTOs;
+using DeskFkow.Infrastructure.DbContext;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Fixi.Infrastructure.Repositories
+namespace DeskFkow.Infrastructure.Repositories
 {
     public class CategoryRepository : ICategoryRepository
     {

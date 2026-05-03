@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Fixi.Core.ServicesContracts.Abstractions
+namespace DeskFkow.Core.ServicesContracts.Abstractions
 {
     public interface IBackgroundJobService
     {

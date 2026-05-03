@@ -22,8 +22,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Fixi.Core\Fixi.Core.csproj" />
-    <ProjectReference Include="..\Fixi.Infrastructure\Fixi.Infrastructure.csproj" />
+    <ProjectReference Include="..\Fixi.Core\DeskFlow.Core.csproj" />
+    <ProjectReference Include="..\Fixi.Infrastructure\DeskFlow.Infrastructure.csproj" />
   </ItemGroup>
 
 	<ItemGroup>

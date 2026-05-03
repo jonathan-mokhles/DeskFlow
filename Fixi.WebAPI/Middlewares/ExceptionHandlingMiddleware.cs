@@ -1,9 +1,9 @@
-﻿using Fixi.Core.DTOs.shared;
-using Fixi.Core.Exceptions;
+﻿using DeskFkow.Core.DTOs.shared;
+using DeskFkow.Core.Exceptions;
 using System.ComponentModel.DataAnnotations;
 
 
-namespace Fixi.WebAPI.Middlewares
+namespace DeskFkow.WebAPI.Middlewares
 {
     public class ExceptionHandlingMiddleware
     {

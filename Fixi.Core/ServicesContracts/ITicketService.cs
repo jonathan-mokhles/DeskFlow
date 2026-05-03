@@ -1,26 +1,26 @@
-﻿using Fixi.Core.Domain.Entity;
-using Fixi.Core.Domain.Repositories_Contracts;
-using Fixi.Core.DTOs.shared;
-using Fixi.Core.DTOs.TicketDTOs;
-using Fixi.Core.Enums;
+﻿using DeskFkow.Core.Domain.Entity;
+using DeskFkow.Core.Domain.RepositoriesContracts;
+using DeskFkow.Core.DTOs.shared;
+using DeskFkow.Core.DTOs.TicketDTOs;
+using DeskFkow.Core.Enums;
 using System;
 using System.Collections.Generic;
 using System.Security.Claims;
 using System.Text;
 
-namespace Fixi.Core.ServicesContracts
+namespace DeskFkow.Core.ServicesContracts
 {
     public interface ITicketService
     {
-        public Task<Ticket> CreateTicketAsync(CreateTicketDTO createTicketDTO,string UserID);
-        public Task<IEnumerable<TicketResponseDTO>> GetAllTicketsAsync(TicketQueryParams queryParams, UserClaims claims);
+        public Task<Ticket> CreateTicketAsync(CreateTicketDTO createTicketDTO);
+        public Task<IEnumerable<TicketResponseDTO>> GetAllTicketsAsync(TicketQueryParams queryParams);
         public Task<TicketFullResponseDTO> GetTicketByIdAsync(int ticketId);
 
-        public Task UpdateTicketAsync(Ticket updateTicket, UserClaims claims);
-        public Task UpdateTicketStatus(int ticketId, TicketUpdateStatusDTO statusDTO, UserClaims calims);
-        public Task UpdateTicketPriority(int ticketId, int newPriority, string userID);
-        public Task AssignTechnician(int ticketId, string newtechnicianId, UserClaims calims);
-        public Task DeleteTicket(int ticketId, string userId);
+        public Task UpdateTicketAsync(Ticket updateTicket);
+        public Task UpdateTicketStatus(int ticketId, TicketUpdateStatusDTO statusDTO);
+        public Task UpdateTicketPriority(int ticketId, int newPriority);
+        public Task AssignTechnician(int ticketId, string newtechnicianId);
+        public Task DeleteTicket(int ticketId);
 
         public Task<IEnumerable<TicketAuditHistoryDTO>> GetTicketHistoryAsync(int ticketId);
 

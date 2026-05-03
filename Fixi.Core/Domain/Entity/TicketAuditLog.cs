@@ -1,8 +1,8 @@
-﻿using Fixi.Core.Domain.IdentityEntity;
+﻿using DeskFkow.Core.Domain.IdentityEntity;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Fixi.Core.Domain.Entity
+namespace DeskFkow.Core.Domain.Entity
 {
     public class TicketAuditLog
     {

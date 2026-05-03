@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text;
-using Fixi.Core.Domain.IdentityEntity;
+using DeskFkow.Core.Domain.IdentityEntity;
 
-namespace Fixi.Core.Domain.Entity
+namespace DeskFkow.Core.Domain.Entity
 {
     public class Department
     {

@@ -1,12 +1,12 @@
-﻿using Fixi.Core.DTOs.AttachementDTOs;
-using Fixi.Core.ServicesContracts;
+﻿using DeskFkow.Core.DTOs.AttachementDTOs;
+using DeskFkow.Core.ServicesContracts;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Identity.Client;
 using System.IdentityModel.Tokens.Jwt;
 
-namespace Fixi.WebAPI.Controllers
+namespace DeskFkow.WebAPI.Controllers
 {
     [ApiController]
     [Route("api/tickets/{ticketId}/[controller]")]
