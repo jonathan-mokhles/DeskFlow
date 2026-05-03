@@ -75,7 +75,7 @@ namespace Fixi.Infrastructure.Repositories
             }).Skip(skip).Take(queryParams.PageSize).ToListAsync();
         }
 
-        public async Task UpdateAsync(UpdateTicketDTO ticket)
+        public async Task UpdateAsync(Ticket ticket)
         {
             await _db.Tickets.Where(t => t.Id == ticket.Id).ExecuteUpdateAsync(t => t
                 .SetProperty(t => t.Title, ticket.Title)
@@ -176,9 +176,8 @@ namespace Fixi.Infrastructure.Repositories
                 .Select(t => new TicketUsersEmails
                 {
                     ReporterEmail = t.ReportedBy.Email ?? string.Empty,
-                    TechnicianEmail = t.AssignedTo != null
-                        ? t.AssignedTo.Email ?? string.Empty
-                        : string.Empty
+                    TechnicianEmail = t.AssignedTo != null? t.AssignedTo.Email ?? string.Empty: string.Empty,
+                    ManagerEmail = t.Category.Department.Manager != null ? t.Category.Department.Manager.Email ?? string.Empty : string.Empty
                 })
                 .FirstOrDefaultAsync() ?? new TicketUsersEmails();
         }

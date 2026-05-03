@@ -18,4 +18,8 @@
     <ProjectReference Include="..\Fixi.Core\Fixi.Core.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Migrations\" />
+  </ItemGroup>
+
 </Project>

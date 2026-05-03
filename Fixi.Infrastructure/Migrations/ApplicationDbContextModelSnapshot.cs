@@ -137,7 +137,6 @@ namespace Fixi.Infrastructure.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("ManagerId")
-                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Name")
@@ -155,25 +154,21 @@ namespace Fixi.Infrastructure.Migrations
                         new
                         {
                             Id = 1,
-                            ManagerId = "",
                             Name = "IT Support"
                         },
                         new
                         {
                             Id = 2,
-                            ManagerId = "",
                             Name = "Human Resources"
                         },
                         new
                         {
                             Id = 3,
-                            ManagerId = "",
                             Name = "Finance"
                         },
                         new
                         {
                             Id = 4,
-                            ManagerId = "",
                             Name = "Facilities"
                         });
                 });
@@ -701,8 +696,7 @@ namespace Fixi.Infrastructure.Migrations
                     b.HasOne("Fixi.Core.Domain.IdentityEntity.ApplicationUser", "Manager")
                         .WithMany()
                         .HasForeignKey("ManagerId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.Navigation("Manager");
                 });
@@ -810,7 +804,7 @@ namespace Fixi.Infrastructure.Migrations
                     b.HasOne("Fixi.Core.Domain.Entity.Department", "Department")
                         .WithMany()
                         .HasForeignKey("DepartmentId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Department");

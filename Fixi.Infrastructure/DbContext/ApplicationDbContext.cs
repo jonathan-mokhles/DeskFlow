@@ -69,6 +69,20 @@ namespace Fixi.Infrastructure.DbContext
                 .HasForeignKey(s => s.ChangedById)
                 .OnDelete(DeleteBehavior.Restrict);
 
+            //  Relationship: Users belonging to a Department (Members)
+            modelBuilder.Entity<ApplicationUser>()
+                .HasOne(u => u.Department)
+                .WithMany() // Or .WithMany(d => d.Employees) if you add a collection
+                .HasForeignKey(u => u.DepartmentId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            // Relationship: A User managing a Department
+            modelBuilder.Entity<Department>()
+                .HasOne(d => d.Manager)
+                .WithMany()
+                .HasForeignKey(d => d.ManagerId)
+                .OnDelete(DeleteBehavior.Restrict);
+
             CategorySeed(modelBuilder);
             SLASettingSeed(modelBuilder);
             DepartmentSeed(modelBuilder);
@@ -84,22 +98,27 @@ namespace Fixi.Infrastructure.DbContext
                 new Department
                 {
                     Id = 1,
-                    Name = "IT Support"
+                    Name = "IT Support",
+                    ManagerId = null 
+
                 },
                 new Department
                 {
                     Id = 2,
-                    Name = "Human Resources"
+                    Name = "Human Resources",
+                    ManagerId = null
                 },
                 new Department
                 {
                     Id = 3,
-                    Name = "Finance"
+                    Name = "Finance",
+                    ManagerId = null
                 },
                 new Department
                 {
                     Id = 4,
-                    Name = "Facilities"
+                    Name = "Facilities",
+                    ManagerId = null
                 }
             );
         }

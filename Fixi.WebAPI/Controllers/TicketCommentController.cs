@@ -1,13 +1,10 @@
 ﻿using Fixi.Core.Domain.Repositories_Contracts;
 using Fixi.Core.DTOs.CommentDTOs;
 using Fixi.Core.DTOs.shared;
-using Fixi.Core.DTOs.TicketDTOs;
 using Fixi.Core.ServicesContracts;
-using Fixi.Infrastructure.Migrations;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
 
 namespace Fixi.WebAPI.Controllers
 {
@@ -20,14 +17,12 @@ namespace Fixi.WebAPI.Controllers
     public class TicketCommentController : ControllerBase
     {
         ITicketCommentsService _CommentsService;
-        ITicketRepository _ticketRepository;
         IAuthorizationService _authorizationService;
 
 
-        public TicketCommentController(ITicketCommentsService ticketCommentsService, ITicketRepository ticketRepository, IAuthorizationService authorizationService)
+        public TicketCommentController(ITicketCommentsService ticketCommentsService, IAuthorizationService authorizationService)
         {
             _CommentsService = ticketCommentsService;
-            _ticketRepository = ticketRepository;
             _authorizationService = authorizationService;
         }
 

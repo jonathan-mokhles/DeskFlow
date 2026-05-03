@@ -8,7 +8,6 @@ using Fixi.Core.Enums;
 using Fixi.Core.Exceptions;
 using Fixi.Core.Services;
 using Fixi.Core.ServicesContracts;
-using Fixi.Infrastructure.Migrations;
 using FluentAssertions;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Moq;

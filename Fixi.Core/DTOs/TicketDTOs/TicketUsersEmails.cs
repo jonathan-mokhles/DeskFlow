@@ -8,5 +8,6 @@ namespace Fixi.Core.DTOs.TicketDTOs
     {
         public string ReporterEmail { get; set; } = string.Empty;
         public string TechnicianEmail { get; set; } = string.Empty;
+        public string ManagerEmail { get; set; } = string.Empty;
     }
 }

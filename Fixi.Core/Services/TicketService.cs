@@ -8,7 +8,7 @@ using Fixi.Core.Enums;
 using Fixi.Core.Exceptions;
 using Fixi.Core.Mappings;
 using Fixi.Core.ServicesContracts;
-using Hangfire;
+using Fixi.Core.ServicesContracts.Abstractions;
 using System.ComponentModel.DataAnnotations;
 using System.Net.NetworkInformation;
 
@@ -18,12 +18,12 @@ namespace Fixi.Core.Services
     {
         IUnitOfWork _unitOfWork;
         IIdentityService _identityService;
-        IMailService _mailService;
-        public TicketService(IUnitOfWork unitOfWork, IIdentityService identityService, IMailService mailService)
+        IBackgroundJobService _backgroundJobService;
+        public TicketService(IUnitOfWork unitOfWork, IIdentityService identityService, IBackgroundJobService backgroundJobService)
         {
             _unitOfWork = unitOfWork;
             _identityService = identityService;
-            _mailService = mailService;
+            _backgroundJobService = backgroundJobService;
         }
 
 
@@ -57,6 +57,12 @@ namespace Fixi.Core.Services
             };
             await _unitOfWork.TicketAuditLog.CreateAsync(auditLog);
             await _unitOfWork.CommitAsync();
+            var emails = await _unitOfWork.Ticket.GetTicketUsersEmailsAsync(ticket.Id);
+
+            if (!string.IsNullOrEmpty(emails.ManagerEmail))
+            {
+                _backgroundJobService.SendEmail(emails.ManagerEmail, "New Ticket Created", $"A new ticket has been created with ID {ticket.Id}. Please check the system for details.");
+            }
 
             return ticket;
 
@@ -75,9 +81,9 @@ namespace Fixi.Core.Services
             return await _unitOfWork.Ticket.GetAllAsync(queryParams);
         }
 
-        public async Task UpdateTicketAsync(UpdateTicketDTO updateTicketDTO, UserClaims claims)
+        public async Task UpdateTicketAsync(Ticket updateTicket, UserClaims claims)
         {
-            TicketDTO? ticket = await _unitOfWork.Ticket.GetTicketAsync(updateTicketDTO.Id);
+            TicketDTO? ticket = await _unitOfWork.Ticket.GetTicketAsync(updateTicket.Id);
 
             if (ticket == null)
             {
@@ -90,12 +96,12 @@ namespace Fixi.Core.Services
 
             await _unitOfWork.TicketAuditLog.CreateAsync(new TicketAuditLog
             {
-                TicketId = updateTicketDTO.Id,
+                TicketId = updateTicket.Id,
                 ChangedById = claims.UserId,
                 ChangeType = "Updated Ticket",
                 ChangedDate = DateTime.UtcNow,
             });
-            await _unitOfWork.Ticket.UpdateAsync(updateTicketDTO);
+            await _unitOfWork.Ticket.UpdateAsync(updateTicket);
             await _unitOfWork.CommitAsync();
         }
 
@@ -109,9 +115,13 @@ namespace Fixi.Core.Services
             return ticket;
         }
 
-        public async Task UpdateTicketPriority(TicketDTO ticket, int newPriority, string userID )
+        public async Task UpdateTicketPriority(int ticketId, int newPriority, string userID )
         {
-
+            TicketDTO? ticket = await _unitOfWork.Ticket.GetTicketAsync(ticketId);
+            if (ticket == null)
+            {
+                throw new TicketNotFoundException();
+            }
             await _unitOfWork.TicketAuditLog.CreateAsync(new TicketAuditLog
             {
                 TicketId = ticket.Id,
@@ -193,7 +203,7 @@ namespace Fixi.Core.Services
             await _unitOfWork.CommitAsync();
             if(NewAssigned.Id != calims.UserId && !string.IsNullOrEmpty(NewAssigned.Email))
             {
-                BackgroundJob.Enqueue(() => _mailService.SendEmailAsync(NewAssigned.Email, "New Ticket Assignment", $"You have been assigned to ticket, With priority: {ticket.priority}. Please check the system for details."));
+               _backgroundJobService.SendEmail(NewAssigned.Email, "New Ticket Assignment", $"You have been assigned to ticket, With priority: {ticket.priority}. Please check the system for details.");
             }
         }
 
@@ -230,14 +240,14 @@ namespace Fixi.Core.Services
             {
                 var emails = await _unitOfWork.Ticket.GetTicketUsersEmailsAsync(ticketId);
                 await _unitOfWork.Ticket.UpdateSLAResponseBreachedStatus(ticketId);
-                BackgroundJob.Enqueue(() => _mailService.SendEmailAsync(emails.TechnicianEmail, "SLA Response Breached", "The SLA response time for your ticket has been breached."));
+                _backgroundJobService.SendEmail(emails.TechnicianEmail, "SLA Response Breached", "The SLA response time for your ticket has been breached.");
             }
             var resolutionBreachedTicketIds = await _unitOfWork.Ticket.GetTicketIdsResolutionDeadlineBreachedAsync();
             foreach (var ticketId in resolutionBreachedTicketIds)
             {
                 var emails = await _unitOfWork.Ticket.GetTicketUsersEmailsAsync(ticketId);
                 await _unitOfWork.Ticket.UpdateSLAResolutionStatus(ticketId);
-                BackgroundJob.Enqueue(() => _mailService.SendEmailAsync(emails.TechnicianEmail, "SLA Resolution Breached", "The SLA resolution time for your ticket has been breached."));
+                _backgroundJobService.SendEmail(emails.TechnicianEmail, "SLA Resolution Breached", "The SLA resolution time for your ticket has been breached.");
             }
         }
 
@@ -253,14 +263,14 @@ namespace Fixi.Core.Services
                 case TicketStatus.Resolved:
                     if (string.IsNullOrEmpty(usersEmails.ReporterEmail))
                     {
-                        BackgroundJob.Enqueue(() => _mailService.SendEmailAsync(usersEmails.ReporterEmail, "Ticket Resolved", $"Your ticket with ID {ticketId} has been resolved. Please check the system for details."));
+                        _backgroundJobService.SendEmail(usersEmails.ReporterEmail, "Ticket Resolved", $"Your ticket with ID {ticketId} has been resolved. Please check the system for details.");
                         return;
                     }
                     break;
                 case TicketStatus.Canceled:
                     if (string.IsNullOrEmpty(usersEmails.TechnicianEmail))
                     {
-                        BackgroundJob.Enqueue(() => _mailService.SendEmailAsync(usersEmails.TechnicianEmail, "Ticket Canceled", $"ticket with ID {ticketId} has been canceled. Please check the system for details."));
+                        _backgroundJobService.SendEmail(usersEmails.TechnicianEmail, "Ticket Canceled", $"ticket with ID {ticketId} has been canceled. Please check the system for details.");
                         return;
                     }
                     break;

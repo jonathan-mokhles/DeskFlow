@@ -20,13 +20,11 @@ namespace Fixi.WebAPI.Controllers
     {
         ITicketService _ticketService;
         IAuthorizationService _authorizationService;
-        ITicketRepository _ticketRepository;
 
-        public TicketsController(ITicketService ticketService, IAuthorizationService authorizationService, ITicketRepository ticketRepository )
+        public TicketsController(ITicketService ticketService, IAuthorizationService authorizationService )
         {
             _ticketService = ticketService;
             _authorizationService = authorizationService;
-            _ticketRepository = ticketRepository;
         }
 
         /// <summary>
@@ -109,7 +107,7 @@ namespace Fixi.WebAPI.Controllers
                     TraceId = HttpContext.TraceIdentifier
                 });
             }
-            await _ticketService.UpdateTicketAsync(updateTicketDTO, GetUserClaims());
+            await _ticketService.UpdateTicketAsync(updateTicketDTO.ToEntity(), GetUserClaims());
             return NoContent();
         }
 
@@ -187,18 +185,7 @@ namespace Fixi.WebAPI.Controllers
                 });
             }
 
-            TicketDTO? ticket = await _ticketRepository.GetTicketAsync(ticketId);
-            if(ticket is null)
-            {
-                return NotFound(new ApiErrorResponse
-                {
-                    Message = "Ticket not found.",
-                    Errors = new List<string> { "No ticket with the specified ID." },
-                    TraceId = HttpContext.TraceIdentifier
-                });
-            }
-
-            var authorizationResult = await _authorizationService.AuthorizeAsync(User, ticket.DepartmentId, "ManagerOrAdmin");
+            var authorizationResult = await _authorizationService.AuthorizeAsync(User, ticketId, "ManagerOrAdmin");
             if(!authorizationResult.Succeeded)
             {
                 return StatusCode(StatusCodes.Status403Forbidden, new ApiErrorResponse
@@ -209,7 +196,7 @@ namespace Fixi.WebAPI.Controllers
                 });
             }
 
-            await _ticketService.UpdateTicketPriority(ticket, newPriority, User.FindFirstValue(JwtRegisteredClaimNames.Sub)!);
+            await _ticketService.UpdateTicketPriority(ticketId, newPriority, User.FindFirstValue(JwtRegisteredClaimNames.Sub)!);
             return NoContent();
         }
 

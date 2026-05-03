@@ -16,5 +16,10 @@ namespace Fixi.Core.Domain.Entity
         [MaxLength(100)]
         public string Name { get; set; } = string.Empty;
 
+        public string? ManagerId { get; set; }
+
+
+        [ForeignKey("ManagerId")]
+        public ApplicationUser? Manager { get; set; }
     }
 }

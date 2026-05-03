@@ -16,9 +16,9 @@ namespace Fixi.Core.ServicesContracts
         public Task<IEnumerable<TicketResponseDTO>> GetAllTicketsAsync(TicketQueryParams queryParams, UserClaims claims);
         public Task<TicketFullResponseDTO> GetTicketByIdAsync(int ticketId);
 
-        public Task UpdateTicketAsync(UpdateTicketDTO updateTicketDTO, UserClaims claims);
+        public Task UpdateTicketAsync(Ticket updateTicket, UserClaims claims);
         public Task UpdateTicketStatus(int ticketId, TicketUpdateStatusDTO statusDTO, UserClaims calims);
-        public Task UpdateTicketPriority(TicketDTO ticket, int newPriority, string userID);
+        public Task UpdateTicketPriority(int ticketId, int newPriority, string userID);
         public Task AssignTechnician(int ticketId, string newtechnicianId, UserClaims calims);
         public Task DeleteTicket(int ticketId, string userId);
 
