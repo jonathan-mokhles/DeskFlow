@@ -1,15 +1,15 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using DeskFkow.Core.ServicesContracts;
+using DeskFlow.Core.ServicesContracts;
 
 
 
 using Microsoft.AspNetCore.Authorization;
-using DeskFkow.Core.DTOs.SLADTOs;
-using DeskFkow.Core.DTOs.shared;
-using DeskFkow.Core.Domain.Entity;
+using DeskFlow.Core.DTOs.SLADTOs;
+using DeskFlow.Core.DTOs.shared;
+using DeskFlow.Core.Domain.Entity;
 
-namespace DeskFkow.WebAPI.Controllers
+namespace DeskFlow.WebAPI.Controllers
 {
     /// <summary>
     /// Provides API endpoints for managing Service Level Agreement (SLA) resources. 

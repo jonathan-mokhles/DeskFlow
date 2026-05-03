@@ -1,10 +1,10 @@
-﻿using DeskFkow.Core.Domain.Entity;
-using DeskFkow.Core.DTOs.AttachementDTOs;
+﻿using DeskFlow.Core.Domain.Entity;
+using DeskFlow.Core.DTOs.AttachementDTOs;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace DeskFkow.Core.Domain.RepositoriesContracts
+namespace DeskFlow.Core.Domain.RepositoriesContracts
 {
     public interface ITicketAttachmentRepository
     {

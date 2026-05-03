@@ -1,10 +1,10 @@
-﻿using DeskFkow.Core.Domain.Entity;
-using DeskFkow.Core.DTOs.CommentDTOs;
+﻿using DeskFlow.Core.Domain.Entity;
+using DeskFlow.Core.DTOs.CommentDTOs;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace DeskFkow.Core.Domain.RepositoriesContracts
+namespace DeskFlow.Core.Domain.RepositoriesContracts
 {
     public interface ITicketCommentRepository
     {

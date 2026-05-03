@@ -1,13 +1,13 @@
-﻿using DeskFkow.Core.Domain.Entity;
-using DeskFkow.Infrastructure.DbContext;
-using DeskFkow.Tests.IntegrationTest.Helpers;
+﻿using DeskFlow.Core.Domain.Entity;
+using DeskFlow.Infrastructure.DbContext;
+using DeskFlow.Tests.IntegrationTest.Helpers;
 using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
 using System.Net;
 using System.Net.Http.Json;
 using Xunit.Abstractions;
 
-namespace DeskFkow.Tests.IntegrationTest
+namespace DeskFlow.Tests.IntegrationTest
 {
     public class DepartmentcontrollerTest : IClassFixture<CustomWebApplicationFactory>
     {

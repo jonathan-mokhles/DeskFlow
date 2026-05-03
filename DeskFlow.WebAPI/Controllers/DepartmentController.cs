@@ -1,10 +1,10 @@
-﻿using DeskFkow.Core.Domain.Entity;
-using DeskFkow.Core.ServicesContracts;
+﻿using DeskFlow.Core.Domain.Entity;
+using DeskFlow.Core.ServicesContracts;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
-namespace DeskFkow.WebAPI.Controllers
+namespace DeskFlow.WebAPI.Controllers
 {
     /// <summary>
     /// Represents an API controller that manages department resources.

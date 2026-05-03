@@ -1,8 +1,8 @@
-﻿using DeskFkow.Core.ServicesContracts;
+﻿using DeskFlow.Core.ServicesContracts;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Hosting;
 
-namespace DeskFkow.Core.Services
+namespace DeskFlow.Core.Services
 {
     public class FileStorageService : IFileStorageService
     {

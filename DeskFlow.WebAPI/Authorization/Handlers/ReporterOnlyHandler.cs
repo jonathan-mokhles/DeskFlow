@@ -1,9 +1,9 @@
-﻿using DeskFkow.Core.Authorization.Requirements;
-using DeskFkow.Core.Domain.RepositoriesContracts;
+﻿using DeskFlow.Core.Authorization.Requirements;
+using DeskFlow.Core.Domain.RepositoriesContracts;
 using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
 
-namespace DeskFkow.Core.Authorization.Handlers
+namespace DeskFlow.Core.Authorization.Handlers
 {
     public class ReporterOnlyHandler : AuthorizationHandler<ReporterOnlyRequirement, int>
     {

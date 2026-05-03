@@ -2,11 +2,11 @@
 using System.Collections.Generic;
 using System.Text;
 using System.ComponentModel.DataAnnotations;
-using DeskFkow.Core.Enums;
+using DeskFlow.Core.Enums;
 
 
 
-namespace DeskFkow.Core.DTOs.SLADTOs
+namespace DeskFlow.Core.DTOs.SLADTOs
 {
     public  class SLACreateDTO
     {

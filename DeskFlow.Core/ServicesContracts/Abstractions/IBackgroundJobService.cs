@@ -2,11 +2,11 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace DeskFkow.Core.ServicesContracts.Abstractions
+namespace DeskFlow.Core.ServicesContracts.Abstractions
 {
     public interface IBackgroundJobService
     {
-        void SendEmail(string to, string subject, string body);
+        void EnqueueEmail(string to, string subject, string body);
 
     }
 }

@@ -1,12 +1,12 @@
-﻿using DeskFkow.Core.Domain.Entity;
-using DeskFkow.Core.Domain.RepositoriesContracts;
-using DeskFkow.Infrastructure.DbContext;
+﻿using DeskFlow.Core.Domain.Entity;
+using DeskFlow.Core.Domain.RepositoriesContracts;
+using DeskFlow.Infrastructure.DbContext;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace DeskFkow.Infrastructure.Repositories
+namespace DeskFlow.Infrastructure.Repositories
 {
     public class TicketAuditLogRepository : ITicketAuditLogRepository
     {

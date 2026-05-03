@@ -1,12 +1,12 @@
 ﻿using Azure.Core;
-using DeskFkow.Core.Domain.IdentityEntity;
-using DeskFkow.Core.DTOs.AccountDTOs;
+using DeskFlow.Core.Domain.IdentityEntity;
+using DeskFlow.Core.DTOs.AccountDTOs;
 using System;
 using System.Collections.Generic;
 using System.Security.Claims;
 using System.Text;
 
-namespace DeskFkow.Core.ServicesContracts
+namespace DeskFlow.Core.ServicesContracts
 {
     public  interface IJwtService
     {

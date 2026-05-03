@@ -1,9 +1,9 @@
-﻿using DeskFkow.Core.Domain.RepositoriesContracts;
-using DeskFkow.Core.DTOs.CommentDTOs;
-using DeskFkow.Core.Mappings;
-using DeskFkow.Core.ServicesContracts;
+﻿using DeskFlow.Core.Domain.RepositoriesContracts;
+using DeskFlow.Core.DTOs.CommentDTOs;
+using DeskFlow.Core.Mappings;
+using DeskFlow.Core.ServicesContracts;
 
-namespace DeskFkow.Core.Services
+namespace DeskFlow.Core.Services
 {
     public class TicketCommentsService : ITicketCommentsService
     {

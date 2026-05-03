@@ -1,17 +1,17 @@
-﻿using DeskFkow.Core.Domain.Entity;
-using DeskFkow.Core.Domain.RepositoriesContracts;
-using DeskFkow.Core.DTOs.shared;
-using DeskFkow.Core.DTOs.TicketDTOs;
-using DeskFkow.Core.Enums;
-using DeskFkow.Core.Mappings;
-using DeskFkow.Core.ServicesContracts;
+﻿using DeskFlow.Core.Domain.Entity;
+using DeskFlow.Core.Domain.RepositoriesContracts;
+using DeskFlow.Core.DTOs.shared;
+using DeskFlow.Core.DTOs.TicketDTOs;
+using DeskFlow.Core.Enums;
+using DeskFlow.Core.Mappings;
+using DeskFlow.Core.ServicesContracts;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 
-namespace DeskFkow.WebAPI.Controllers
+namespace DeskFlow.WebAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]

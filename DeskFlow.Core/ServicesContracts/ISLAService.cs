@@ -1,10 +1,10 @@
-﻿using DeskFkow.Core.Domain.Entity;
-using DeskFkow.Core.DTOs.SLADTOs;
+﻿using DeskFlow.Core.Domain.Entity;
+using DeskFlow.Core.DTOs.SLADTOs;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace DeskFkow.Core.ServicesContracts
+namespace DeskFlow.Core.ServicesContracts
 {
     public interface ISLAService
     {

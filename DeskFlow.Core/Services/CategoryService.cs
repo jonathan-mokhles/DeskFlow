@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using DeskFkow.Core.Domain.RepositoriesContracts;
-using DeskFkow.Core.DTOs.CategoryDTOs;
-using DeskFkow.Core.Mappings;
-using DeskFkow.Core.ServicesContracts;
+using DeskFlow.Core.Domain.RepositoriesContracts;
+using DeskFlow.Core.DTOs.CategoryDTOs;
+using DeskFlow.Core.Mappings;
+using DeskFlow.Core.ServicesContracts;
 
-namespace DeskFkow.Core.Services
+namespace DeskFlow.Core.Services
 {
     public class CategoryService : ICategoryService
     {

@@ -1,6 +1,6 @@
-@DeskFkow.WebAPI_HostAddress = http://localhost:5224
+@DeskFlow.WebAPI_HostAddress = http://localhost:5224
 
-GET {{DeskFkow.WebAPI_HostAddress}}/weatherforecast/
+GET {{DeskFlow.WebAPI_HostAddress}}/weatherforecast/
 Accept: application/json
 
 ###

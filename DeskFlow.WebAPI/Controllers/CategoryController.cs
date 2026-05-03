@@ -1,11 +1,11 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using DeskFkow.Core.ServicesContracts;
-using DeskFkow.Core.DTOs.CategoryDTOs;
-using DeskFkow.Core.DTOs.shared;
+using DeskFlow.Core.ServicesContracts;
+using DeskFlow.Core.DTOs.CategoryDTOs;
+using DeskFlow.Core.DTOs.shared;
 
-namespace DeskFkow.WebAPI.Controllers
+namespace DeskFlow.WebAPI.Controllers
 {
     /// <summary>
     /// Represents an API controller that manages category resources.</summary>

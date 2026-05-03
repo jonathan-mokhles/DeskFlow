@@ -1,16 +1,16 @@
-using DeskFkow.Core.Authorization.Handlers;
-using DeskFkow.Core.Authorization.Requirements;
-using DeskFkow.Core.Domain.IdentityEntity;
-using DeskFkow.Core.Domain.RepositoriesContracts;
-using DeskFkow.Core.DTOs.shared;
-using DeskFkow.Core.Enums;
-using DeskFkow.Core.Services;
-using DeskFkow.Core.ServicesContracts;
-using DeskFkow.Core.Settings;
-using DeskFkow.Infrastructure.DbContext;
-using DeskFkow.Infrastructure.Repositories;
-using DeskFkow.WebAPI;
-using DeskFkow.WebAPI.Middlewares;
+using DeskFlow.Core.Authorization.Handlers;
+using DeskFlow.Core.Authorization.Requirements;
+using DeskFlow.Core.Domain.IdentityEntity;
+using DeskFlow.Core.Domain.RepositoriesContracts;
+using DeskFlow.Core.DTOs.shared;
+using DeskFlow.Core.Enums;
+using DeskFlow.Core.Services;
+using DeskFlow.Core.ServicesContracts;
+using DeskFlow.Core.Settings;
+using DeskFlow.Infrastructure.DbContext;
+using DeskFlow.Infrastructure.Repositories;
+using DeskFlow.WebAPI;
+using DeskFlow.WebAPI.Middlewares;
 using Hangfire;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
@@ -91,7 +91,7 @@ builder.Services.AddScoped<ITicketCommentsService, TicketCommentsService>();
 builder.Services.AddScoped<IIdentityService, IdentityService>();
 builder.Services.AddScoped<ITicketAttachmentService, TicketAttachmentService>();
 builder.Services.AddScoped<IFileStorageService, FileStorageService>();
-builder.Services.AddScoped<IMailService, MailService>();
+builder.Services.AddScoped<IEmailSender, MailService>();
 
 
 

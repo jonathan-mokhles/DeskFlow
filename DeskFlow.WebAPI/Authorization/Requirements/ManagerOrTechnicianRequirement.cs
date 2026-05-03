@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 
-namespace DeskFkow.Core.Authorization.Requirements
+namespace DeskFlow.Core.Authorization.Requirements
 {
     public class ManagerOrTechnicianRequirement : IAuthorizationRequirement
     {

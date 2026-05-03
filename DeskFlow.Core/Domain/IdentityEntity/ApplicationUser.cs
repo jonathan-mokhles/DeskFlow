@@ -1,11 +1,11 @@
-﻿using DeskFkow.Core.Domain.Entity;
+﻿using DeskFlow.Core.Domain.Entity;
 using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text;
 
-namespace DeskFkow.Core.Domain.IdentityEntity
+namespace DeskFlow.Core.Domain.IdentityEntity
 {
     public class ApplicationUser:IdentityUser
     {

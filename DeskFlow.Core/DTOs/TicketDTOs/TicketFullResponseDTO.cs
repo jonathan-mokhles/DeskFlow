@@ -1,13 +1,13 @@
-﻿using DeskFkow.Core.Domain.Entity;
-using DeskFkow.Core.Domain.IdentityEntity;
-using DeskFkow.Core.Enums;
+﻿using DeskFlow.Core.Domain.Entity;
+using DeskFlow.Core.Domain.IdentityEntity;
+using DeskFlow.Core.Enums;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text;
 
-namespace DeskFkow.Core.DTOs.TicketDTOs
+namespace DeskFlow.Core.DTOs.TicketDTOs
 {
     public record TicketFullResponseDTO
     {

@@ -1,12 +1,12 @@
-﻿using DeskFkow.Core.DTOs.AttachementDTOs;
-using DeskFkow.Core.ServicesContracts;
+﻿using DeskFlow.Core.DTOs.AttachementDTOs;
+using DeskFlow.Core.ServicesContracts;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Identity.Client;
 using System.IdentityModel.Tokens.Jwt;
 
-namespace DeskFkow.WebAPI.Controllers
+namespace DeskFlow.WebAPI.Controllers
 {
     [ApiController]
     [Route("api/tickets/{ticketId}/[controller]")]

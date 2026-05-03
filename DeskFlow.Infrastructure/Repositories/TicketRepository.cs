@@ -1,17 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using DeskFkow.Core.Domain.Entity;
-using DeskFkow.Core.Domain.IdentityEntity;
-using DeskFkow.Core.Domain.RepositoriesContracts;
-using DeskFkow.Core.DTOs.TicketDTOs;
-using DeskFkow.Infrastructure.DbContext;
+using DeskFlow.Core.Domain.Entity;
+using DeskFlow.Core.Domain.IdentityEntity;
+using DeskFlow.Core.Domain.RepositoriesContracts;
+using DeskFlow.Core.DTOs.TicketDTOs;
+using DeskFlow.Infrastructure.DbContext;
 using Microsoft.EntityFrameworkCore;
 using System.Threading;
 using System.Threading.Tasks;
-using DeskFkow.Core.Enums;
+using DeskFlow.Core.Enums;
 
-namespace DeskFkow.Infrastructure.Repositories
+namespace DeskFlow.Infrastructure.Repositories
 {
     public class TicketRepository : ITicketRepository
     {

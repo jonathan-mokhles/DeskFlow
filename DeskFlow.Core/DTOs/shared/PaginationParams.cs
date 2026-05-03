@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace DeskFkow.Core.DTOs.shared
+namespace DeskFlow.Core.DTOs.shared
 {
     public class PaginationParams
     {

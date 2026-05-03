@@ -1,8 +1,8 @@
-﻿using DeskFkow.Core.DTOs.shared;
+﻿using DeskFlow.Core.DTOs.shared;
 using Microsoft.AspNetCore.Http;
 using System.Security.Claims;
 
-namespace DeskFkow.WebAPI
+namespace DeskFlow.WebAPI
 {
     public class CurrentUserService : ICurrentUserService
     {

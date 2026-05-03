@@ -1,19 +1,19 @@
-﻿using DeskFkow.Core.ServicesContracts;
+﻿using DeskFlow.Core.ServicesContracts;
 using System;
 using System.Collections.Generic;
 using System.Text;
 using MailKit.Net.Smtp;
 using Microsoft.Extensions.Options;
-using DeskFkow.Core.Settings;
+using DeskFlow.Core.Settings;
 using MimeKit;
 
-namespace DeskFkow.Core.Services
+namespace DeskFlow.Infrastructure.Services
 {
-    public class MailService : IMailService
+    public class EmailSender : IEmailSender
     {
         private readonly MailSettings _mailSettings;
 
-        public MailService(IOptions<MailSettings> mailSettings)
+        public EmailSender(IOptions<MailSettings> mailSettings)
         {
             _mailSettings = mailSettings.Value;
         }

@@ -1,9 +1,9 @@
-﻿using DeskFkow.Core.DTOs.shared;
+﻿using DeskFlow.Core.DTOs.shared;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace DeskFkow.Core.DTOs.UsersDTOs
+namespace DeskFlow.Core.DTOs.UsersDTOs
 {
     public class UsersQueryParameters: PaginationParams
     {

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Text;
 
-namespace DeskFkow.Core.DTOs.CategoryDTOs
+namespace DeskFlow.Core.DTOs.CategoryDTOs
 {
     public class CategoryResponseDTO
     {

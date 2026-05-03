@@ -1,10 +1,10 @@
-using DeskFkow.Core.DTOs.CategoryDTOs;
-using DeskFkow.Tests.IntegrationTest.Helpers;
+using DeskFlow.Core.DTOs.CategoryDTOs;
+using DeskFlow.Tests.IntegrationTest.Helpers;
 using FluentAssertions;
 using System.Net;
 using System.Net.Http.Json;
 
-namespace DeskFkow.Tests.IntegrationTest
+namespace DeskFlow.Tests.IntegrationTest
 {
     public class CategoryControllerTest : IClassFixture<CustomWebApplicationFactory>
     {

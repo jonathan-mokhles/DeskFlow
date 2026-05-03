@@ -1,4 +1,4 @@
-using DeskFkow.Infrastructure.DbContext;
+using DeskFlow.Infrastructure.DbContext;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
@@ -9,7 +9,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using System.Data.Common;
 
-namespace DeskFkow.Tests.IntegrationTest.Helpers
+namespace DeskFlow.Tests.IntegrationTest.Helpers
 {
     public class CustomWebApplicationFactory : WebApplicationFactory<Program>
     {

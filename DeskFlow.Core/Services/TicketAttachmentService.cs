@@ -1,16 +1,16 @@
-﻿using DeskFkow.Core.Domain.Entity;
-using DeskFkow.Core.Domain.RepositoriesContracts;
-using DeskFkow.Core.DTOs.AttachementDTOs;
-using DeskFkow.Core.Exceptions;
-using DeskFkow.Core.Mappings;
-using DeskFkow.Core.ServicesContracts;
+﻿using DeskFlow.Core.Domain.Entity;
+using DeskFlow.Core.Domain.RepositoriesContracts;
+using DeskFlow.Core.DTOs.AttachementDTOs;
+using DeskFlow.Core.Exceptions;
+using DeskFlow.Core.Mappings;
+using DeskFlow.Core.ServicesContracts;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace DeskFkow.Core.Services
+namespace DeskFlow.Core.Services
 {
     public class TicketAttachmentService : ITicketAttachmentService
     {

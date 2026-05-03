@@ -1,9 +1,9 @@
-using DeskFkow.Tests.IntegrationTest.Helpers;
+using DeskFlow.Tests.IntegrationTest.Helpers;
 using FluentAssertions;
 using System.Net;
 using System.Net.Http.Json;
 
-namespace DeskFkow.Tests.IntegrationTest
+namespace DeskFlow.Tests.IntegrationTest
 {
     public class UsersControllerTest : IClassFixture<CustomWebApplicationFactory>
     {

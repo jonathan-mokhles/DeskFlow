@@ -1,9 +1,9 @@
-using DeskFkow.Core.Domain.IdentityEntity;
-using DeskFkow.Core.DTOs.AccountDTOs;
-using DeskFkow.Core.DTOs.UsersDTOs;
+using DeskFlow.Core.Domain.IdentityEntity;
+using DeskFlow.Core.DTOs.AccountDTOs;
+using DeskFlow.Core.DTOs.UsersDTOs;
 using System;
 
-namespace DeskFkow.Core.Mappings
+namespace DeskFlow.Core.Mappings
 {
     public static class UserMappings
     {

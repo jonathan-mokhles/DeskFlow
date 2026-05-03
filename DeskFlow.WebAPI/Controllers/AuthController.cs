@@ -1,14 +1,14 @@
-﻿using DeskFkow.Core.Domain.IdentityEntity;
-using DeskFkow.Core.DTOs.AccountDTOs;
-using DeskFkow.Core.DTOs.shared;
-using DeskFkow.Core.ServicesContracts;
+﻿using DeskFlow.Core.Domain.IdentityEntity;
+using DeskFlow.Core.DTOs.AccountDTOs;
+using DeskFlow.Core.DTOs.shared;
+using DeskFlow.Core.ServicesContracts;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 using System.Security.Claims;
 
-namespace DeskFkow.WebAPI.Controllers
+namespace DeskFlow.WebAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]

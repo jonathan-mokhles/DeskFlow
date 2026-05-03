@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace DeskFkow.Core.DTOs.AccountDTOs
+namespace DeskFlow.Core.DTOs.AccountDTOs
 {
     public record AuthResponseDTO
     {

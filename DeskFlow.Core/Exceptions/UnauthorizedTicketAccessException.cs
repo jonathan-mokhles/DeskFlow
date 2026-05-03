@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace DeskFkow.Core.Exceptions
+namespace DeskFlow.Core.Exceptions
 {
     public class UnauthorizedTicketAccessException: Exception
     {

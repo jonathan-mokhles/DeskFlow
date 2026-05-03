@@ -1,15 +1,15 @@
-﻿using DeskFkow.Core.Services;
-using DeskFkow.Core.ServicesContracts;
+﻿using DeskFlow.Core.Services;
+using DeskFlow.Core.ServicesContracts;
 using Moq;
-using DeskFkow.Core.DTOs.UsersDTOs;
-using DeskFkow.Core.Domain.RepositoriesContracts;
-using DeskFkow.Core.Domain.IdentityEntity;
+using DeskFlow.Core.DTOs.UsersDTOs;
+using DeskFlow.Core.Domain.RepositoriesContracts;
+using DeskFlow.Core.Domain.IdentityEntity;
 using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Identity;
 using FluentAssertions;
-using DeskFkow.Core.Exceptions;
+using DeskFlow.Core.Exceptions;
 
-namespace DeskFkow.Tests.UnitTests
+namespace DeskFlow.Tests.UnitTests
 {
     public class UserServiceTests
     {

@@ -1,7 +1,7 @@
-using DeskFkow.Core.Domain.Entity;
-using DeskFkow.Core.DTOs.CommentDTOs;
+using DeskFlow.Core.Domain.Entity;
+using DeskFlow.Core.DTOs.CommentDTOs;
 
-namespace DeskFkow.Core.Mappings
+namespace DeskFlow.Core.Mappings
 {
     public static class CommentMappings
     {

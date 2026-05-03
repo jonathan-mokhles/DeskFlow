@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text;
-using DeskFkow.Core.Domain.IdentityEntity;
+using DeskFlow.Core.Domain.IdentityEntity;
 
-namespace DeskFkow.Core.Domain.Entity
+namespace DeskFlow.Core.Domain.Entity
 {
     public class Department
     {

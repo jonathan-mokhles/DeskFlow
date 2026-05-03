@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Text;
 
-namespace DeskFkow.Core.DTOs.UsersDTOs
+namespace DeskFlow.Core.DTOs.UsersDTOs
 {
     public class RegisterUserDTO
     {

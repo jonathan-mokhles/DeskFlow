@@ -1,11 +1,11 @@
-﻿using DeskFkow.Core.Domain.IdentityEntity;
-using DeskFkow.Core.DTOs.UsersDTOs;
+﻿using DeskFlow.Core.Domain.IdentityEntity;
+using DeskFlow.Core.DTOs.UsersDTOs;
 using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace DeskFkow.Core.ServicesContracts
+namespace DeskFlow.Core.ServicesContracts
 {
     public interface IIdentityService
     {

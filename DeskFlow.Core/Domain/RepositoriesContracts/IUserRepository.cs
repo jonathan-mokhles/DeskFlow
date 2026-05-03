@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using DeskFkow.Core.DTOs.UsersDTOs;
+using DeskFlow.Core.DTOs.UsersDTOs;
 
-namespace DeskFkow.Core.Domain.RepositoriesContracts
+namespace DeskFlow.Core.Domain.RepositoriesContracts
 {
     public interface IUserRepository
     {

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace DeskFkow.Core.Enums
+namespace DeskFlow.Core.Enums
 {
     public enum RoleEnum
     {

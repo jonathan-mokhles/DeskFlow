@@ -1,9 +1,9 @@
-﻿using DeskFkow.Core.Domain.Entity;
+﻿using DeskFlow.Core.Domain.Entity;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace DeskFkow.Core.Domain.RepositoriesContracts
+namespace DeskFlow.Core.Domain.RepositoriesContracts
 {
     public interface IDepartmentRepository
     {

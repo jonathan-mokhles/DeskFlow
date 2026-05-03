@@ -1,9 +1,9 @@
-﻿using DeskFkow.Core.DTOs.shared;
-using DeskFkow.Core.Exceptions;
+﻿using DeskFlow.Core.DTOs.shared;
+using DeskFlow.Core.Exceptions;
 using System.ComponentModel.DataAnnotations;
 
 
-namespace DeskFkow.WebAPI.Middlewares
+namespace DeskFlow.WebAPI.Middlewares
 {
     public class ExceptionHandlingMiddleware
     {

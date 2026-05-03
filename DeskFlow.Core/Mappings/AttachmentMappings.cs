@@ -1,9 +1,9 @@
-using DeskFkow.Core.Domain.Entity;
-using DeskFkow.Core.DTOs.AttachementDTOs;
+using DeskFlow.Core.Domain.Entity;
+using DeskFlow.Core.DTOs.AttachementDTOs;
 using Microsoft.AspNetCore.Http;
 using System;
 
-namespace DeskFkow.Core.Mappings
+namespace DeskFlow.Core.Mappings
 {
     public static class AttachmentMappings
     {

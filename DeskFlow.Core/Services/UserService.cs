@@ -1,14 +1,14 @@
-﻿using DeskFkow.Core.Domain.IdentityEntity;
-using DeskFkow.Core.Domain.RepositoriesContracts;
-using DeskFkow.Core.DTOs.shared;
-using DeskFkow.Core.DTOs.UsersDTOs;
-using DeskFkow.Core.Exceptions;
-using DeskFkow.Core.Mappings;
-using DeskFkow.Core.ServicesContracts;
+﻿using DeskFlow.Core.Domain.IdentityEntity;
+using DeskFlow.Core.Domain.RepositoriesContracts;
+using DeskFlow.Core.DTOs.shared;
+using DeskFlow.Core.DTOs.UsersDTOs;
+using DeskFlow.Core.Exceptions;
+using DeskFlow.Core.Mappings;
+using DeskFlow.Core.ServicesContracts;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
-namespace DeskFkow.Core.Services
+namespace DeskFlow.Core.Services
 {
     public class UserService : IUserService
     {

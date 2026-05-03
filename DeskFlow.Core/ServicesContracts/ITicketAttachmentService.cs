@@ -1,10 +1,10 @@
-﻿using DeskFkow.Core.DTOs.AttachementDTOs;
+﻿using DeskFlow.Core.DTOs.AttachementDTOs;
 using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace DeskFkow.Core.ServicesContracts
+namespace DeskFlow.Core.ServicesContracts
 {
     public interface ITicketAttachmentService
     {

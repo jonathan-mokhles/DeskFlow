@@ -1,8 +1,8 @@
-using DeskFkow.Tests.IntegrationTest.Helpers;
+using DeskFlow.Tests.IntegrationTest.Helpers;
 using FluentAssertions;
 using System.Net;
 
-namespace DeskFkow.Tests.IntegrationTest
+namespace DeskFlow.Tests.IntegrationTest
 {
     public class TicketCommentControllerTest : IClassFixture<CustomWebApplicationFactory>
     {

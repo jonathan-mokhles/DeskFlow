@@ -1,17 +1,17 @@
-﻿using DeskFkow.Core.Domain.IdentityEntity;
-using DeskFkow.Core.DTOs.AccountDTOs;
-using DeskFkow.Core.ServicesContracts;
+﻿using DeskFlow.Core.Domain.IdentityEntity;
+using DeskFlow.Core.DTOs.AccountDTOs;
+using DeskFlow.Core.ServicesContracts;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
-using DeskFkow.Core.Exceptions;
-using DeskFkow.Core.Settings;
+using DeskFlow.Core.Exceptions;
+using DeskFlow.Core.Settings;
 using Microsoft.Extensions.Options;
 using System.ComponentModel.DataAnnotations;
 
-namespace DeskFkow.Core.Services
+namespace DeskFlow.Core.Services
 {
     public class JwtService : IJwtService
     {

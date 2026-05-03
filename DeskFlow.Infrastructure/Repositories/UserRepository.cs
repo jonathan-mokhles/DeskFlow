@@ -1,9 +1,9 @@
-﻿using DeskFkow.Core.Domain.RepositoriesContracts;
-using DeskFkow.Core.DTOs.UsersDTOs;
+﻿using DeskFlow.Core.Domain.RepositoriesContracts;
+using DeskFlow.Core.DTOs.UsersDTOs;
 using Microsoft.EntityFrameworkCore;
-using DeskFkow.Infrastructure.DbContext;
+using DeskFlow.Infrastructure.DbContext;
 
-namespace DeskFkow.Infrastructure.Repositories
+namespace DeskFlow.Infrastructure.Repositories
 {
     public class UserRepository : IUserRepository
     {

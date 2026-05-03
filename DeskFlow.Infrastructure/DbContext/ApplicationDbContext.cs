@@ -1,13 +1,13 @@
-﻿using DeskFkow.Core.Domain.Entity;
-using DeskFkow.Core.Domain.IdentityEntity;
-using DeskFkow.Core.Enums;
+﻿using DeskFlow.Core.Domain.Entity;
+using DeskFlow.Core.Domain.IdentityEntity;
+using DeskFlow.Core.Enums;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 
-namespace DeskFkow.Infrastructure.DbContext
+namespace DeskFlow.Infrastructure.DbContext
 {
     public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     {

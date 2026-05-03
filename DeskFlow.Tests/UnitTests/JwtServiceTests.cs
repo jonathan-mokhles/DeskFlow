@@ -1,15 +1,15 @@
-﻿using DeskFkow.Core.Domain.IdentityEntity;
-using DeskFkow.Core.Exceptions;
-using DeskFkow.Core.Services;
-using DeskFkow.Core.ServicesContracts;
-using DeskFkow.Core.Settings;
+﻿using DeskFlow.Core.Domain.IdentityEntity;
+using DeskFlow.Core.Exceptions;
+using DeskFlow.Core.Services;
+using DeskFlow.Core.ServicesContracts;
+using DeskFlow.Core.Settings;
 using FluentAssertions;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Moq;
 using System.Security.Claims;
 
-namespace DeskFkow.Tests.UnitTests
+namespace DeskFlow.Tests.UnitTests
 {
     public class JwtServiceTests
     {

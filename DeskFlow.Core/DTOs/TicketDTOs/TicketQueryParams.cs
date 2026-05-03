@@ -1,9 +1,9 @@
-﻿using DeskFkow.Core.DTOs.shared;
+﻿using DeskFlow.Core.DTOs.shared;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace DeskFkow.Core.DTOs.TicketDTOs
+namespace DeskFlow.Core.DTOs.TicketDTOs
 {
     public class TicketQueryParams : PaginationParams
     {

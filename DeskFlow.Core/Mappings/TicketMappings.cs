@@ -1,8 +1,8 @@
-using DeskFkow.Core.Domain.Entity;
-using DeskFkow.Core.DTOs.TicketDTOs;
-using DeskFkow.Core.Enums;
+using DeskFlow.Core.Domain.Entity;
+using DeskFlow.Core.DTOs.TicketDTOs;
+using DeskFlow.Core.Enums;
 
-namespace DeskFkow.Core.Mappings
+namespace DeskFlow.Core.Mappings
 {
     public static class TicketMappings
     {

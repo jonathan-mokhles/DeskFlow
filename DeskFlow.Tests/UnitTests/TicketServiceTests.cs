@@ -1,20 +1,20 @@
 ﻿using AutoFixture;
-using DeskFkow.Core.Domain.Entity;
-using DeskFkow.Core.Domain.IdentityEntity;
-using DeskFkow.Core.Domain.RepositoriesContracts;
-using DeskFkow.Core.DTOs.shared;
-using DeskFkow.Core.DTOs.TicketDTOs;
-using DeskFkow.Core.Enums;
-using DeskFkow.Core.Exceptions;
-using DeskFkow.Core.Services;
-using DeskFkow.Core.ServicesContracts;
-using DeskFkow.Core.ServicesContracts.Abstractions;
+using DeskFlow.Core.Domain.Entity;
+using DeskFlow.Core.Domain.IdentityEntity;
+using DeskFlow.Core.Domain.RepositoriesContracts;
+using DeskFlow.Core.DTOs.shared;
+using DeskFlow.Core.DTOs.TicketDTOs;
+using DeskFlow.Core.Enums;
+using DeskFlow.Core.Exceptions;
+using DeskFlow.Core.Services;
+using DeskFlow.Core.ServicesContracts;
+using DeskFlow.Core.ServicesContracts.Abstractions;
 using FluentAssertions;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Moq;
 using System.ComponentModel.DataAnnotations;
 
-namespace DeskFkow.Tests.UnitTests
+namespace DeskFlow.Tests.UnitTests
 {
     public class TicketServiceTests
     {

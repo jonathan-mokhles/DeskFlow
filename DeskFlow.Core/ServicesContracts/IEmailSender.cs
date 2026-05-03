@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace DeskFkow.Core.ServicesContracts
+namespace DeskFlow.Core.ServicesContracts
 {
-    public interface IMailService
+    public interface IEmailSender
     {
         public Task SendEmailAsync(string toEmail, string subject, string body);
     }

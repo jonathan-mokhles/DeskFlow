@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using DeskFkow.Core.Enums;
+using DeskFlow.Core.Enums;
 
-namespace DeskFkow.Core.Domain.Rules
+namespace DeskFlow.Core.Domain.Rules
 {
     public class TicketStatusRules
     {

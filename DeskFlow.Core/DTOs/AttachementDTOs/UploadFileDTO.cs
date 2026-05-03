@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace DeskFkow.Core.DTOs.AttachementDTOs
+namespace DeskFlow.Core.DTOs.AttachementDTOs
 {
     public class UploadFileDTO
     {

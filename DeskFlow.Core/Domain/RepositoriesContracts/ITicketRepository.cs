@@ -1,11 +1,11 @@
-﻿using DeskFkow.Core.Domain.Entity;
-using DeskFkow.Core.DTOs.TicketDTOs;
-using DeskFkow.Core.Enums;
+﻿using DeskFlow.Core.Domain.Entity;
+using DeskFlow.Core.DTOs.TicketDTOs;
+using DeskFlow.Core.Enums;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace DeskFkow.Core.Domain.RepositoriesContracts
+namespace DeskFlow.Core.Domain.RepositoriesContracts
 {
     public interface ITicketRepository
     {

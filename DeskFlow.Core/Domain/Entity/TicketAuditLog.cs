@@ -1,8 +1,8 @@
-﻿using DeskFkow.Core.Domain.IdentityEntity;
+﻿using DeskFlow.Core.Domain.IdentityEntity;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace DeskFkow.Core.Domain.Entity
+namespace DeskFlow.Core.Domain.Entity
 {
     public class TicketAuditLog
     {

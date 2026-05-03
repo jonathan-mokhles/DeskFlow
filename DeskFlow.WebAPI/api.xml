@@ -4,13 +4,13 @@
         <name>DeskFlow.WebAPI</name>
     </assembly>
     <members>
-        <member name="M:DeskFkow.WebAPI.Controllers.AuthController.login(DeskFkow.Core.DTOs.AccountDTOs.LoginDTO)">
+        <member name="M:DeskFlow.WebAPI.Controllers.AuthController.login(DeskFlow.Core.DTOs.AccountDTOs.LoginDTO)">
             <summary>
             Handles user login
             </summary>
             <param name="loginDTO">The login data transfer object containing the user's email and password.</param>
         </member>
-        <member name="M:DeskFkow.WebAPI.Controllers.AuthController.refreshToken(DeskFkow.Core.DTOs.AccountDTOs.RefreshTokenRequestDTO)">
+        <member name="M:DeskFlow.WebAPI.Controllers.AuthController.refreshToken(DeskFlow.Core.DTOs.AccountDTOs.RefreshTokenRequestDTO)">
             <summary>
             refreshes the access token using a valid refresh token.
             </summary>
@@ -19,32 +19,32 @@
             <param name="request">The refresh token request containing the expired access token and the associated refresh token.</param>
             <returns> Return the new access token and refresh token if successful</returns>
         </member>
-        <member name="M:DeskFkow.WebAPI.Controllers.AuthController.resetPassword(DeskFkow.Core.DTOs.AccountDTOs.ResetPasswordRequestDTO)">
+        <member name="M:DeskFlow.WebAPI.Controllers.AuthController.resetPassword(DeskFlow.Core.DTOs.AccountDTOs.ResetPasswordRequestDTO)">
             <summary>
             Resets the password for a user identified by the provided email address.
             </summary>
             <param name="passwordRequest">An object containing the user's email address, current password, and new password.</param>
             <returns>An HTTP 200 OK response if the password is successfully reset</returns>
         </member>
-        <member name="T:DeskFkow.WebAPI.Controllers.CategoryController">
+        <member name="T:DeskFlow.WebAPI.Controllers.CategoryController">
             <summary>
             Represents an API controller that manages category resources.</summary>
             <remarks>Access to this controller is restricted to users with the AdminOnly policy.</remarks>
         </member>
-        <member name="M:DeskFkow.WebAPI.Controllers.CategoryController.GetAllCategories">
+        <member name="M:DeskFlow.WebAPI.Controllers.CategoryController.GetAllCategories">
             <summary>
             Retrieves all categories.
             </summary>
             <returns>A list of category response DTOs.</returns>
         </member>
-        <member name="M:DeskFkow.WebAPI.Controllers.CategoryController.CreateCategory(DeskFkow.Core.DTOs.CategoryDTOs.CreateCategoryDTO)">
+        <member name="M:DeskFlow.WebAPI.Controllers.CategoryController.CreateCategory(DeskFlow.Core.DTOs.CategoryDTOs.CreateCategoryDTO)">
             <summary>
             Create new category
             </summary>
             <param name="category"></param>
             <returns></returns>
         </member>
-        <member name="M:DeskFkow.WebAPI.Controllers.CategoryController.UpdateCategory(System.Int32,DeskFkow.Core.DTOs.CategoryDTOs.UpdateCategoryDTO)">
+        <member name="M:DeskFlow.WebAPI.Controllers.CategoryController.UpdateCategory(System.Int32,DeskFlow.Core.DTOs.CategoryDTOs.UpdateCategoryDTO)">
             <summary>
             Update category by id
             </summary>
@@ -52,82 +52,82 @@
             <param name="category">Category data to update</param>
             <returns></returns>
         </member>
-        <member name="M:DeskFkow.WebAPI.Controllers.CategoryController.DeleteCategory(System.Int32)">
+        <member name="M:DeskFlow.WebAPI.Controllers.CategoryController.DeleteCategory(System.Int32)">
             <summary>
             Delete category by id
             </summary>
             <param name="id">Category Id</param>
             <returns></returns>
         </member>
-        <member name="T:DeskFkow.WebAPI.Controllers.DepartmentController">
+        <member name="T:DeskFlow.WebAPI.Controllers.DepartmentController">
             <summary>
             Represents an API controller that manages department resources.
             </summary>
             <remarks>Access to this controller is restricted to users with the AdminOnly policy</remarks>
         </member>
-        <member name="M:DeskFkow.WebAPI.Controllers.DepartmentController.GetAllDepartments">
+        <member name="M:DeskFlow.WebAPI.Controllers.DepartmentController.GetAllDepartments">
             <summary>
             Retrive all the departments
             </summary>
             <returns>list of departments</returns>
         </member>
-        <member name="M:DeskFkow.WebAPI.Controllers.DepartmentController.DeleteDepartment(System.Int32)">
+        <member name="M:DeskFlow.WebAPI.Controllers.DepartmentController.DeleteDepartment(System.Int32)">
             <summary>
             Deletes the department with Id.
             </summary>
             <param name="id">The Id of the department to delete.</param>
             <returns>An HTTP 204 No Content response if the department was successfully deleted.</returns>
         </member>
-        <member name="M:DeskFkow.WebAPI.Controllers.DepartmentController.AddDepartment(System.String)">
+        <member name="M:DeskFlow.WebAPI.Controllers.DepartmentController.AddDepartment(System.String)">
             <summary>
             Creates a new department with the specified name.
             </summary>
             <param name="name">The name of the department to create. Cannot be null or empty.</param>
         </member>
-        <member name="T:DeskFkow.WebAPI.Controllers.SLAController">
+        <member name="T:DeskFlow.WebAPI.Controllers.SLAController">
             <summary>
             Provides API endpoints for managing Service Level Agreement (SLA) resources. 
             </summary>
             <remarks> Access to these endpoints is restricted to users with the AdminOnly policy.</remarks>
         </member>
-        <member name="M:DeskFkow.WebAPI.Controllers.SLAController.CreateSLA(DeskFkow.Core.DTOs.SLADTOs.SLACreateDTO)">
+        <member name="M:DeskFlow.WebAPI.Controllers.SLAController.CreateSLA(DeskFlow.Core.DTOs.SLADTOs.SLACreateDTO)">
             <summary>
             Create new SLA 
             </summary>
             <param name="createDTO"></param>
             <returns></returns>
         </member>
-        <member name="M:DeskFkow.WebAPI.Controllers.SLAController.GetAllSLA">
+        <member name="M:DeskFlow.WebAPI.Controllers.SLAController.GetAllSLA">
             <summary>
             Retrieves all service level agreements (SLAs).
             </summary>
         </member>
-        <member name="M:DeskFkow.WebAPI.Controllers.SLAController.GetSLAById(System.Int32)">
+        <member name="M:DeskFlow.WebAPI.Controllers.SLAController.GetSLAById(System.Int32)">
             <summary>
             Retrieves a specific service level agreement (SLA) by its Id.
             </summary>
             <param name="id"> SLA Id</param>
         </member>
-        <member name="M:DeskFkow.WebAPI.Controllers.SLAController.UpdateSLA(System.Int32,DeskFkow.Core.Domain.Entity.SLASetting)">
+        <member name="M:DeskFlow.WebAPI.Controllers.SLAController.UpdateSLA(System.Int32,DeskFlow.Core.Domain.Entity.SLASetting)">
             <summary>
             Updates the specified SLA setting with new values.
             </summary>
             <param name="id">The unique identifier of the SLA setting to update. Must match the Id property of the provided SLA setting.</param>
             <param name="sLA">The updated SLA setting values. The Id property must match the id parameter.</param>
         </member>
-        <member name="M:DeskFkow.WebAPI.Controllers.SLAController.DeleteSLA(System.Int32)">
+        <member name="M:DeskFlow.WebAPI.Controllers.SLAController.DeleteSLA(System.Int32)">
             <summary>
             Delete SLA by its Id
             </summary>
             <param name="id"> SLA Id</param>
             <returns></returns>
         </member>
-        <member name="T:DeskFkow.WebAPI.Controllers.TicketCommentController">
+        <member name="T:DeskFlow.WebAPI.Controllers.TicketCommentController">
             <summary>
             for managing comments related to tickets.
             </summary>
         </member>
-        <member name="M:DeskFkow.WebAPI.Controllers.TicketCommentController.AddComment(System.Int32,DeskFkow.Core.DTOs.CommentDTOs.CommentCreateDTO)">
+        <member name="M:DeskFlow.WebAPI.Controllers.TicketCommentController.AddComment(System.Int32,DeskFlow.Core.DTOs.CommentDTOs.CommentCreateDTO)">
             <summary>
             Adds a new comment to the specified ticket.
             </summary>
@@ -136,7 +136,7 @@
             <param name="comment">The data for the comment to add, including content and associated ticket information. Must not be null, and
             the TicketId property must match the ticketId parameter.</param>
         </member>
-        <member name="M:DeskFkow.WebAPI.Controllers.TicketCommentController.GetComments(System.Int32)">
+        <member name="M:DeskFlow.WebAPI.Controllers.TicketCommentController.GetComments(System.Int32)">
             <summary>
             Retrive all comments related to a specific ticket by providing the ticket's unique identifier.
             </summary>
@@ -144,7 +144,7 @@
             <param name="ticketId"></param>
             <returns></returns>
         </member>
-        <member name="M:DeskFkow.WebAPI.Controllers.TicketCommentController.DeleteComment(System.Int32)">
+        <member name="M:DeskFlow.WebAPI.Controllers.TicketCommentController.DeleteComment(System.Int32)">
             <summary>
             Delete a comment from a ticket by providing the ticket's unique identifier and the comment's unique identifier.
             </summary>
@@ -152,14 +152,14 @@
             <param name="commentId"></param>
             <returns></returns>
         </member>
-        <member name="M:DeskFkow.WebAPI.Controllers.TicketsController.CreateTicket(DeskFkow.Core.DTOs.TicketDTOs.CreateTicketDTO)">
+        <member name="M:DeskFlow.WebAPI.Controllers.TicketsController.CreateTicket(DeskFlow.Core.DTOs.TicketDTOs.CreateTicketDTO)">
             <summary>
             open new ticket.
             </summary>
             <param name="createTicketDTO"></param>
             <returns></returns>
         </member>
-        <member name="M:DeskFkow.WebAPI.Controllers.TicketsController.GetTicketById(System.Int32)">
+        <member name="M:DeskFlow.WebAPI.Controllers.TicketsController.GetTicketById(System.Int32)">
             <summary>
             Retrive ticket by Id.
             </summary>
@@ -167,14 +167,14 @@
             <param name="id"></param>
             <returns></returns>
         </member>
-        <member name="M:DeskFkow.WebAPI.Controllers.TicketsController.GetAllTickets(DeskFkow.Core.DTOs.TicketDTOs.TicketQueryParams)">
+        <member name="M:DeskFlow.WebAPI.Controllers.TicketsController.GetAllTickets(DeskFlow.Core.DTOs.TicketDTOs.TicketQueryParams)">
             <summary>
             Retrives all tickets with pagination and optional filtering by status, priority, department, category, reporter or assigned technician.
             </summary>
             <param name="queryParams">The query parameters for filtering and pagination.</param>
             <returns>A list of tickets matching the specified criteria.</returns>
         </member>
-        <member name="M:DeskFkow.WebAPI.Controllers.TicketsController.UpdateTicket(System.Int32,DeskFkow.Core.DTOs.TicketDTOs.UpdateTicketDTO)">
+        <member name="M:DeskFlow.WebAPI.Controllers.TicketsController.UpdateTicket(System.Int32,DeskFlow.Core.DTOs.TicketDTOs.UpdateTicketDTO)">
             <summary>
             Udpate all ticket details except status, assigned technician and priority.
             </summary>
@@ -183,7 +183,7 @@
             <param name="updateTicketDTO">An object containing the updated ticket details. All fields are required.</param>
             <returns>A 204 No Content response if the ticket is updated successfully; otherwise, a 400 Bad Request response containing error details.</returns>
         </member>
-        <member name="M:DeskFkow.WebAPI.Controllers.TicketsController.UpdateTicketStatus(System.Int32,DeskFkow.Core.DTOs.TicketDTOs.TicketUpdateStatusDTO)">
+        <member name="M:DeskFlow.WebAPI.Controllers.TicketsController.UpdateTicketStatus(System.Int32,DeskFlow.Core.DTOs.TicketDTOs.TicketUpdateStatusDTO)">
             <summary>
             Updates the status of the specified ticket to a new value.
             </summary>
@@ -194,7 +194,7 @@
             <returns>A result indicating the outcome of the operation. Returns 204 No Content if the update is successful, or 400
             Bad Request if the new status value is invalid.</returns>
         </member>
-        <member name="M:DeskFkow.WebAPI.Controllers.TicketsController.AssignTechnician(System.Int32,System.String)">
+        <member name="M:DeskFlow.WebAPI.Controllers.TicketsController.AssignTechnician(System.Int32,System.String)">
             <summary>
             Assigns a technician to the specified support ticket.
             </summary>
@@ -204,7 +204,7 @@
             <returns>A result indicating the outcome of the operation. Returns a 204 No Content response if the assignment is
             successful.</returns>
         </member>
-        <member name="M:DeskFkow.WebAPI.Controllers.TicketsController.UpdateTicketPriority(System.Int32,System.Int32)">
+        <member name="M:DeskFlow.WebAPI.Controllers.TicketsController.UpdateTicketPriority(System.Int32,System.Int32)">
             <summary>
             Updates the priority of the specified ticket.
             </summary>
@@ -213,7 +213,7 @@
             <returns>A result indicating the outcome of the operation. Returns 204 No Content if the update is successful, or 400
             Bad Request if the new priority value is invalid.</returns>
         </member>
-        <member name="M:DeskFkow.WebAPI.Controllers.TicketsController.DeleteTicket(System.Int32)">
+        <member name="M:DeskFlow.WebAPI.Controllers.TicketsController.DeleteTicket(System.Int32)">
             <summary>
             delete ticket of specidied Id
             </summary>
@@ -221,18 +221,18 @@
             <param name="id">The unique identifier of the ticket to delete.</param>
             <returns>A result indicating the outcome of the operation. Returns 204 No Content if the deletion is successful, or 400 Bad Request if the ticket cannot be deleted.</returns>
         </member>
-        <member name="M:DeskFkow.WebAPI.Controllers.TicketsController.GetTicketHistory(System.Int32)">
+        <member name="M:DeskFlow.WebAPI.Controllers.TicketsController.GetTicketHistory(System.Int32)">
             <summary>
             Retrieves the audit history for a specified ticket.
             </summary>
             <remarks>Returns a 404 response if the ticket does not exist, or a 401 response if the caller
             does not have permission to view the ticket's history.</remarks>
             <param name="ticketId">The unique identifier of the ticket for which to retrieve the audit history. Must be a valid ticket ID.</param>
-            <returns>An <see cref="T:Microsoft.AspNetCore.Mvc.ActionResult`1"/> containing a collection of <see cref="T:DeskFkow.Core.DTOs.TicketDTOs.TicketAuditHistoryDTO"/> objects
+            <returns>An <see cref="T:Microsoft.AspNetCore.Mvc.ActionResult`1"/> containing a collection of <see cref="T:DeskFlow.Core.DTOs.TicketDTOs.TicketAuditHistoryDTO"/> objects
             representing the ticket's audit history if found and authorized; otherwise, an error response indicating the
             reason for failure.</returns>
         </member>
-        <member name="M:DeskFkow.WebAPI.Controllers.UsersController.register(DeskFkow.Core.DTOs.UsersDTOs.RegisterUserDTO)">
+        <member name="M:DeskFlow.WebAPI.Controllers.UsersController.register(DeskFlow.Core.DTOs.UsersDTOs.RegisterUserDTO)">
             <summary>
             Registers a new user account with the specified registration details. Accessible only to users in the Admin
             role.
@@ -243,7 +243,7 @@
             <returns>A 201 Created result if the user is successfully registered; otherwise, a 400 Bad Request result containing
             validation errors or identity errors.</returns>
         </member>
-        <member name="M:DeskFkow.WebAPI.Controllers.UsersController.UpdateUser(System.String,DeskFkow.Core.DTOs.UsersDTOs.UpdateUserDTO)">
+        <member name="M:DeskFlow.WebAPI.Controllers.UsersController.UpdateUser(System.String,DeskFlow.Core.DTOs.UsersDTOs.UpdateUserDTO)">
             <summary>
             Update user deatails
             </summary>
@@ -252,7 +252,7 @@
             <param name="updateDTO"></param>
             <returns></returns>
         </member>
-        <member name="M:DeskFkow.WebAPI.Controllers.UsersController.DeleteUser(System.String)">
+        <member name="M:DeskFlow.WebAPI.Controllers.UsersController.DeleteUser(System.String)">
             <summary>
             Deletes the user with the specified identifier.
             </summary>
@@ -261,7 +261,7 @@
             <returns>A 204 No Content response if the user is deleted successfully; otherwise, a 400 Bad Request response
             containing error details.</returns>
         </member>
-        <member name="M:DeskFkow.WebAPI.Controllers.UsersController.GetUserById(System.String)">
+        <member name="M:DeskFlow.WebAPI.Controllers.UsersController.GetUserById(System.String)">
             <summary>
             Get user deatails by id.
             </summary>
@@ -269,7 +269,7 @@
             <param name="id">The unique identifier of the user to retrieve. Cannot be null or empty.</param>
             <returns>A 200 OK response containing the user details if found; otherwise, a 404 Not Found response.</returns>
         </member>
-        <member name="M:DeskFkow.WebAPI.Controllers.UsersController.GetAllUsers(DeskFkow.Core.DTOs.UsersDTOs.UsersQueryParameters)">
+        <member name="M:DeskFlow.WebAPI.Controllers.UsersController.GetAllUsers(DeskFlow.Core.DTOs.UsersDTOs.UsersQueryParameters)">
             <summary>
             Retrives a list of users based on the specified query parameter.
             </summary>

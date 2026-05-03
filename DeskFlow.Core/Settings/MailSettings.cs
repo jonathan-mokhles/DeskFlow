@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace DeskFkow.Core.Settings
+namespace DeskFlow.Core.Settings
 {
     public class MailSettings
     {

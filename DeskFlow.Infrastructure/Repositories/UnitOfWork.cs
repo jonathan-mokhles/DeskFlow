@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using DeskFkow.Core.Domain.RepositoriesContracts;
-using DeskFkow.Infrastructure.DbContext;
+using DeskFlow.Core.Domain.RepositoriesContracts;
+using DeskFlow.Infrastructure.DbContext;
 
-namespace DeskFkow.Infrastructure.Repositories
+namespace DeskFlow.Infrastructure.Repositories
 {
     public class UnitOfWork : IUnitOfWork
     {

@@ -1,13 +1,13 @@
-﻿using DeskFkow.Core.Domain.Entity;
-using DeskFkow.Core.ServicesContracts;
+﻿using DeskFlow.Core.Domain.Entity;
+using DeskFlow.Core.ServicesContracts;
 using System;
 using System.Collections.Generic;
 using System.Text;
-using DeskFkow.Core.Domain.RepositoriesContracts;
-using DeskFkow.Core.DTOs.SLADTOs;
-using DeskFkow.Core.Mappings;
+using DeskFlow.Core.Domain.RepositoriesContracts;
+using DeskFlow.Core.DTOs.SLADTOs;
+using DeskFlow.Core.Mappings;
 
-namespace DeskFkow.Core.Services
+namespace DeskFlow.Core.Services
 {
     public  class SLAService : ISLAService
     {

@@ -1,10 +1,10 @@
-﻿using DeskFkow.Core.Domain.Entity;
-using DeskFkow.Core.Domain.RepositoriesContracts;
-using DeskFkow.Core.DTOs.AttachementDTOs;
-using DeskFkow.Infrastructure.DbContext;
+﻿using DeskFlow.Core.Domain.Entity;
+using DeskFlow.Core.Domain.RepositoriesContracts;
+using DeskFlow.Core.DTOs.AttachementDTOs;
+using DeskFlow.Infrastructure.DbContext;
 using Microsoft.EntityFrameworkCore;
 
-namespace DeskFkow.Infrastructure.Repositories
+namespace DeskFlow.Infrastructure.Repositories
 {
     public class TicketAttachmentRepository : ITicketAttachmentRepository
     {

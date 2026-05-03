@@ -1,12 +1,12 @@
-﻿using DeskFkow.Core.Domain.RepositoriesContracts;
-using DeskFkow.Core.DTOs.CommentDTOs;
-using DeskFkow.Core.DTOs.shared;
-using DeskFkow.Core.ServicesContracts;
+﻿using DeskFlow.Core.Domain.RepositoriesContracts;
+using DeskFlow.Core.DTOs.CommentDTOs;
+using DeskFlow.Core.DTOs.shared;
+using DeskFlow.Core.ServicesContracts;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.IdentityModel.Tokens.Jwt;
 
-namespace DeskFkow.WebAPI.Controllers
+namespace DeskFlow.WebAPI.Controllers
 {
     /// <summary>
     /// for managing comments related to tickets.

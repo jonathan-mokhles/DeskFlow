@@ -1,18 +1,18 @@
-﻿using DeskFkow.Core.Domain.Entity;
-using DeskFkow.Core.Domain.IdentityEntity;
-using DeskFkow.Core.Domain.RepositoriesContracts;
-using DeskFkow.Core.Domain.Rules;
-using DeskFkow.Core.DTOs.shared;
-using DeskFkow.Core.DTOs.TicketDTOs;
-using DeskFkow.Core.Enums;
-using DeskFkow.Core.Exceptions;
-using DeskFkow.Core.Mappings;
-using DeskFkow.Core.ServicesContracts;
-using DeskFkow.Core.ServicesContracts.Abstractions;
+﻿using DeskFlow.Core.Domain.Entity;
+using DeskFlow.Core.Domain.IdentityEntity;
+using DeskFlow.Core.Domain.RepositoriesContracts;
+using DeskFlow.Core.Domain.Rules;
+using DeskFlow.Core.DTOs.shared;
+using DeskFlow.Core.DTOs.TicketDTOs;
+using DeskFlow.Core.Enums;
+using DeskFlow.Core.Exceptions;
+using DeskFlow.Core.Mappings;
+using DeskFlow.Core.ServicesContracts;
+using DeskFlow.Core.ServicesContracts.Abstractions;
 using System.ComponentModel.DataAnnotations;
 using System.Net.NetworkInformation;
 
-namespace DeskFkow.Core.Services
+namespace DeskFlow.Core.Services
 {
     public class TicketService : ITicketService
     {

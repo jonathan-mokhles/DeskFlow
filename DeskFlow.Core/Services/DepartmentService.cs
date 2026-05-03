@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using DeskFkow.Core.Domain.Entity;
-using DeskFkow.Core.Domain.RepositoriesContracts;
-using DeskFkow.Core.ServicesContracts;
+using DeskFlow.Core.Domain.Entity;
+using DeskFlow.Core.Domain.RepositoriesContracts;
+using DeskFlow.Core.ServicesContracts;
 
-namespace DeskFkow.Core.Services
+namespace DeskFlow.Core.Services
 {
     public class DepartmentService : IDepartmentService
     {

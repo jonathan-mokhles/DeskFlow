@@ -1,7 +1,7 @@
-﻿using DeskFkow.Core.Authorization.Requirements;
-using DeskFkow.Core.Domain.RepositoriesContracts;
-using DeskFkow.Core.DTOs.TicketDTOs;
-using DeskFkow.Core.Enums;
+﻿using DeskFlow.Core.Authorization.Requirements;
+using DeskFlow.Core.Domain.RepositoriesContracts;
+using DeskFlow.Core.DTOs.TicketDTOs;
+using DeskFlow.Core.Enums;
 using Microsoft.AspNetCore.Authorization;
 using System;
 using System.Collections.Generic;
@@ -9,7 +9,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 
-namespace DeskFkow.Core.Authorization.Handlers
+namespace DeskFlow.Core.Authorization.Handlers
 {
     public class ManagerOrReporterOrAssignedToHandler : AuthorizationHandler<ManagerOrReporterOrAssignedToRequirement, int>
     {

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace DeskFkow.Tests.IntegrationTest.Helpers
+namespace DeskFlow.Tests.IntegrationTest.Helpers
 {
     public static class HttpClientExtensions
     {

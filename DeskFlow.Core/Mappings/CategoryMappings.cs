@@ -1,7 +1,7 @@
-using DeskFkow.Core.Domain.Entity;
-using DeskFkow.Core.DTOs.CategoryDTOs;
+using DeskFlow.Core.Domain.Entity;
+using DeskFlow.Core.DTOs.CategoryDTOs;
 
-namespace DeskFkow.Core.Mappings
+namespace DeskFlow.Core.Mappings
 {
     public static class CategoryMappings
     {
