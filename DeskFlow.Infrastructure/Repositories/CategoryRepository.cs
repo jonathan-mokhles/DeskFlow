@@ -26,7 +26,11 @@ namespace DeskFlow.Infrastructure.Repositories
 
         public Task DeleteAsync(int Id)
         {
-            _db.Categories.Remove(_db.Categories.Find(Id)!);
+            var category = _db.Categories.Find(Id);
+            if (category != null)
+            {
+                _db.Categories.Remove(category);
+            }
             return Task.CompletedTask;
         }
 

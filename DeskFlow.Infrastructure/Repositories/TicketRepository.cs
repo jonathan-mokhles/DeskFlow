@@ -15,7 +15,7 @@ namespace DeskFlow.Infrastructure.Repositories
 {
     public class TicketRepository : ITicketRepository
     {
-        ApplicationDbContext _db;
+        private readonly ApplicationDbContext _db;
 
         public TicketRepository(ApplicationDbContext context)
         {

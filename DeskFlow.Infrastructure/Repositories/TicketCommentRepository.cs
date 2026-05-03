@@ -38,10 +38,10 @@ namespace DeskFlow.Infrastructure.Repositories
             await _db.AddAsync(comment);
         }
 
-        public async Task DeleteAsync(int CommentId)
+        public Task DeleteAsync(int CommentId)
         {
             _db.TicketComments.Remove(new TicketComment { Id = CommentId});
-            await Task.CompletedTask;
+            return Task.CompletedTask;
         }
 
         public async Task<IEnumerable<CommentResponseDTO>> GetByticketIdAsync(int ticketId)

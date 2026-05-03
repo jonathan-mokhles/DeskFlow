@@ -7,7 +7,7 @@ namespace DeskFlow.WebAPI.Middlewares
 {
     public class ExceptionHandlingMiddleware
     {
-        ILogger<ExceptionHandlingMiddleware> _logger;
+        private readonly ILogger<ExceptionHandlingMiddleware> _logger;
         private readonly RequestDelegate _next;
 
         public ExceptionHandlingMiddleware(RequestDelegate next, ILogger<ExceptionHandlingMiddleware> logger)
@@ -79,7 +79,7 @@ namespace DeskFlow.WebAPI.Middlewares
                 default:
                     context.Response.StatusCode = 500;
                     response.Message = "Internal server error";
-                    response.Errors = new List<string> { exception.Message };
+                    response.Errors = new List<string> { "Internal server error occurred." };
                     break;
             }
             return context.Response.WriteAsJsonAsync(response);

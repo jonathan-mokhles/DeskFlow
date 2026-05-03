@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿
 using DeskFlow.Core.Domain.RepositoriesContracts;
 using DeskFlow.Infrastructure.DbContext;
 
@@ -18,17 +16,27 @@ namespace DeskFlow.Infrastructure.Repositories
         public IDepartmentRepository Department { get; }
         public IUserRepository User { get; }
         public ITicketAttachmentRepository TicketAttachment { get; }
-        public UnitOfWork(ApplicationDbContext context)
+        public UnitOfWork(
+            ApplicationDbContext context,
+            ITicketRepository ticket,
+            ITicketAuditLogRepository ticketAuditLog,
+            ITicketCommentRepository ticketComment,
+            ISLASettingRepository slaSetting,
+            ICategoryRepository category,
+            IDepartmentRepository department,
+            IUserRepository user,
+            ITicketAttachmentRepository ticketAttachment)
         {
             _context = context;
-            Ticket = new TicketRepository(_context);
-            TicketAuditLog = new TicketAuditLogRepository(_context);
-            TicketComment = new TicketCommentRepository(_context);
-            SLASetting = new SLASettingRepository(_context);
-            Category = new CategoryRepository(_context);
-            Department = new DepartmentRopository(_context);
-            User = new UserRepository(_context);
-            TicketAttachment = new TicketAttachmentRepository(_context);
+
+            Ticket = ticket;
+            TicketAuditLog = ticketAuditLog;
+            TicketComment = ticketComment;
+            SLASetting = slaSetting;
+            Category = category;
+            Department = department;
+            User = user;
+            TicketAttachment = ticketAttachment;
         }
 
 

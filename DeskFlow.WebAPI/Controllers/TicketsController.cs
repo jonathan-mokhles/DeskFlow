@@ -199,7 +199,7 @@ namespace DeskFlow.WebAPI.Controllers
                 });
             }
 
-            var authorizationResult = await _authorizationService.AuthorizeAsync(User, ticketId, "ManagerOrAdmin");
+            var authorizationResult = await _authorizationService.AuthorizeAsync(User, ticketId, "ManagerOrTechnician");
             if(!authorizationResult.Succeeded)
             {
                 return StatusCode(StatusCodes.Status403Forbidden, new ApiErrorResponse

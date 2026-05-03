@@ -9,6 +9,7 @@ using DeskFlow.Core.ServicesContracts;
 using DeskFlow.Core.Settings;
 using DeskFlow.Infrastructure.DbContext;
 using DeskFlow.Infrastructure.Repositories;
+using DeskFlow.Infrastructure.Services;
 using DeskFlow.WebAPI;
 using DeskFlow.WebAPI.Middlewares;
 using Hangfire;
@@ -19,7 +20,10 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi;
 using System.Text;
+using Swashbuckle.AspNetCore;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -59,21 +63,21 @@ builder.Services.AddAuthorization( options =>
          options.AddPolicy("AdminOrManager", policy => policy.RequireRole(nameof(RoleEnum.Manager), nameof(RoleEnum.Admin)));
          options.AddPolicy("AdminOnly", policy => policy.RequireRole(nameof(RoleEnum.Admin)));
 
+
          options.AddPolicy("ManagerOrReporterOrAssignedTo", policy =>
              policy.Requirements.Add(new ManagerOrReporterOrAssignedToRequirement()));
-
          options.AddPolicy("ManagerOrAdmin", policy =>
              policy.Requirements.Add(new ManagerOrAdminRequirement()));
          options.AddPolicy("ReporterOnly", policy =>
              policy.Requirements.Add(new ReporterOnlyRequirement()));
-         options.AddPolicy("ManagerOrAdmin", policy =>
-             policy.Requirements.Add(new ManagerOrAdminRequirement()));
+         options.AddPolicy("ManagerOrTechnician", policy =>
+             policy.Requirements.Add(new ManagerOrTechnicianRequirement()));
      });
 
 builder.Services.AddScoped<IAuthorizationHandler,ManagerOrReporterOrAssignedToHandler >();
 builder.Services.AddScoped<IAuthorizationHandler,ManagerOrAdminHandler >();
 builder.Services.AddScoped<IAuthorizationHandler,ReporterOnlyHandler >();
-builder.Services.AddScoped<IAuthorizationHandler,ManagerOrAdminHandler >();
+builder.Services.AddScoped<IAuthorizationHandler,ManagerOrTechnicianHandler >();
 
 builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection("Jwt"));
 builder.Services.Configure<MailSettings>(builder.Configuration.GetSection("Mail"));
@@ -91,7 +95,7 @@ builder.Services.AddScoped<ITicketCommentsService, TicketCommentsService>();
 builder.Services.AddScoped<IIdentityService, IdentityService>();
 builder.Services.AddScoped<ITicketAttachmentService, TicketAttachmentService>();
 builder.Services.AddScoped<IFileStorageService, FileStorageService>();
-builder.Services.AddScoped<IEmailSender, MailService>();
+builder.Services.AddScoped<IEmailSender, EmailSender>();
 
 
 
@@ -133,7 +137,17 @@ builder.Services.AddSwaggerGen(options =>
 {
     var xmlPath = Path.Combine(AppContext.BaseDirectory, "api.xml");
     options.IncludeXmlComments(xmlPath);
+    options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    {
+        Name = "Authorization",
+        Type = SecuritySchemeType.Http,
+        Scheme = "Bearer",
+        BearerFormat = "JWT",
+        In = ParameterLocation.Header,
+        Description = "Enter: Bearer {your JWT token}"
+    });
 }
+
 );
 
 // Add Hangfire services
