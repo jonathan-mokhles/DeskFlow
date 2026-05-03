@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Hosting;
 
-namespace DeskFlow.Core.Services
+namespace DeskFlow.Infrastructure.Services
 {
     public class FileStorageService : IFileStorageService
     {
