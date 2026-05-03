@@ -12,6 +12,10 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="System.Security.Cryptography.Xml" Version="10.0.6" />
+	  <PackageReference Include="hangfire" Version="1.8.23" />
+	  <PackageReference Include="MailKit" Version="4.16.0" />
+	  <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="10.0.2" />
+
   </ItemGroup>
 
   <ItemGroup>

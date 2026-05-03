@@ -63,7 +63,7 @@ namespace DeskFlow.Core.Services
 
             if (!string.IsNullOrEmpty(emails.ManagerEmail))
             {
-                _backgroundJobService.SendEmail(emails.ManagerEmail, "New Ticket Created", $"A new ticket has been created with ID {ticket.Id}. Please check the system for details.");
+                _backgroundJobService.EnqueueEmail(emails.ManagerEmail, "New Ticket Created", $"A new ticket has been created with ID {ticket.Id}. Please check the system for details.");
             }
 
             return ticket;
@@ -88,7 +88,7 @@ namespace DeskFlow.Core.Services
             await _unitOfWork.TicketAuditLog.CreateAsync(new TicketAuditLog
             {
                 TicketId = updateTicket.Id,
-                ChangedById = updateTicket.LastModifiedById,
+                ChangedById = _currentUser.UserId,
                 ChangeType = "Updated Ticket",
                 ChangedDate = DateTime.UtcNow,
             });
@@ -129,7 +129,7 @@ namespace DeskFlow.Core.Services
         public async Task UpdateTicketStatus(int ticketId, TicketUpdateStatusDTO statusDTO)
         {
             TicketDTO? ticket =  await _unitOfWork.Ticket.GetTicketAsync(ticketId);
-            RoleEnum Role = (RoleEnum)Enum.Parse(typeof(RoleEnum), _currentUser .Role);
+            RoleEnum Role = Enum.TryParse<RoleEnum>(_currentUser.Role, out var role) ? role : throw new BusinessRuleViolationException("Invalid role.");
             if (ticket == null)
             {
                 throw new TicketNotFoundException();
@@ -192,7 +192,7 @@ namespace DeskFlow.Core.Services
             await _unitOfWork.CommitAsync();
             if(NewAssigned.Id != _currentUser.UserId && !string.IsNullOrEmpty(NewAssigned.Email))
             {
-               _backgroundJobService.SendEmail(NewAssigned.Email, "New Ticket Assignment", $"You have been assigned to ticket, With priority: {ticket.priority}. Please check the system for details.");
+               _backgroundJobService.EnqueueEmail(NewAssigned.Email, "New Ticket Assignment", $"You have been assigned to ticket, With priority: {ticket.priority}. Please check the system for details.");
             }
         }
 
@@ -229,14 +229,14 @@ namespace DeskFlow.Core.Services
             {
                 var emails = await _unitOfWork.Ticket.GetTicketUsersEmailsAsync(ticketId);
                 await _unitOfWork.Ticket.UpdateSLAResponseBreachedStatus(ticketId);
-                _backgroundJobService.SendEmail(emails.TechnicianEmail, "SLA Response Breached", "The SLA response time for your ticket has been breached.");
+                _backgroundJobService.EnqueueEmail(emails.TechnicianEmail, "SLA Response Breached", "The SLA response time for your ticket has been breached.");
             }
             var resolutionBreachedTicketIds = await _unitOfWork.Ticket.GetTicketIdsResolutionDeadlineBreachedAsync();
             foreach (var ticketId in resolutionBreachedTicketIds)
             {
                 var emails = await _unitOfWork.Ticket.GetTicketUsersEmailsAsync(ticketId);
                 await _unitOfWork.Ticket.UpdateSLAResolutionStatus(ticketId);
-                _backgroundJobService.SendEmail(emails.TechnicianEmail, "SLA Resolution Breached", "The SLA resolution time for your ticket has been breached.");
+                _backgroundJobService.EnqueueEmail(emails.TechnicianEmail, "SLA Resolution Breached", "The SLA resolution time for your ticket has been breached.");
             }
         }
 
@@ -252,14 +252,14 @@ namespace DeskFlow.Core.Services
                 case TicketStatus.Resolved:
                     if (!string.IsNullOrEmpty(usersEmails.ReporterEmail))
                     {
-                        _backgroundJobService.SendEmail(usersEmails.ReporterEmail, "Ticket Resolved", $"Your ticket with ID {ticketId} has been resolved. Please check the system for details.");
+                        _backgroundJobService.EnqueueEmail(usersEmails.ReporterEmail, "Ticket Resolved", $"Your ticket with ID {ticketId} has been resolved. Please check the system for details.");
                         return;
                     }
                     break;
                 case TicketStatus.Canceled:
                     if (!string.IsNullOrEmpty(usersEmails.TechnicianEmail))
                     {
-                        _backgroundJobService.SendEmail(usersEmails.TechnicianEmail, "Ticket Canceled", $"ticket with ID {ticketId} has been canceled. Please check the system for details.");
+                        _backgroundJobService.EnqueueEmail(usersEmails.TechnicianEmail, "Ticket Canceled", $"ticket with ID {ticketId} has been canceled. Please check the system for details.");
                         return;
                     }
                     break;

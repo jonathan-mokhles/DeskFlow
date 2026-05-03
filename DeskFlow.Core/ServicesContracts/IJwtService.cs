@@ -1,5 +1,4 @@
-﻿using Azure.Core;
-using DeskFlow.Core.Domain.IdentityEntity;
+﻿using DeskFlow.Core.Domain.IdentityEntity;
 using DeskFlow.Core.DTOs.AccountDTOs;
 using System;
 using System.Collections.Generic;

@@ -1,12 +1,10 @@
 ﻿using DeskFlow.Core.Domain.IdentityEntity;
 using DeskFlow.Core.Domain.RepositoriesContracts;
-using DeskFlow.Core.DTOs.shared;
 using DeskFlow.Core.DTOs.UsersDTOs;
 using DeskFlow.Core.Exceptions;
 using DeskFlow.Core.Mappings;
 using DeskFlow.Core.ServicesContracts;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
 namespace DeskFlow.Core.Services
 {
