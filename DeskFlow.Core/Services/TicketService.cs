@@ -250,14 +250,14 @@ namespace DeskFkow.Core.Services
             switch (status)
             {
                 case TicketStatus.Resolved:
-                    if (string.IsNullOrEmpty(usersEmails.ReporterEmail))
+                    if (!string.IsNullOrEmpty(usersEmails.ReporterEmail))
                     {
                         _backgroundJobService.SendEmail(usersEmails.ReporterEmail, "Ticket Resolved", $"Your ticket with ID {ticketId} has been resolved. Please check the system for details.");
                         return;
                     }
                     break;
                 case TicketStatus.Canceled:
-                    if (string.IsNullOrEmpty(usersEmails.TechnicianEmail))
+                    if (!string.IsNullOrEmpty(usersEmails.TechnicianEmail))
                     {
                         _backgroundJobService.SendEmail(usersEmails.TechnicianEmail, "Ticket Canceled", $"ticket with ID {ticketId} has been canceled. Please check the system for details.");
                         return;

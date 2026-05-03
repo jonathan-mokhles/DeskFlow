@@ -1,10 +1,10 @@
 <Solution>
   <Folder Name="/src/">
-    <Project Path="Fixi.Core/DeskFlow.Core.csproj" />
-    <Project Path="Fixi.Infrastructure/DeskFlow.Infrastructure.csproj" />
-    <Project Path="Fixi.WebAPI/DeskFlow.WebAPI.csproj" />
+    <Project Path="DeskFlow.Core/DeskFlow.Core.csproj" />
+    <Project Path="DeskFlow.Infrastructure/DeskFlow.Infrastructure.csproj" />
+    <Project Path="DeskFlow.WebAPI/DeskFlow.WebAPI.csproj" />
   </Folder>
   <Folder Name="/tests/">
-    <Project Path="Fixi.Tests/DeskFlow.Tests.csproj" Id="45048dc2-b771-4f99-b409-d4f6bd1c3bc3" />
+    <Project Path="DeskFlow.Tests/DeskFlow.Tests.csproj" Id="45048dc2-b771-4f99-b409-d4f6bd1c3bc3" />
   </Folder>
 </Solution>

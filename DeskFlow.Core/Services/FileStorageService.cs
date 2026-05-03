@@ -26,7 +26,7 @@ namespace DeskFkow.Core.Services
             return Task.CompletedTask;
         }
 
-        public Task<(Stream FileStream, string MimeType)> GetFileAsync(string filePath)
+        public async Task<(Stream FileStream, string MimeType)> GetFileAsync(string filePath)
         {
             string rootPath = _env.WebRootPath ?? _env.ContentRootPath;
             string physicalPath = Path.Combine(rootPath, filePath.Replace("/", Path.DirectorySeparatorChar.ToString()));
@@ -36,15 +36,15 @@ namespace DeskFkow.Core.Services
                 throw new FileNotFoundException("File not found.", physicalPath);
             }
 
-            var stream = new FileStream(physicalPath, FileMode.Open, FileAccess.Read, FileShare.Read);
+            await using var stream = new FileStream(physicalPath, FileMode.Open, FileAccess.Read, FileShare.Read);
             string extension = Path.GetExtension(physicalPath);
             string mimeType = GetMimeType(extension);
 
-            return Task.FromResult(((Stream)stream, mimeType));
+            return (stream, mimeType);
         }
 
 
-        public Task<string> SaveFileAsync(IFormFile file, int ticketId)
+        public async Task<string> SaveFileAsync(IFormFile file, int ticketId)
         {
             List<string> allowedExtensions = new List<string> { ".jpg", ".jpeg", ".png", ".gif", ".pdf", ".docx", ".xlsx" };
             string extension = Path.GetExtension(file.FileName);
@@ -60,7 +60,7 @@ namespace DeskFkow.Core.Services
 
             string uploadsFolder = Path.Combine(_env.WebRootPath ?? _env.ContentRootPath, "Attachments", ticketId.ToString());
 
-            string fileName = $"{Guid.NewGuid()}_{file.FileName}";
+            string fileName = $"{Guid.NewGuid()}_{Path.GetFileName(file.FileName)}";
             string physicalPath = Path.Combine(uploadsFolder, fileName);
             string filePath = $"Attachments/{ticketId}/{fileName}";
 
@@ -71,10 +71,10 @@ namespace DeskFkow.Core.Services
 
             using (var stream = new FileStream(physicalPath, FileMode.Create))
             {
-                file.CopyTo(stream);
+               await file.CopyToAsync(stream);
             }
 
-            return Task.FromResult(filePath);
+            return filePath;
         }
 
 

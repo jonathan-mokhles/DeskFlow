@@ -12,7 +12,6 @@ using DeskFkow.Infrastructure.Repositories;
 using DeskFkow.WebAPI;
 using DeskFkow.WebAPI.Middlewares;
 using Hangfire;
-using Hangfire;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
