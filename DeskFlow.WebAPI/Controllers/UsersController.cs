@@ -35,8 +35,7 @@ namespace DeskFlow.WebAPI.Controllers
         /// <returns>A 201 Created result if the user is successfully registered; otherwise, a 400 Bad Request result containing
         /// validation errors or identity errors.</returns>
         [HttpPost]
-        //[Authorize(policy: "AdminOnly")]
-        [AllowAnonymous]
+        [Authorize(policy: "AdminOnly")]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(typeof(ApiErrorResponse), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> register([FromBody]RegisterUserDTO registerDTO)

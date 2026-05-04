@@ -24,9 +24,6 @@
     <ProjectReference Include="..\DeskFlow.Core\DeskFlow.Core.csproj" />
     <ProjectReference Include="..\DeskFlow.Infrastructure\DeskFlow.Infrastructure.csproj" />
     <ProjectReference Include="..\DeskFlow.WebAPI\DeskFlow.WebAPI.csproj" />
-    <ProjectReference Include="..\Fixi.Core\DeskFlow.Core.csproj" />
-    <ProjectReference Include="..\Fixi.Infrastructure\DeskFlow.Infrastructure.csproj" />
-    <ProjectReference Include="..\Fixi.WebAPI\DeskFlow.WebAPI.csproj" />
   </ItemGroup>
 
   <ItemGroup>

@@ -58,8 +58,8 @@ namespace DeskFlow.Core.Services
                 NewValue = $"Title: {ticket.Title}, Description: {ticket.Description}, Priority: {ticket.Priority}, Status: {ticket.Status}, CategoryId: {ticket.CategoryId}"
             };
             await _unitOfWork.TicketAuditLog.CreateAsync(auditLog);
-            await _unitOfWork.CommitAsync();
             var emails = await _unitOfWork.Ticket.GetTicketUsersEmailsAsync(ticket.Id);
+            await _unitOfWork.CommitAsync();
 
             if (!string.IsNullOrEmpty(emails.ManagerEmail))
             {
@@ -72,11 +72,11 @@ namespace DeskFlow.Core.Services
 
         public async Task<IEnumerable<TicketResponseDTO>> GetAllTicketsAsync(TicketQueryParams queryParams)
         {
-            if(_currentUser.Role == nameof(RoleEnum.Manager) || _currentUser.Role == nameof(RoleEnum.Technician))
+            if(_currentUser.Role == RoleEnum.Manager || _currentUser.Role == RoleEnum.Technician)
             {
                 queryParams.DepartmentId = _currentUser.DeptId;
             }
-            else if(_currentUser.Role == nameof(RoleEnum.User))
+            else if(_currentUser.Role == RoleEnum.User)
             {
                 queryParams.ReporterId = _currentUser.UserId;
             }
@@ -85,6 +85,11 @@ namespace DeskFlow.Core.Services
 
         public async Task UpdateTicketAsync(Ticket updateTicket)
         {
+            var existingTicket = await _unitOfWork.Ticket.GetTicketAsync(updateTicket.Id);
+            if(existingTicket == null)
+            {
+                throw new TicketNotFoundException();
+            }
             await _unitOfWork.TicketAuditLog.CreateAsync(new TicketAuditLog
             {
                 TicketId = updateTicket.Id,
@@ -122,6 +127,7 @@ namespace DeskFlow.Core.Services
                 OldValue = ((TicketPriority)ticket.priority).ToString(),
                 NewValue = ((TicketPriority)newPriority).ToString()
             });
+
             await _unitOfWork.Ticket.UpdatePriority(ticket.Id, newPriority, _currentUser.UserId);
             await _unitOfWork.CommitAsync();
         }
@@ -129,7 +135,7 @@ namespace DeskFlow.Core.Services
         public async Task UpdateTicketStatus(int ticketId, TicketUpdateStatusDTO statusDTO)
         {
             TicketDTO? ticket =  await _unitOfWork.Ticket.GetTicketAsync(ticketId);
-            RoleEnum Role = Enum.TryParse<RoleEnum>(_currentUser.Role, out var role) ? role : throw new BusinessRuleViolationException("Invalid role.");
+            RoleEnum Role = _currentUser.Role;
             if (ticket == null)
             {
                 throw new TicketNotFoundException();
@@ -163,7 +169,7 @@ namespace DeskFlow.Core.Services
             {
                 throw new TicketNotFoundException();
             }
-            if (_currentUser.Role == nameof(RoleEnum.Technician) && newtechnicianId != _currentUser.UserId)
+            if (_currentUser.Role == RoleEnum.Technician && newtechnicianId != _currentUser.UserId)
             {
                 throw new BusinessRuleViolationException("Technician can only assign themselves to a ticket.");
             }

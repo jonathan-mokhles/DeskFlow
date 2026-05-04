@@ -1,6 +1,8 @@
 ﻿using DeskFlow.Core.DTOs.shared;
 using DeskFlow.Core.Exceptions;
+using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
+using System.Diagnostics;
 
 
 namespace DeskFlow.WebAPI.Middlewares
@@ -24,7 +26,7 @@ namespace DeskFlow.WebAPI.Middlewares
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, ex.Message);
+                _logger.LogError(ex, "Unhandled exception occurred. TraceId: {TraceId}", httpContext.TraceIdentifier);
                 await HandleExceptionAsync(httpContext, ex);
             }
         }
@@ -43,37 +45,39 @@ namespace DeskFlow.WebAPI.Middlewares
                 case TicketNotFoundException :
                     context.Response.StatusCode = 404;
                     response.Message = "Not found";
-                    response.Errors = new List<string> { exception.Message };
                     break;
 
                 case UnauthorizedTicketAccessException:
                     context.Response.StatusCode = 403;
                     response.Message = "UnAuthorized";
-                    response.Errors = new List<string> { exception.Message };
                     break;
 
                 case NotFoundException:
                     context.Response.StatusCode = 404;
                     response.Message = "Not found";
-                    response.Errors = new List<string> { exception.Message };
                     break;
 
                 case BusinessRuleViolationException:
                     context.Response.StatusCode = 400;
                     response.Message = "Business rule violation";
-                    response.Errors = new List<string> { exception.Message };
                     break;
 
                 case UnauthorizedOperationException:
                     context.Response.StatusCode = 403;
-                    response.Message = "UnAuthorized";
-                    response.Errors = new List<string> { exception.Message };
+                    response.Message = "Unauthorized";
                     break;
 
                 case ValidationException:
                     context.Response.StatusCode = 400;
                     response.Message = "Validation error";
-                    response.Errors = new List<string> { exception.Message };
+                    break;
+                case ArgumentException:
+                    context.Response.StatusCode = 400;
+                    response.Message = "Invalid argument";
+                    break;
+                case InvalidOperationException:
+                    context.Response.StatusCode = 400;
+                    response.Message = "Invalid operation";
                     break;
 
                 default:
@@ -81,6 +85,10 @@ namespace DeskFlow.WebAPI.Middlewares
                     response.Message = "Internal server error";
                     response.Errors = new List<string> { "Internal server error occurred." };
                     break;
+            }
+            if(context.Response.StatusCode != 500)
+            {
+                response.Errors = new List<string> { exception.Message };
             }
             return context.Response.WriteAsJsonAsync(response);
         }

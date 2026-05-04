@@ -1,4 +1,5 @@
 ﻿using DeskFlow.Core.DTOs.shared;
+using DeskFlow.Core.Enums;
 using Microsoft.AspNetCore.Http;
 using System.Security.Claims;
 
@@ -16,8 +17,8 @@ namespace DeskFlow.WebAPI
         public string UserId =>
             _httpContextAccessor.HttpContext?.User?.FindFirstValue(ClaimTypes.NameIdentifier) ?? "";
 
-        public string Role =>
-            _httpContextAccessor.HttpContext?.User?.FindFirstValue(ClaimTypes.Role) ?? "";
+        public RoleEnum Role =>
+            Enum.TryParse(_httpContextAccessor.HttpContext?.User?.FindFirstValue(ClaimTypes.Role), out RoleEnum role) ? role : RoleEnum.User;
 
         public int DeptId
         {

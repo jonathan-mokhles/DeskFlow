@@ -189,7 +189,7 @@ namespace DeskFlow.WebAPI.Controllers
         [ProducesResponseType(typeof(ApiErrorResponse), StatusCodes.Status403Forbidden)]
         public async Task<ActionResult> UpdateTicketPriority(int ticketId, int newPriority)
         {
-            if(newPriority < 1 || newPriority > 3)
+            if(newPriority < 1 || newPriority >4)
             {
                 return BadRequest(new ApiErrorResponse
                 {

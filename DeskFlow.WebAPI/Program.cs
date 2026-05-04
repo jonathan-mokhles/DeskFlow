@@ -22,7 +22,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi;
 using System.Text;
-using Swashbuckle.AspNetCore;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -146,6 +145,8 @@ builder.Services.AddSwaggerGen(options =>
         In = ParameterLocation.Header,
         Description = "Enter: Bearer {your JWT token}"
     });
+
+
 }
 
 );

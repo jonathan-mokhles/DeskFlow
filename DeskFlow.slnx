@@ -1,5 +1,6 @@
 <Solution>
   <Folder Name="/src/">
+    <File Path=".gitignore" />
     <Project Path="DeskFlow.Core/DeskFlow.Core.csproj" />
     <Project Path="DeskFlow.Infrastructure/DeskFlow.Infrastructure.csproj" />
     <Project Path="DeskFlow.WebAPI/DeskFlow.WebAPI.csproj" />

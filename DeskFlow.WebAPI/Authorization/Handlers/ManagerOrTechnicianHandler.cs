@@ -5,6 +5,7 @@ using DeskFlow.Core.Enums;
 using Microsoft.AspNetCore.Authorization;
 using System;
 using System.Collections.Generic;
+using System.Security.Claims;
 using System.Text;
 
 namespace DeskFlow.Core.Authorization.Handlers
@@ -24,7 +25,7 @@ namespace DeskFlow.Core.Authorization.Handlers
                 context.Fail();
                 return;
             }
-            string role = context.User.Claims.FirstOrDefault(c => c.Type == "role")?.Value!;
+            string role = context.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value!;
             int deptID = int.Parse(context.User.Claims.FirstOrDefault(c => c.Type == "DeptId")?.Value ?? "0");
             if ((role == nameof(RoleEnum.Manager)|| role == nameof(RoleEnum.Technician)) && deptID == ticket.DepartmentId)
             {
