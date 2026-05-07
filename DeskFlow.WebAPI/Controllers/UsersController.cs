@@ -9,6 +9,9 @@ using System.Security.Claims;
 
 namespace DeskFlow.WebAPI.Controllers
 {
+    /// <summary>
+    /// Controller for managing user accounts, including registration, updating, deletion, and retrieval of user details. Access to these endpoints is restricted based on user roles and policies.
+    /// </summary>
     [Route("api/[controller]")]
     [ApiController]
     [Authorize]
@@ -17,7 +20,11 @@ namespace DeskFlow.WebAPI.Controllers
         private readonly IUserService _userService;
         private readonly ILogger<UsersController> _logger;
 
-
+        /// <summary>
+        /// Initializes a new instance of the UsersController class with the specified user service and logger. 
+        /// </summary>
+        /// <param name="userService">The service used to manage user-related operations. Cannot be null.</param>
+        /// <param name="logger">The logger used to record diagnostic and operational information for the controller. Cannot be null.</param>
         public UsersController(IUserService userService, ILogger<UsersController> logger)
         {
             _userService = userService;
@@ -141,10 +148,10 @@ namespace DeskFlow.WebAPI.Controllers
             }
 
             var role = User.FindFirstValue(ClaimTypes.Role);
-            string userid = User.FindFirstValue(JwtRegisteredClaimNames.Sub)!;
+            string userid = User.FindFirstValue(ClaimTypes.NameIdentifier)!;
 
             int deptId = int.Parse(User.FindFirstValue("DeptId")!);
-            if (id == userid || user.Role == nameof(RoleEnum.Admin) || (user.Role == nameof(RoleEnum.Manager) && user.DepartmentId == deptId)) {
+            if ((id == userid || user.Role == nameof(RoleEnum.Admin)) || ((user.Role == nameof(RoleEnum.Manager) && user.DepartmentId == deptId))) {
                 return Ok(user);
             }
             else

@@ -18,7 +18,10 @@ namespace DeskFlow.WebAPI.Controllers
     {
         private readonly ICategoryService _categoryService;
 
-
+        /// <summary>
+        /// initializes a new instance of the <see cref="CategoryController"/> class with the specified category service.
+        /// </summary>
+        /// <param name="categoryService">The service for managing categories.</param>
         public CategoryController(ICategoryService categoryService)
         {
             _categoryService = categoryService;

@@ -4,6 +4,8 @@ using System.Text;
 using DeskFlow.Core.Domain.Entity;
 using DeskFlow.Core.Domain.RepositoriesContracts;
 using DeskFlow.Core.ServicesContracts;
+using DeskFlow.Core.DTOs.DepartmentDTO;
+using DeskFlow.Core.Mappings;
 
 namespace DeskFlow.Core.Services
 {
@@ -16,9 +18,9 @@ namespace DeskFlow.Core.Services
             _unitOfWork = unitOfWork;
         }
 
-        public async Task<Department> CreateDepartmentAsync(string name)
+        public async Task<DepartmentResponseDTO> CreateDepartmentAsync(DepartmentCreateDTO createDTO)
         {
-            var department = await _unitOfWork.Department.CreateAsync(name);
+            var department = await _unitOfWork.Department.CreateAsync(createDTO.ToEntity());
             await _unitOfWork.CommitAsync();
             return department;
         }
@@ -29,7 +31,7 @@ namespace DeskFlow.Core.Services
             await _unitOfWork.CommitAsync();
         }
 
-        public async Task<IEnumerable<Department>> GetAllDepartmentsAsync()
+        public async Task<IEnumerable<DepartmentResponseDTO>> GetAllDepartmentsAsync()
         {
             return await _unitOfWork.Department.GetAllAsync();
         }

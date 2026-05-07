@@ -1,6 +1,10 @@
 ﻿using DeskFlow.Core.Domain.Entity;
 using DeskFlow.Core.Domain.RepositoriesContracts;
+using DeskFlow.Core.DTOs.DepartmentDTO;
+using DeskFlow.Core.Exceptions;
+using DeskFlow.Core.Mappings;
 using DeskFlow.Infrastructure.DbContext;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -18,11 +22,22 @@ namespace DeskFlow.Infrastructure.Repositories
         }
 
 
-        public async Task<Department> CreateAsync(string DepartmentName)
+        public async Task<DepartmentResponseDTO> CreateAsync(Department department)
         {
-            var department = new Department { Name = DepartmentName };
+            var Manager = _db.Users.FirstOrDefault(u => u.Id == department.ManagerId);
+            if (Manager == null)
+            {
+                throw new NotFoundException("Manager not found");
+            }
             await _db.Departments.AddAsync(department);
-            return department;
+            await _db.SaveChangesAsync();
+            return new DepartmentResponseDTO
+            {
+                Id = department.Id,
+                Name = department.Name,
+                ManagerId = department.ManagerId,
+                ManagerName = Manager.FullName
+            };
         }
 
         public Task DeleteAsync(int id)
@@ -31,9 +46,10 @@ namespace DeskFlow.Infrastructure.Repositories
             return Task.CompletedTask;
         }
 
-        public async Task<IEnumerable<Department>> GetAllAsync()
+        public async Task<IEnumerable<DepartmentResponseDTO>> GetAllAsync()
         {
-              return await _db.Departments.ToListAsync();
+             var departments = await _db.Departments.Include(d => d.Manager).ToListAsync();
+             return departments.ToResponseDTOs();
         }
     }
 }

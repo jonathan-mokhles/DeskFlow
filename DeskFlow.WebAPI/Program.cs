@@ -6,6 +6,7 @@ using DeskFlow.Core.DTOs.shared;
 using DeskFlow.Core.Enums;
 using DeskFlow.Core.Services;
 using DeskFlow.Core.ServicesContracts;
+using DeskFlow.Core.ServicesContracts.Abstractions;
 using DeskFlow.Core.Settings;
 using DeskFlow.Infrastructure.DbContext;
 using DeskFlow.Infrastructure.Repositories;
@@ -95,6 +96,7 @@ builder.Services.AddScoped<IIdentityService, IdentityService>();
 builder.Services.AddScoped<ITicketAttachmentService, TicketAttachmentService>();
 builder.Services.AddScoped<IFileStorageService, FileStorageService>();
 builder.Services.AddScoped<IEmailSender, EmailSender>();
+builder.Services.AddScoped<IBackgroundJobService, BackgroundJobService>();
 
 
 
@@ -134,8 +136,16 @@ builder.Services.AddControllers()
 
 builder.Services.AddSwaggerGen(options =>
 {
+    options.SwaggerDoc("v1", new OpenApiInfo
+    {
+        Version = "v1",
+        Title = "DeskFlow API",
+        Description = "An ASP.NET Core Web API for DeskFlow ticket management system",
+    });
+
     var xmlPath = Path.Combine(AppContext.BaseDirectory, "api.xml");
     options.IncludeXmlComments(xmlPath);
+
     options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
         Name = "Authorization",
@@ -146,10 +156,16 @@ builder.Services.AddSwaggerGen(options =>
         Description = "Enter: Bearer {your JWT token}"
     });
 
+    options.AddSecurityRequirement(document => new OpenApiSecurityRequirement
+    {
+        {
+            new OpenApiSecuritySchemeReference("Bearer", document),
+            new List<string>()
+        }
+    });
 
-}
 
-);
+});
 
 // Add Hangfire services
 builder.Services.AddHangfire(configuration =>

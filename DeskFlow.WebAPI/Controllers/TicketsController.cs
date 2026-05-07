@@ -13,6 +13,9 @@ using System.Security.Claims;
 
 namespace DeskFlow.WebAPI.Controllers
 {
+    /// <summary>
+    /// Controller for managing support tickets, providing endpoints for creating, retrieving, updating, and deleting tickets, as well as managing ticket status, priority, and assignment. Access to these endpoints is restricted based on user roles and authorization policies.
+    /// </summary>
     [Route("api/[controller]")]
     [ApiController]
     [Authorize]
@@ -20,7 +23,12 @@ namespace DeskFlow.WebAPI.Controllers
     {
         ITicketService _ticketService;
         IAuthorizationService _authorizationService;
-
+        /// <summary>
+        /// Initializes a new instance of the TicketsController class with the specified ticket and authorization
+        /// services.
+        /// </summary>
+        /// <param name="ticketService">The service used to manage and retrieve ticket data.</param>
+        /// <param name="authorizationService">The service used to perform authorization checks for ticket-related operations.</param>
         public TicketsController(ITicketService ticketService, IAuthorizationService authorizationService )
         {
             _ticketService = ticketService;

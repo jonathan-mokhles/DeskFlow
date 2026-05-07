@@ -21,7 +21,10 @@ namespace DeskFlow.WebAPI.Controllers
     public class SLAController : ControllerBase
     {
         private readonly ISLAService _slaService;
-
+        /// <summary>
+        /// initializes a new instance of the <see cref="SLAController"/> class with the specified SLA service.
+        /// </summary>
+        /// <param name="slaService">The service for managing SLAs.</param>
         public SLAController(ISLAService slaService)
         {
             _slaService = slaService;

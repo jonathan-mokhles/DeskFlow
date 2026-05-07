@@ -10,6 +10,9 @@ using System.Security.Claims;
 
 namespace DeskFlow.WebAPI.Controllers
 {
+    /// <summary>
+    /// Authentication controller for handling user login, token refresh, and password reset operations.
+    /// </summary>
     [Route("api/[controller]")]
     [ApiController]
     public class AuthController : ControllerBase
@@ -18,7 +21,13 @@ namespace DeskFlow.WebAPI.Controllers
         private readonly IJwtService _jwt;
         private readonly ILogger<AuthController> _logger;
 
-
+        /// <summary>
+        /// Initializes a new instance of the AuthController class with the specified user manager, JWT service, and
+        /// logger.
+        /// </summary>
+        /// <param name="userManager">The user manager used to manage and validate application users.</param>
+        /// <param name="jwtService">The service used to generate and validate JSON Web Tokens for authentication.</param>
+        /// <param name="logger">The logger used to record authentication-related events and errors.</param>
         public AuthController(UserManager<ApplicationUser> userManager, IJwtService jwtService, ILogger<AuthController> logger)
         {
             _userManager = userManager;

@@ -36,7 +36,7 @@ namespace DeskFlow.Infrastructure.Repositories
 
         public async Task<IEnumerable<Category>> GetAllAsync()
         {
-            return await _db.Categories.ToListAsync();
+            return await _db.Categories.Include(c => c.Department).ToListAsync();
         }
 
         public Task UpdateAsync(Category category)

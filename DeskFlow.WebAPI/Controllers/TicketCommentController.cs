@@ -19,7 +19,11 @@ namespace DeskFlow.WebAPI.Controllers
         ITicketCommentsService _CommentsService;
         IAuthorizationService _authorizationService;
 
-
+        /// <summary>
+        /// intializes a new instance of the <see cref="TicketCommentController"/> class with the specified ticket comments service and authorization service.
+        /// </summary>
+        /// <param name="ticketCommentsService">The service for managing ticket comments.</param>
+        /// <param name="authorizationService">The service for handling authorization checks.</param>
         public TicketCommentController(ITicketCommentsService ticketCommentsService, IAuthorizationService authorizationService)
         {
             _CommentsService = ticketCommentsService;

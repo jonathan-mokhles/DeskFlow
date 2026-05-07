@@ -1,4 +1,5 @@
 ﻿using DeskFlow.Core.Domain.Entity;
+using DeskFlow.Core.DTOs.DepartmentDTO;
 using DeskFlow.Core.ServicesContracts;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -17,6 +18,11 @@ namespace DeskFlow.WebAPI.Controllers
     public class DepartmentController : ControllerBase
     {
         IDepartmentService _departmentService;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="DepartmentController"/> class with the specified department service.
+        /// </summary>
+        /// <param name="departmentService">The service for managing departments.</param>
         public DepartmentController(IDepartmentService departmentService)
         {
             _departmentService = departmentService;
@@ -26,7 +32,7 @@ namespace DeskFlow.WebAPI.Controllers
         /// Retrive all the departments
         /// </summary>
         /// <returns>list of departments</returns>
-        [ProducesResponseType(typeof(IEnumerable<Department>),StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(IEnumerable<DepartmentResponseDTO>),StatusCodes.Status200OK)]
         [HttpGet]
         public async Task<IActionResult> GetAllDepartments()
         {
@@ -51,13 +57,13 @@ namespace DeskFlow.WebAPI.Controllers
         /// <summary>
         /// Creates a new department with the specified name.
         /// </summary>
-        /// <param name="name">The name of the department to create. Cannot be null or empty.</param>
+        /// <param name="createDTO">The DTO containing the details of the department to create. Cannot be null.</param>
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created)]
-        public async Task<IActionResult> AddDepartment(string name)
+        public async Task<IActionResult> AddDepartment([FromBody] DepartmentCreateDTO createDTO)
         {
-            var department = await _departmentService.CreateDepartmentAsync(name);
-            return CreatedAtAction(nameof(GetAllDepartments), new { name = department.Name }, department);
+            var department = await _departmentService.CreateDepartmentAsync(createDTO);
+            return CreatedAtAction(nameof(GetAllDepartments), department);
         }
     }
 }
