@@ -233,7 +233,7 @@
             </summary>
             <remarks>Admin, Depatment Manger, Assigned technician and Reported User only can comment</remarks>
             <param name="ticketId">The unique identifier of the ticket to which the comment will be added.</param>
-            <param name="comment">The data for the comment to add, including content and associated ticket information. Must not be null, and
+            <param name="commentDTO">The data for the comment to add, including content and associated ticket information. Must not be null, and
             the TicketId property must match the ticketId parameter.</param>
         </member>
         <member name="M:DeskFlow.WebAPI.Controllers.TicketCommentController.GetComments(System.Int32)">

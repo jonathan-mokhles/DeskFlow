@@ -36,7 +36,7 @@ namespace DeskFlow.Infrastructure.Services
                 throw new FileNotFoundException("File not found.", physicalPath);
             }
 
-            await using var stream = new FileStream(physicalPath, FileMode.Open, FileAccess.Read, FileShare.Read);
+            var stream = new FileStream(physicalPath, FileMode.Open, FileAccess.Read, FileShare.Read);
             string extension = Path.GetExtension(physicalPath);
             string mimeType = GetMimeType(extension);
 

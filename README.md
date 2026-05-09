@@ -1,4 +1,4 @@
-# DeskFlow — Help Desk Ticket Management System
+# DeskFlow — Enterprise Service Desk System with SLA Automation
 
 A production-ready RESTful API for managing IT support tickets, built with **ASP.NET Core** and following clean architecture principles.
 
