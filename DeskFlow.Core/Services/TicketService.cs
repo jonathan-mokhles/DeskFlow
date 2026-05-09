@@ -58,13 +58,14 @@ namespace DeskFlow.Core.Services
                 NewValue = $"Title: {ticket.Title}, Description: {ticket.Description}, Priority: {ticket.Priority}, Status: {ticket.Status}, CategoryId: {ticket.CategoryId}"
             };
             await _unitOfWork.TicketAuditLog.CreateAsync(auditLog);
-            var emails = await _unitOfWork.Ticket.GetTicketUsersEmailsAsync(ticket.Id);
+            var managerEmail = await _unitOfWork.User.GetManagerDepartmentEmailByCategoryIdAsync(ticketDTO.CategoryId);
             await _unitOfWork.CommitAsync();
 
-            if (!string.IsNullOrEmpty(emails.ManagerEmail))
+            if (!string.IsNullOrEmpty(managerEmail))
             {
-                _backgroundJobService.EnqueueEmail(emails.ManagerEmail, "New Ticket Created", $"A new ticket has been created with ID {ticket.Id}. Please check the system for details.");
+                _backgroundJobService.EnqueueEmail(managerEmail, "New Ticket Created", $"A new ticket has been created with ID {ticket.Id}. Please check the system for details.");
             }
+
 
             return ticket;
 
@@ -235,14 +236,28 @@ namespace DeskFlow.Core.Services
             {
                 var emails = await _unitOfWork.Ticket.GetTicketUsersEmailsAsync(ticketId);
                 await _unitOfWork.Ticket.UpdateSLAResponseBreachedStatus(ticketId);
-                _backgroundJobService.EnqueueEmail(emails.TechnicianEmail, "SLA Response Breached", "The SLA response time for your ticket has been breached.");
+                if (!string.IsNullOrEmpty(emails.TechnicianEmail))
+                {
+                    _backgroundJobService.EnqueueEmail(emails.TechnicianEmail, "SLA Response Breached", "The SLA response time for your ticket has been breached.");
+                }
+                if(!string.IsNullOrEmpty(emails.ManagerEmail))
+                {
+                    _backgroundJobService.EnqueueEmail(emails.ManagerEmail, "SLA Response Breached", "The SLA response time for a ticket in your department has been breached.");
+                }
             }
             var resolutionBreachedTicketIds = await _unitOfWork.Ticket.GetTicketIdsResolutionDeadlineBreachedAsync();
             foreach (var ticketId in resolutionBreachedTicketIds)
             {
                 var emails = await _unitOfWork.Ticket.GetTicketUsersEmailsAsync(ticketId);
                 await _unitOfWork.Ticket.UpdateSLAResolutionStatus(ticketId);
-                _backgroundJobService.EnqueueEmail(emails.TechnicianEmail, "SLA Resolution Breached", "The SLA resolution time for your ticket has been breached.");
+                if(!string.IsNullOrEmpty(emails.ManagerEmail))
+                {
+                    _backgroundJobService.EnqueueEmail(emails.ManagerEmail, "SLA Resolution Breached", "The SLA resolution time for a ticket in your department has been breached.");
+                }
+                if(!string.IsNullOrEmpty(emails.TechnicianEmail))
+                {
+                    _backgroundJobService.EnqueueEmail(emails.TechnicianEmail, "SLA Resolution Breached", "The SLA resolution time for your ticket has been breached.");
+                }
             }
         }
 

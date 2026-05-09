@@ -1,4 +1,5 @@
-﻿using DeskFlow.Core.Domain.RepositoriesContracts;
+﻿using DeskFlow.Core.Domain.Entity;
+using DeskFlow.Core.Domain.RepositoriesContracts;
 using DeskFlow.Core.DTOs.CommentDTOs;
 using DeskFlow.Core.Mappings;
 using DeskFlow.Core.ServicesContracts;
@@ -15,9 +16,9 @@ namespace DeskFlow.Core.Services
         }
 
 
-        public async Task AddCommentToTicketAsync(CommentCreateDTO comment)
+        public async Task AddCommentToTicketAsync(TicketComment comment)
         {
-            await _unitOfWork.TicketComment.CreateAsync(comment.ToEntity());
+            await _unitOfWork.TicketComment.CreateAsync(comment);
             await _unitOfWork.CommitAsync();
         }
 

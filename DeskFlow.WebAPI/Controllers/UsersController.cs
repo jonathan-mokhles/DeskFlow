@@ -19,16 +19,19 @@ namespace DeskFlow.WebAPI.Controllers
     {
         private readonly IUserService _userService;
         private readonly ILogger<UsersController> _logger;
+        private readonly IAuthorizationService _authorizationService;
 
         /// <summary>
-        /// Initializes a new instance of the UsersController class with the specified user service and logger. 
+        /// Initializes a new instance of the UsersController class with the specified user service, logger, and authorization service. 
         /// </summary>
         /// <param name="userService">The service used to manage user-related operations. Cannot be null.</param>
         /// <param name="logger">The logger used to record diagnostic and operational information for the controller. Cannot be null.</param>
-        public UsersController(IUserService userService, ILogger<UsersController> logger)
+        /// <param name="authorizationService">The authorization service used to enforce policies and requirements. Cannot be null.</param>
+        public UsersController(IUserService userService, ILogger<UsersController> logger, IAuthorizationService authorizationService)
         {
             _userService = userService;
             _logger = logger;
+            _authorizationService = authorizationService;
         }
 
 
@@ -147,14 +150,9 @@ namespace DeskFlow.WebAPI.Controllers
                 return NotFound(errorResponse);
             }
 
-            var role = User.FindFirstValue(ClaimTypes.Role);
-            string userid = User.FindFirstValue(ClaimTypes.NameIdentifier)!;
+            var result = await _authorizationService.AuthorizeAsync(User, user, "AdminOrManagerOrSelf");
 
-            int deptId = int.Parse(User.FindFirstValue("DeptId")!);
-            if ((id == userid || user.Role == nameof(RoleEnum.Admin)) || ((user.Role == nameof(RoleEnum.Manager) && user.DepartmentId == deptId))) {
-                return Ok(user);
-            }
-            else
+            if (!result.Succeeded)
             {
                 ApiErrorResponse errorResponse = new ApiErrorResponse
                 {
@@ -163,9 +161,8 @@ namespace DeskFlow.WebAPI.Controllers
                     TraceId = HttpContext.TraceIdentifier
                 };
                 return StatusCode(StatusCodes.Status403Forbidden, errorResponse);
-
             }
-
+            return Ok(user);
         }
 
 

@@ -35,7 +35,7 @@ namespace DeskFlow.Core.Services
 
             var claims = new List<Claim>
             {
-            new Claim(JwtRegisteredClaimNames.Sub, user.Id), // subject is userId	
+            new Claim(ClaimTypes.NameIdentifier, user.Id), // subject is userId	
             new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()), //Json token Id
             new Claim(ClaimTypes.Role, roles.FirstOrDefault()?? "User"),
             new Claim(ClaimTypes.Email, user.Email),

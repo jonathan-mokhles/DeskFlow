@@ -12,6 +12,8 @@ using DeskFlow.Infrastructure.DbContext;
 using DeskFlow.Infrastructure.Repositories;
 using DeskFlow.Infrastructure.Services;
 using DeskFlow.WebAPI;
+using DeskFlow.WebAPI.Authorization.Handlers;
+using DeskFlow.WebAPI.Authorization.Requirements;
 using DeskFlow.WebAPI.Middlewares;
 using Hangfire;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -72,11 +74,14 @@ builder.Services.AddAuthorization( options =>
              policy.Requirements.Add(new ReporterOnlyRequirement()));
          options.AddPolicy("ManagerOrTechnician", policy =>
              policy.Requirements.Add(new ManagerOrTechnicianRequirement()));
+         options.AddPolicy("AdminOrManagerOrSelf", policy =>
+             policy.Requirements.Add(new AdminOrManagerOrUserRequirement()));
      });
 
 builder.Services.AddScoped<IAuthorizationHandler,ManagerOrReporterOrAssignedToHandler >();
 builder.Services.AddScoped<IAuthorizationHandler,ManagerOrAdminHandler >();
 builder.Services.AddScoped<IAuthorizationHandler,ReporterOnlyHandler >();
+builder.Services.AddScoped<IAuthorizationHandler,AdminOrManagerOrUserHandler >();
 builder.Services.AddScoped<IAuthorizationHandler,ManagerOrTechnicianHandler >();
 
 builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection("Jwt"));

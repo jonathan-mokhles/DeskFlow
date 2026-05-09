@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Identity.Client;
 using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 
 namespace DeskFlow.WebAPI.Controllers
 {
@@ -83,7 +84,7 @@ namespace DeskFlow.WebAPI.Controllers
                 return Forbid();
             }
 
-            var userId = User.FindFirst(JwtRegisteredClaimNames.Sub)?.Value;
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             if (string.IsNullOrEmpty(userId))
             {
                 return Unauthorized();
@@ -108,10 +109,10 @@ namespace DeskFlow.WebAPI.Controllers
         /// <returns>A file result containing the attachment if found and authorized; otherwise, a 403 Forbidden or 404 Not Found
         /// response.</returns>
         [HttpGet("{id:int}/download")]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(FileResult))]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status403Forbidden,Type = typeof(ApiErrorResponse))]
         [ProducesResponseType(StatusCodes.Status404NotFound, Type =typeof(ApiErrorResponse))]
-
+        [Produces("application/octet-stream")]
         public async Task<IActionResult> DownloadAttachment([FromRoute] int ticketId, [FromRoute] int id)
         {
             var authorizationResult = await _authorizationService.AuthorizeAsync(User, ticketId, "ManagerOrReporterOrAssignedTo");

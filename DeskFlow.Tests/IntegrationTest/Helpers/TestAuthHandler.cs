@@ -24,7 +24,7 @@ public class TestAuthHandler : AuthenticationHandler<AuthenticationSchemeOptions
         var claims = new[]
         {
             new Claim(ClaimTypes.Role, role),
-            new Claim(JwtRegisteredClaimNames.Sub, "test-user-id"),
+            new Claim(ClaimTypes.NameIdentifier, "test-user-id"),
             new Claim(ClaimTypes.Email, "test@test.com"),
             new Claim("DeptId", departmentId)
         };

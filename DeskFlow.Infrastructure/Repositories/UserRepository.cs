@@ -1,7 +1,8 @@
 ﻿using DeskFlow.Core.Domain.RepositoriesContracts;
 using DeskFlow.Core.DTOs.UsersDTOs;
-using Microsoft.EntityFrameworkCore;
+using DeskFlow.Core.Enums;
 using DeskFlow.Infrastructure.DbContext;
+using Microsoft.EntityFrameworkCore;
 
 namespace DeskFlow.Infrastructure.Repositories
 {
@@ -59,6 +60,21 @@ namespace DeskFlow.Infrastructure.Repositories
                     Role = g.Select(x => x.RoleName).FirstOrDefault() ?? "UnAssigned"
                 })
                 .ToList();
+        }
+
+        public async Task<string?> GetManagerDepartmentEmailByCategoryIdAsync(int categoryId)
+        {
+            return await _context.Categories
+                .Where(c => c.Id == categoryId)
+                .Join(_context.Departments,
+                    c => c.DepartmentId,
+                    d => d.Id,
+                    (c, d) => d)
+                .Join(_context.Users,
+                    d => d.ManagerId,
+                    u => u.Id,
+                    (d, u) => u.Email)
+                .FirstOrDefaultAsync();
         }
 
         public Task<UserResponseDTO?> GetUserByIdAsync(string Id)

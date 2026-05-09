@@ -10,10 +10,9 @@ namespace DeskFlow.Core.Mappings
             return new TicketComment
             {
                 TicketId = dto.TicketId,
-                UserId = dto.UserId,
                 CommentText = dto.CommentText,
                 IsInternal = dto.IsInternal,
-                CreatedDate = dto.CreatedDate
+                CreatedDate = DateTime.UtcNow,
             };
         }
 

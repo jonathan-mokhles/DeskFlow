@@ -1,10 +1,13 @@
-﻿using DeskFlow.Core.Domain.RepositoriesContracts;
+﻿using DeskFlow.Core.Domain.Entity;
+using DeskFlow.Core.Domain.RepositoriesContracts;
 using DeskFlow.Core.DTOs.CommentDTOs;
 using DeskFlow.Core.DTOs.shared;
+using DeskFlow.Core.Enums;
 using DeskFlow.Core.ServicesContracts;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.IdentityModel.Tokens.Jwt;
+using DeskFlow.Core.Mappings;
+using System.Security.Claims;
 
 namespace DeskFlow.WebAPI.Controllers
 {
@@ -35,7 +38,7 @@ namespace DeskFlow.WebAPI.Controllers
         /// </summary>
         /// <remarks>Admin, Depatment Manger, Assigned technician and Reported User only can comment</remarks>
         /// <param name="ticketId">The unique identifier of the ticket to which the comment will be added.</param>
-        /// <param name="comment">The data for the comment to add, including content and associated ticket information. Must not be null, and
+        /// <param name="commentDTO">The data for the comment to add, including content and associated ticket information. Must not be null, and
         /// the TicketId property must match the ticketId parameter.</param>
        
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -43,7 +46,7 @@ namespace DeskFlow.WebAPI.Controllers
         [ProducesResponseType(typeof(ApiErrorResponse), StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(ApiErrorResponse), StatusCodes.Status403Forbidden)]
         [HttpPost]
-        public async Task<IActionResult> AddComment(int ticketId, CommentCreateDTO comment)
+        public async Task<IActionResult> AddComment([FromRoute] int ticketId,[FromBody] CommentCreateDTO commentDTO)
         {
 
             var result = await _authorizationService.AuthorizeAsync(User, ticketId, "ManagerOrReporterOrAssignedTo");
@@ -56,8 +59,12 @@ namespace DeskFlow.WebAPI.Controllers
                     TraceId = HttpContext.TraceIdentifier
                 });
             }
-
-            if(ticketId != comment.TicketId)
+            string role = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value ?? string.Empty;
+            if (role == nameof(RoleEnum.User))
+            {
+                commentDTO.IsInternal =false;
+            }
+            if (ticketId != commentDTO.TicketId)
             {
                 return BadRequest(new ApiErrorResponse
                 {
@@ -66,6 +73,9 @@ namespace DeskFlow.WebAPI.Controllers
                     TraceId = HttpContext.TraceIdentifier,
                 });
             }
+
+            TicketComment comment = commentDTO.ToEntity();
+            comment.UserId = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value ?? string.Empty;
 
             await _CommentsService.AddCommentToTicketAsync(comment);
             return Ok();
@@ -111,7 +121,7 @@ namespace DeskFlow.WebAPI.Controllers
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         public async Task<IActionResult> DeleteComment(int commentId)
         {
-            string userId = User.Claims.FirstOrDefault(c => c.Type == JwtRegisteredClaimNames.Sub)?.Value ?? string.Empty;
+            string userId = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value ?? string.Empty;
             CommentResponseDTO? comment = await _CommentsService.GetCommentByIdAsync(commentId);
             if(comment is null)
             {

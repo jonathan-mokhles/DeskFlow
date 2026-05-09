@@ -10,12 +10,8 @@ namespace DeskFlow.Core.DTOs.CommentDTOs
         [Required]
         public int TicketId { get; set; }
         [Required]
-        public string UserId { get; set; } = string.Empty;
-        [Required]
         public string CommentText { get; set; } = string.Empty;
         [Required]
-        public bool IsInternal { get; set; }
-        [Required]
-        public DateTime CreatedDate { get; set; }
+        public bool IsInternal { get; set; } = false;
     }
 }

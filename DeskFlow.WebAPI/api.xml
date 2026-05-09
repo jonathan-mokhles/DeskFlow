@@ -350,12 +350,13 @@
             Controller for managing user accounts, including registration, updating, deletion, and retrieval of user details. Access to these endpoints is restricted based on user roles and policies.
             </summary>
         </member>
-        <member name="M:DeskFlow.WebAPI.Controllers.UsersController.#ctor(DeskFlow.Core.ServicesContracts.IUserService,Microsoft.Extensions.Logging.ILogger{DeskFlow.WebAPI.Controllers.UsersController})">
+        <member name="M:DeskFlow.WebAPI.Controllers.UsersController.#ctor(DeskFlow.Core.ServicesContracts.IUserService,Microsoft.Extensions.Logging.ILogger{DeskFlow.WebAPI.Controllers.UsersController},Microsoft.AspNetCore.Authorization.IAuthorizationService)">
             <summary>
-            Initializes a new instance of the UsersController class with the specified user service and logger. 
+            Initializes a new instance of the UsersController class with the specified user service, logger, and authorization service. 
             </summary>
             <param name="userService">The service used to manage user-related operations. Cannot be null.</param>
             <param name="logger">The logger used to record diagnostic and operational information for the controller. Cannot be null.</param>
+            <param name="authorizationService">The authorization service used to enforce policies and requirements. Cannot be null.</param>
         </member>
         <member name="M:DeskFlow.WebAPI.Controllers.UsersController.register(DeskFlow.Core.DTOs.UsersDTOs.RegisterUserDTO)">
             <summary>

@@ -87,9 +87,6 @@ namespace DeskFlow.WebAPI.Controllers
         [ProducesResponseType(typeof(IEnumerable<TicketResponseDTO>), StatusCodes.Status200OK)]
         public async Task<ActionResult<IEnumerable<TicketResponseDTO>>> GetAllTickets([FromQuery] TicketQueryParams queryParams)
         {
-            var role = User.FindFirstValue(ClaimTypes.Role);
-            string userid = User.FindFirstValue(JwtRegisteredClaimNames.Sub)!;
-
             var tickets = await _ticketService.GetAllTicketsAsync(queryParams);
             return Ok(tickets);
         }

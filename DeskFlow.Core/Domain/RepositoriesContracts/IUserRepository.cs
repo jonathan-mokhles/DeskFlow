@@ -9,5 +9,6 @@ namespace DeskFlow.Core.Domain.RepositoriesContracts
     {
         public Task<UserResponseDTO?> GetUserByIdAsync(string Id);
         public Task<List<UserResponseDTO>> GetAllUsersAsync(UsersQueryParameters query);
+        Task<string?> GetManagerDepartmentEmailByCategoryIdAsync(int categoryId);
     }
 }

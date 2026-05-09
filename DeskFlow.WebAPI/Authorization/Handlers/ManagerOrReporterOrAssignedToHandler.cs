@@ -26,7 +26,7 @@ namespace DeskFlow.Core.Authorization.Handlers
                 return;
             }
 
-            string userId = context.User.FindFirstValue(JwtRegisteredClaimNames.Sub)!;
+            string userId = context.User.FindFirstValue(ClaimTypes.NameIdentifier)!;
             string Role = context.User.FindFirstValue(ClaimTypes.Role)!;
             int deptId = int.Parse(context.User.FindFirstValue("DeptId")!);
 

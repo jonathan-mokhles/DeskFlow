@@ -363,3 +363,4 @@ MigrationBackup/
 FodyWeavers.xsd
 
 .github/agents
+DeskFlow.WebAPI/wwwroot/Attachments/
