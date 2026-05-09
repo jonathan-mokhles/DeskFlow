@@ -44,9 +44,9 @@ namespace DeskFlow.Infrastructure.Repositories
             return Task.CompletedTask;
         }
 
-        public async Task<IEnumerable<CommentResponseDTO>> GetByticketIdAsync(int ticketId)
+        public async Task<IEnumerable<CommentResponseDTO>> GetByticketIdAsync(int ticketId, bool AllComments)
         {
-            return await  _db.TicketComments.Where(c => c.TicketId == ticketId)
+            return await  _db.TicketComments.Where(c => c.TicketId == ticketId && (AllComments || !c.IsInternal))
                 .Select(c => new CommentResponseDTO
                 {
                     Id = c.Id,

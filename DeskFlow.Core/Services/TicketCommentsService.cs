@@ -1,6 +1,8 @@
 ﻿using DeskFlow.Core.Domain.Entity;
 using DeskFlow.Core.Domain.RepositoriesContracts;
 using DeskFlow.Core.DTOs.CommentDTOs;
+using DeskFlow.Core.DTOs.shared;
+using DeskFlow.Core.Enums;
 using DeskFlow.Core.Mappings;
 using DeskFlow.Core.ServicesContracts;
 
@@ -9,10 +11,12 @@ namespace DeskFlow.Core.Services
     public class TicketCommentsService : ITicketCommentsService
     {
         IUnitOfWork _unitOfWork;
+        ICurrentUserService _currentUserService;
 
-        public TicketCommentsService(IUnitOfWork unitOfWork)
+        public TicketCommentsService(IUnitOfWork unitOfWork, ICurrentUserService currentUserService)
         {
             _unitOfWork = unitOfWork;
+            _currentUserService = currentUserService;
         }
 
 
@@ -35,7 +39,12 @@ namespace DeskFlow.Core.Services
 
         public Task<IEnumerable<CommentResponseDTO>> GetCommentsForTicketAsync(int ticketId)
         {
-            return _unitOfWork.TicketComment.GetByticketIdAsync(ticketId);
+            bool AllComments = true;
+            if(_currentUserService.Role == RoleEnum.User )
+            {
+                    AllComments = false;
+            }
+            return _unitOfWork.TicketComment.GetByticketIdAsync(ticketId, AllComments);
         }
     }
 }

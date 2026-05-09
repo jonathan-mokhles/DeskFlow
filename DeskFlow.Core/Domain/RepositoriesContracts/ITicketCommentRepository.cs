@@ -8,7 +8,7 @@ namespace DeskFlow.Core.Domain.RepositoriesContracts
 {
     public interface ITicketCommentRepository
     {
-        Task<IEnumerable<CommentResponseDTO>> GetByticketIdAsync(int ticketId);
+        Task<IEnumerable<CommentResponseDTO>> GetByticketIdAsync(int ticketId, bool AllComments);
         public Task<CommentResponseDTO?> GetCommentByIdAsync(int commentId);
 
         Task CreateAsync(TicketComment comment);

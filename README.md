@@ -28,8 +28,8 @@ DeskFlow is a full-featured help desk system that enables organizations to track
 
 | Layer | Technology |
 |---|---|
-| Framework | ASP.NET Core 10 |
-| ORM | Entity Framework Core 10 |
+| Framework | ASP.NET Core |
+| ORM | Entity Framework Core |
 | Database | SQL Server |
 | Authentication | JWT Bearer + Refresh Tokens |
 | Authorization | ASP.NET Core Policy-Based Auth |
@@ -75,7 +75,21 @@ DeskFlow.Tests          → Unit tests (services) + Integration tests (controlle
 | Manage Departments/SLA | ✅ | ❌ | ❌ | ❌ |
 
 ---
+## API Highlights
 
+| Method | Endpoint | Description |
+|---|---|---|
+| `POST` | `/api/auth/login` | Login and receive JWT + refresh token |
+| `POST` | `/api/auth/refresh-token` | Rotate tokens |
+| `POST` | `/api/tickets` | Open a new ticket |
+| `GET` | `/api/tickets/{id}` | Get ticket details |
+| `PATCH` | `/api/tickets/{id}/status` | Update ticket status |
+| `PATCH` | `/api/tickets/{id}/assign` | Assign technician |
+| `GET` | `/api/tickets/{id}/history` | View audit log |
+| `POST` | `/api/tickets/{id}/attachments` | Upload file |
+| `GET` | `/api/tickets/{id}/comments` | Get comments |
+
+---
 ## Getting Started
 
 ### Prerequisites
@@ -117,23 +131,3 @@ The test suite includes:
 - **Integration Tests** — Controller-level tests using an in-memory database and a custom `TestAuthHandler` to simulate roles without real JWT tokens
 
 ---
-
-## API Highlights
-
-| Method | Endpoint | Description |
-|---|---|---|
-| `POST` | `/api/auth/login` | Login and receive JWT + refresh token |
-| `POST` | `/api/auth/refresh-token` | Rotate tokens |
-| `POST` | `/api/tickets` | Open a new ticket |
-| `GET` | `/api/tickets/{id}` | Get ticket details |
-| `PATCH` | `/api/tickets/{id}/status` | Update ticket status |
-| `PATCH` | `/api/tickets/{id}/assign` | Assign technician |
-| `GET` | `/api/tickets/{id}/history` | View audit log |
-| `POST` | `/api/tickets/{id}/attachments` | Upload file |
-| `GET` | `/api/tickets/{id}/comments` | Get comments |
-
----
-
-## License
-
-This project is for portfolio and educational purposes.

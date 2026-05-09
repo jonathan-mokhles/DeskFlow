@@ -1,7 +1,6 @@
 <Solution>
   <Folder Name="/Solution Items/">
-    <File Path="docs/ticket-state-diagram.png" />
-    <File Path="docs/use-case-diagram.png" />
+    <File Path="DeskFlow.WebAPI/Permissions.md" />
     <File Path="README.md" />
   </Folder>
   <Folder Name="/Solution Items/docs/" />
