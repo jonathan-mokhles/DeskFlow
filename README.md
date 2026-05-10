@@ -59,7 +59,9 @@ DeskFlow.Tests          → Unit tests (services) + Integration tests (controlle
 ![ERD](docs/erd.png)
 
 ### Ticket State Machine
-![Ticket State Diagram](docs/ticket-state-diagram.png)
+<img src="docs/ticket-state-diagram.png" width="50%">
+
+---
 
 ## Permissions Matrix
 
@@ -75,6 +77,7 @@ DeskFlow.Tests          → Unit tests (services) + Integration tests (controlle
 | Manage Departments/SLA | ✅ | ❌ | ❌ | ❌ |
 
 ---
+
 ## API Highlights
 
 | Method | Endpoint | Description |

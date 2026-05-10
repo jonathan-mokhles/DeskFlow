@@ -22,7 +22,7 @@ namespace DeskFlow.WebAPI.Controllers
     [Route("api/tickets/{ticketId}/[controller]")]
     [Authorize]
 
-    public class AttachmentsController : ControllerBase
+    public class TicketAttachmentsController : ControllerBase
     {
         private readonly IAuthorizationService _authorizationService;
         private readonly ITicketAttachmentService _ticketAttachmentService;
@@ -32,7 +32,7 @@ namespace DeskFlow.WebAPI.Controllers
         /// </summary>
         /// <param name="authorizationService">The service used to authorize user actions for attachment-related operations. Cannot be null.</param>
         /// <param name="ticketAttachmentService">The service responsible for managing ticket attachments. Cannot be null.</param>
-        public AttachmentsController(IAuthorizationService authorizationService, ITicketAttachmentService ticketAttachmentService)
+        public TicketAttachmentsController(IAuthorizationService authorizationService, ITicketAttachmentService ticketAttachmentService)
         {
             _authorizationService = authorizationService;
             _ticketAttachmentService = ticketAttachmentService;
