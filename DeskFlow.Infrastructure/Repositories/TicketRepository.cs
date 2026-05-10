@@ -133,7 +133,7 @@ namespace DeskFlow.Infrastructure.Repositories
 
         public async Task AssignTechnician(int ticketId, string technicianId, string userID)
         {
-            await _db.Tickets.Where(t => t.Id == ticketId).ExecuteUpdateAsync(t => t.SetProperty(t => t.AssignedToId, technicianId).SetProperty(t => t.LastModifiedById, userID).SetProperty(t => t.LastModifiedDate, DateTime.UtcNow));
+            await _db.Tickets.Where(t => t.Id == ticketId).ExecuteUpdateAsync(t => t.SetProperty(t => t.AssignedToId, technicianId).SetProperty(t => t.LastModifiedById, userID).SetProperty(t => t.LastModifiedDate, DateTime.UtcNow).SetProperty(t => t.AssignedDate, DateTime.UtcNow));
         }
 
         public async Task<TicketDTO?> GetTicketAsync(int ticketId)
